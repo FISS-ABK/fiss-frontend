@@ -59,12 +59,12 @@ export default function Navbar() {
         {/* Right Side Buttons */}
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Portal Login - Hidden on very small screens, shown on sm+ */}
-          <button className="font-poppins hidden h-9 items-center gap-1.5 rounded-lg bg-[#324e69] px-3 text-xs font-semibold text-white sm:flex sm:h-10 sm:gap-2 sm:px-4 sm:text-sm md:h-11 md:rounded-xl md:px-5">
+          <Link href="/portal" className="font-poppins hidden h-9 items-center gap-1.5 rounded-lg bg-[#324e69] px-3 text-xs font-semibold text-white sm:flex sm:h-10 sm:gap-2 sm:px-4 sm:text-sm md:h-11 md:rounded-xl md:px-5">
             <span>Portal Login</span>
             <span className="relative inline-flex h-5 w-5 items-center justify-center rounded-md bg-[rgba(4,16,28,0.3)] sm:h-6 sm:w-6">
               <LogIn className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </span>
-          </button>
+          </Link>
 
           {/* Mobile Menu Button */}
           <button
@@ -103,10 +103,14 @@ export default function Navbar() {
               );
             })}
             {/* Mobile Portal Login Button */}
-            <button className="font-poppins mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#324e69] text-sm font-semibold text-white sm:hidden">
+            <Link
+              href="/portal"
+              onClick={() => setMobileMenuOpen(false)}
+              className="font-poppins mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#324e69] text-sm font-semibold text-white sm:hidden"
+            >
               Portal Login
               <LogIn className="h-4 w-4" />
-            </button>
+            </Link>
           </nav>
         </div>
       )}
