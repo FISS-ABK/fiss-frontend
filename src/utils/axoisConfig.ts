@@ -9,7 +9,7 @@ export const axiosConfig = axios.create({
 // Add a request interceptor to dynamically add the jwt_token from sessionStorage
 axiosConfig.interceptors.request.use(
   (config) => {
-    const token = sessionStorage.getItem("jwt_token");
+    const token = sessionStorage.getItem("admin-token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
