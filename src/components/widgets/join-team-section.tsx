@@ -3,67 +3,15 @@
 import { Briefcase } from 'lucide-react';
 import { CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { Vacancy } from '@/types/vacancies';
-import { logger } from '@/lib/logger';
-
+import { useVacancies } from '@/hooks/useVacancies';
 
 export default function JoinTeamSection() {
-  const [vacancies, setVacancies] = useState<Vacancy[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { vacancies, isLoading } = useVacancies();
+  
+  // Filter only active vacancies
+  const activeVacancies = vacancies.filter((v: any) => v.isActive !== false);
 
-  useEffect(() => {
-    // TODO: Replace with actual API call
-    // Fetch active vacancies from the backend
-    const fetchVacancies = async () => {
-      try {
-        // const response = await fetch('/api/vacancies?active=true');
-        // const data = await response.json();
-        
-        // Mock data for now
-        const mockData: Vacancy[] = [
-          {
-            id: 1,
-            title: 'Mathematics Teacher',
-            jobDescription: 'Responsible for delivering engaging lessons, assessing student progress, and supporting academic excellence within the classroom.',
-            requirements: [
-              { text: 'Relevant teaching qualification' },
-              { text: 'Minimum of 2 years teaching experience' },
-              { text: 'Strong classroom management skills' },
-              { text: 'Commitment to school values' },
-            ],
-            department: 'Academic',
-            employmentType: 'Full-time',
-            isActive: true,
-          },
-          {
-            id: 2,
-            title: 'Mathematics Teacher',
-            jobDescription: 'Responsible for delivering engaging lessons, assessing student progress, and supporting academic excellence within the classroom.',
-            requirements: [
-              { text: 'Relevant teaching qualification' },
-              { text: 'Minimum of 2 years teaching experience' },
-              { text: 'Strong classroom management skills' },
-              { text: 'Commitment to school values' },
-            ],
-            department: 'Academic',
-            employmentType: 'Full-time',
-            isActive: true,
-          },
-        ];
-        
-        setVacancies(mockData);
-      } catch (error) {
-        logger.error('Error fetching vacancies:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchVacancies();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <section className="bg-white py-16 md:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
@@ -73,10 +21,6 @@ export default function JoinTeamSection() {
         </div>
       </section>
     );
-  }
-
-  if (vacancies.length === 0) {
-    return null; // Don't show section if no vacancies
   }
 
   return (
@@ -93,9 +37,27 @@ export default function JoinTeamSection() {
           </p>
         </div>
 
-        {/* Vacancies Grid */}
-        <div className="grid gap-8 md:grid-cols-2 lg:gap-12">
-          {vacancies.map((vacancy) => (
+        {/* Empty State */}
+        {activeVacancies.length === 0 ? (
+          <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gray-200">
+              <Briefcase className="h-10 w-10 text-gray-400" />
+            </div>
+            <h3 className="mt-6 text-xl font-semibold text-gray-900 md:text-2xl">
+              No Open Positions
+            </h3>
+            <p className="mt-3 text-base text-gray-600 md:text-lg">
+              We don&apos;t have any job openings at the moment, but we&apos;re always interested in connecting with talented educators.
+            </p>
+            <p className="mt-2 text-sm text-gray-500">
+              Check back soon or send us your resume for future opportunities.
+            </p>
+          </div>
+        ) : (
+          <>
+            {/* Vacancies Grid */}
+            <div className="grid gap-8 md:grid-cols-2 lg:gap-12">
+              {activeVacancies.map((vacancy: any) => (
             <div
               key={vacancy.id}
               className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md md:p-8"
@@ -116,7 +78,7 @@ export default function JoinTeamSection() {
               <div className="mb-6">
                 <h4 className="mb-3 text-lg font-bold text-[#09283b]">Job Description</h4>
                 <p className="text-sm leading-relaxed text-gray-700 md:text-base">
-                  {vacancy.jobDescription}
+                  {vacancy.job_description || vacancy.jobDescription}
                 </p>
               </div>
 
@@ -124,10 +86,12 @@ export default function JoinTeamSection() {
               <div className="mb-8">
                 <h4 className="mb-4 text-lg font-bold text-[#09283b]">Requirements</h4>
                 <ul className="space-y-3">
-                  {vacancy.requirements.map((req, index) => (
+                  {vacancy.requirements?.map((req: any, index: number) => (
                     <li key={index} className="flex items-start gap-3">
                       <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#09283b]" />
-                      <span className="text-sm text-gray-700 md:text-base">{req.text}</span>
+                      <span className="text-sm text-gray-700 md:text-base">
+                        {typeof req === 'string' ? req : req.text}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -145,7 +109,7 @@ export default function JoinTeamSection() {
         </div>
 
         {/* View All Careers Link */}
-        {vacancies.length > 2 && (
+        {activeVacancies.length > 2 && (
           <div className="mt-12 text-center">
             <Link
               href="/careers"
@@ -157,6 +121,8 @@ export default function JoinTeamSection() {
               </svg>
             </Link>
           </div>
+        )}
+      </>
         )}
       </div>
     </section>
