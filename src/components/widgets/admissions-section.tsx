@@ -1,5 +1,6 @@
 import { FileCheck, ArrowRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function AdmissionsSection() {
     return (
@@ -16,12 +17,14 @@ export default function AdmissionsSection() {
                             <p className="font-suisse text-sm leading-relaxed text-gray-600 sm:text-base">
                                 Our admission process is designed to be simple, transparent, and supportive, ensuring every child is given the opportunity to thrive academically and morally.
                             </p>
-                            <button className="font-poppins flex h-11 w-fill items-center justify-center gap-2 rounded-lg bg-[#0b2c4d] px-4 text-sm font-semibold text-white sm:h-12 sm:w-auto sm:px-5">
-                                View Admission Requirements
-                                <span className="relative inline-flex h-5 w-5 items-center justify-center rounded bg-[rgba(4,16,28,0.3)] sm:h-6 sm:w-6">
-                                    <FileCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                                </span>
-                            </button>
+                            <Link href="/admissions">
+                                <button className="font-poppins flex h-11 w-auto items-center justify-center gap-2 rounded-lg bg-[#0b2c4d] px-4 text-sm font-semibold text-white sm:h-12 sm:w-fit sm:px-5">
+                                    View Admission Requirements
+                                    <span className="relative inline-flex h-5 w-5 items-center justify-center rounded bg-[rgba(4,16,28,0.3)] sm:h-6 sm:w-6">
+                                        <FileCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                    </span>
+                                </button>
+                            </Link>
                         </div>
 
                         {/* Admission Requirements - Image Card */}
@@ -73,12 +76,14 @@ export default function AdmissionsSection() {
                             <p className="font-suisse text-sm leading-relaxed text-gray-600 sm:text-base">
                                 Our Junior Secondary program focuses on building strong academic foundations while developing critical thinking, discipline, and confidence in students.
                             </p>
-                            <button className="font-poppins flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-[#0b2c4d] px-4 text-sm font-semibold text-white sm:h-12 sm:w-auto sm:px-5 md:ml-auto">
-                                Learn More
-                                <span className="relative inline-flex h-5 w-5 items-center justify-center rounded bg-[rgba(4,16,28,0.3)] sm:h-6 sm:w-6">
-                                    <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                                </span>
-                            </button>
+                            <Link href="/academics">
+                                <button className="font-poppins flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-[#0b2c4d] px-4 text-sm font-semibold text-white sm:h-12 sm:w-auto sm:px-5 md:ml-auto">
+                                    Learn More
+                                    <span className="relative inline-flex h-5 w-5 items-center justify-center rounded bg-[rgba(4,16,28,0.3)] sm:h-6 sm:w-6">
+                                        <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                    </span>
+                                </button>
+                            </Link>
                         </div>
                     </div>
                 </div>

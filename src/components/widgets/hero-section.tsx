@@ -1,4 +1,5 @@
 import { FileCheck, BookOpen } from "lucide-react";
+import Link from "next/link";
 import Image from "next/image";
 
 const imgBadgeIcon = "https://www.figma.com/api/mcp/asset/b36a05ce-676f-44ef-8049-4fd281437365";
@@ -27,19 +28,23 @@ export default function HeroSection() {
 
             {/* Buttons - Stack on mobile, row on sm+ */}
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
+              <Link href="/admissions"> 
               <button className="font-poppins flex h-11 items-center justify-center gap-2 rounded-lg bg-[#0b2c4d] px-4 text-sm font-semibold text-white sm:h-11.5 sm:justify-start sm:px-5">
                 <span>Apply for Admission</span>
                 <span className="relative inline-flex h-5 w-5 items-center justify-center rounded bg-[rgba(4,16,28,0.3)] sm:h-6 sm:w-6">
                   <FileCheck className="h-3.5 w-3.5 sm:h-4.5 sm:w-4.5" />
                 </span>
               </button>
+              </Link>
 
-              <button className="font-poppins flex h-11 items-center justify-center gap-2 rounded-lg bg-white px-4 text-sm font-semibold text-[#0b2c4d] shadow-sm sm:h-11.5 sm:justify-start sm:px-5">
-                <span>Explore Academics</span>
-                <span className="relative inline-flex h-5 w-5 items-center justify-center rounded bg-[#f0f0f0] sm:h-6 sm:w-6">
-                  <BookOpen className="h-3.5 w-3.5 sm:h-4.5 sm:w-4.5" />
-                </span>
-              </button>
+              <Link href="/academics">
+                <button className="font-poppins flex h-11 items-center justify-center gap-2 rounded-lg bg-white px-4 text-sm font-semibold text-[#0b2c4d] shadow-sm sm:h-11.5 sm:justify-start sm:px-5">
+                  <span>Explore Academics</span>
+                  <span className="relative inline-flex h-5 w-5 items-center justify-center rounded bg-[#f0f0f0] sm:h-6 sm:w-6">
+                    <BookOpen className="h-3.5 w-3.5 sm:h-4.5 sm:w-4.5" />
+                  </span>
+                </button>
+              </Link>
             </div>
           </div>
 
@@ -58,7 +63,7 @@ export default function HeroSection() {
             </div>
 
             {/* Left Tilted Image */}
-            <div className="absolute left-0 top-[30px] h-[100px] w-[90px] -rotate-[10deg] sm:top-[40px] sm:h-[130px] sm:w-[115px] md:top-[50px] md:h-[160px] md:w-[145px] lg:top-[60px] lg:h-[200px] lg:w-[180px] xl:top-[70px] xl:h-[230px] xl:w-[210px]">
+            <div className="absolute left-0 top-7.5 h-25 w-22.5 -rotate-10 sm:top-10 sm:h-32.5 sm:w-28.75 md:top-12.5 md:h-40 md:w-36.25 lg:top-15 lg:h-50 lg:w-45 xl:top-17.5 xl:h-57.5 xl:w-52.5">
               <Image
                 alt="Smiling student"
                 src="/imgImage1.png"
@@ -82,7 +87,7 @@ export default function HeroSection() {
             </div>
 
             {/* Accredited Badge */}
-            <div className="absolute bottom-[20px] left-[16%] flex flex-col items-center sm:bottom-[30px] sm:left-[20%] md:bottom-[40px] md:left-[24%] lg:bottom-[48px] lg:left-[26%] xl:bottom-[54px] xl:left-[28%]">
+            <div className="absolute bottom-5 left-[16%] flex flex-col items-center sm:bottom-7.5 sm:left-[20%] md:bottom-10 md:left-[24%] lg:bottom-12 lg:left-[26%] xl:bottom-13.5 xl:left-[28%]">
               <div className="relative h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 lg:h-11 lg:w-11">
                 <Image alt="Accredited badge" src={imgBadgeIcon} fill className="object-contain" sizes="44px" loading="lazy" />
               </div>
