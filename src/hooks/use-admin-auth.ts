@@ -26,7 +26,7 @@ interface UseSignInReturn {
 const STORAGE_KEY = "jwt_token";
 const AUTH_POPUP_CONFIG = "width=500,height=600,scrollbars=yes,resizable=yes";
 const AUTH_TIMEOUT = 5 * 60 * 1000; // 5 minutes
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export const useAdminAuth = (): UseSignInReturn => {
   const [user, setUser] = useState<User | null>(null);

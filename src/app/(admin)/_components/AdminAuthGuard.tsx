@@ -2,10 +2,10 @@
 
 import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useAdminAuth } from '@/hooks/use-admin-auth';
+import { getSession } from '@/lib/auth';
 
 export default function AdminAuthGuard({ children }: { children: React.ReactNode }) {
-  const { user } = useAdminAuth();
+  const session  = getSession();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -16,15 +16,15 @@ export default function AdminAuthGuard({ children }: { children: React.ReactNode
     }
 
     // If user is null (not authenticated) and not on login page, redirect to login
-    if (user === null && pathname !== '/admin/login') {
+    if (session === null && pathname !== '/admin/login') {
       router.push('/admin/login');
     }
 
-    // If user is authenticated and on login page, redirect to overview
-    if (user && pathname === '/admin/login') {
+    // If session is authenticated and on login page, redirect to overview
+    if (session && pathname === '/admin/login') {
       router.push('/admin/overview');
     }
-  }, [user, pathname, router]);
+  }, [session, pathname, router]);
 
   // Allow login page to render immediately
   if (pathname === '/admin/login') {
@@ -32,7 +32,7 @@ export default function AdminAuthGuard({ children }: { children: React.ReactNode
   }
 
   // For protected pages, only render if authenticated
-  if (!user) {
+  if (!session) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
