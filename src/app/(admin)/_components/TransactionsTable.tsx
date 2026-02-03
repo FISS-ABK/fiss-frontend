@@ -29,61 +29,63 @@ export default function TransactionsTable({
   onSeeAll 
 }: TransactionsTableProps) {
   return (
-    <div className="rounded-lg bg-white p-6 shadow-sm">
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-gray-900">Recent Transactions</h2>
+    <div className="rounded-lg bg-white p-4 shadow-sm sm:p-6">
+      <div className="mb-4 flex items-center justify-between sm:mb-6">
+        <h2 className="text-base font-semibold text-gray-900 sm:text-lg">Recent Transactions</h2>
         {showSeeAll && (
           <button 
             onClick={onSeeAll}
-            className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700"
+            className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 sm:gap-2 sm:text-sm"
           >
             See all
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>
         )}
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="border-b border-gray-200">
-            <tr className="text-left text-sm font-medium text-gray-600">
-              <th className="pb-3 font-medium">Student Name</th>
-              <th className="pb-3 font-medium">Fee Type</th>
-              <th className="pb-3 font-medium">Class</th>
-              <th className="pb-3 font-medium">Amount</th>
-              <th className="pb-3 font-medium">Date</th>
-              <th className="pb-3 font-medium">Status</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {transactions.map((transaction) => (
-              <tr key={transaction.id} className="text-sm">
-                <td className="py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-700 text-white text-sm font-medium">
-                      {transaction.studentName[0]}
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{transaction.studentName}</p>
-                      <p className="text-xs text-gray-500">{transaction.studentId}</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="py-4 text-gray-600">{transaction.feeType}</td>
-                <td className="py-4 text-gray-600">{transaction.class}</td>
-                <td className="py-4 font-medium text-gray-900">{transaction.amount}</td>
-                <td className="py-4 text-gray-600">{transaction.date}</td>
-                <td className="py-4">
-                  <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${statusStyles[transaction.status]}`}>
-                    {transaction.status}
-                  </span>
-                </td>
+      <div className="-mx-4 overflow-x-auto sm:mx-0">
+        <div className="inline-block min-w-full align-middle">
+          <table className="min-w-full">
+            <thead className="border-b border-gray-200">
+              <tr className="text-left text-xs font-medium text-gray-600 sm:text-sm">
+                <th className="whitespace-nowrap px-4 pb-3 font-medium sm:px-0">Student Name</th>
+                <th className="whitespace-nowrap px-4 pb-3 font-medium sm:px-0">Fee Type</th>
+                <th className="hidden whitespace-nowrap px-4 pb-3 font-medium sm:table-cell sm:px-0">Class</th>
+                <th className="whitespace-nowrap px-4 pb-3 font-medium sm:px-0">Amount</th>
+                <th className="hidden whitespace-nowrap px-4 pb-3 font-medium lg:table-cell lg:px-0">Date</th>
+                <th className="whitespace-nowrap px-4 pb-3 font-medium sm:px-0">Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {transactions.map((transaction) => (
+                <tr key={transaction.id} className="text-xs sm:text-sm">
+                  <td className="px-4 py-3 sm:px-0 sm:py-4">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-700 text-xs font-medium text-white sm:h-10 sm:w-10 sm:text-sm">
+                        {transaction.studentName[0]}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="truncate font-medium text-gray-900">{transaction.studentName}</p>
+                        <p className="truncate text-xs text-gray-500">{transaction.studentId}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-3 text-gray-600 sm:px-0 sm:py-4">{transaction.feeType}</td>
+                  <td className="hidden whitespace-nowrap px-4 py-3 text-gray-600 sm:table-cell sm:px-0 sm:py-4">{transaction.class}</td>
+                  <td className="whitespace-nowrap px-4 py-3 font-medium text-gray-900 sm:px-0 sm:py-4">{transaction.amount}</td>
+                  <td className="hidden whitespace-nowrap px-4 py-3 text-gray-600 lg:table-cell lg:px-0 lg:py-4">{transaction.date}</td>
+                  <td className="whitespace-nowrap px-4 py-3 sm:px-0 sm:py-4">
+                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium sm:px-3 sm:py-1 ${statusStyles[transaction.status]}`}>
+                      {transaction.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
