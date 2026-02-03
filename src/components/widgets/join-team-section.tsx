@@ -73,10 +73,10 @@ export default function JoinTeamSection() {
                   <h3 className="text-2xl font-bold text-[#09283b] md:text-3xl">
                     {vacancy.title}
                   </h3>
-                <div className='flex text-sm'>
-                    <h4 className='bg-gray-200 text-gray-500 rounded-3xl p-2'>{vacancy.department}</h4>
-                    <h4 className='bg-gray-200 text-gray-500 rounded-3xl p-2'>{vacancy.location}</h4>
-                    <h4 className='bg-gray-200 text-gray-500 rounded-3xl p-2'>{vacancy.employment_type}</h4>
+                <div className='flex text-xs gap-2'>
+                    <h4 className='bg-gray-200 text-gray-500 rounded-3xl py-1 px-2'>{vacancy.department}</h4>
+                    <h4 className='bg-gray-200 text-gray-500 rounded-3xl py-1 px-2'>{vacancy.location}</h4>
+                    <h4 className='bg-gray-200 text-gray-500 rounded-3xl py-1 px-2'>{vacancy.employment_type}</h4>
                 </div>
                 </div>
               </div>
