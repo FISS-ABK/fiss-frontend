@@ -27,9 +27,23 @@ export interface VacancyResponse {
   createdAt?: string;
 }
 
-const fetchVacancies = async () => {
+const fetchVacancies = async (): Promise<VacancyResponse[]> => {
   const response = await axiosConfig.get("/vacancies");
-  return response.data;
+  // Ensure we always return an array
+  const data = response.data;
+  if (Array.isArray(data)) {
+    return data;
+  }
+  // If the response has a data property that's an array
+  if (data && Array.isArray(data.data)) {
+    return data.data;
+  }
+  // If the response has a vacancies property that's an array
+  if (data && Array.isArray(data.vacancies)) {
+    return data.vacancies;
+  }
+  // Default to empty array
+  return [];
 };
 
 const createVacancyApi = async (payload: VacancyPayload) => {
@@ -55,12 +69,15 @@ export const useVacancies = () => {
     isLoading,
     error,
     refetch: getVacancies
-  } = useQuery({
+  } = useQuery<VacancyResponse[]>({
     queryKey: ["vacancies"],
     queryFn: fetchVacancies,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
   });
+
+  // Ensure vacancies is always an array
+  const safeVacancies = Array.isArray(vacancies) ? vacancies : [];
 
   const createVacancyMutation = useMutation({
     mutationFn: createVacancyApi,
@@ -97,7 +114,7 @@ export const useVacancies = () => {
 
   return {
     // Data and loading states
-    vacancies,
+    vacancies: safeVacancies,
     isLoading,
     error,
     
