@@ -17,59 +17,19 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Vacancy } from '@/types/vacancies';
-import { toast } from 'sonner';
-
-// Mock data - replace with actual API calls
-const mockVacancies: Vacancy[] = [
-  {
-    id: 1,
-    title: 'Mathematics Teacher',
-    jobDescription: 'Responsible for delivering engaging lessons, assessing student progress, and supporting academic excellence within the classroom.',
-    requirements: [
-      { text: 'Relevant teaching qualification' },
-      { text: 'Minimum of 2 years teaching experience' },
-      { text: 'Strong classroom management skills' },
-      { text: 'Commitment to school values' },
-    ],
-    department: 'Academic',
-    location: 'Main Campus',
-    employmentType: 'Full-time',
-    isActive: true,
-  },
-  {
-    id: 2,
-    title: 'English Teacher',
-    jobDescription: 'Teach English language and literature to secondary school students, fostering critical thinking and communication skills.',
-    requirements: [
-      { text: 'Bachelor\'s degree in English or related field' },
-      { text: 'Teaching certification' },
-      { text: 'Excellent communication skills' },
-      { text: 'Experience with curriculum development' },
-    ],
-    department: 'Academic',
-    location: 'Main Campus',
-    employmentType: 'Full-time',
-    isActive: true,
-  },
-  {
-    id: 3,
-    title: 'ICT Instructor',
-    jobDescription: 'Deliver comprehensive ICT education, covering computer science fundamentals and digital literacy.',
-    requirements: [
-      { text: 'Degree in Computer Science or related field' },
-      { text: 'Proficiency in programming languages' },
-      { text: 'Minimum 1 year teaching experience' },
-      { text: 'Up-to-date knowledge of technology trends' },
-    ],
-    department: 'Technology',
-    location: 'Main Campus',
-    employmentType: 'Full-time',
-    isActive: true,
-  },
-];
+import { useVacancies, VacancyPayload } from '@/hooks/useVacancies';
 
 export default function VacanciesPage() {
-  const [vacancies, setVacancies] = useState<Vacancy[]>(mockVacancies);
+  const { 
+    vacancies, 
+    isLoading, 
+    createVacancy, 
+    updateVacancy, 
+    deleteVacancy,
+    isCreating,
+    isDeleting 
+  } = useVacancies();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
   const [selectedVacancy, setSelectedVacancy] = useState<Vacancy | null>(null);
@@ -94,41 +54,47 @@ export default function VacanciesPage() {
   };
 
   const handleDeleteConfirm = () => {
-    if (vacancyToDelete) {
-      setVacancies(vacancies.filter(v => v.id !== vacancyToDelete.id));
-      toast.success(`${vacancyToDelete.title} vacancy has been deleted successfully`);
+    if (vacancyToDelete && vacancyToDelete.id) {
+      deleteVacancy(vacancyToDelete.id);
       setDeleteDialogOpen(false);
       setVacancyToDelete(null);
     }
   };
 
   const handleSave = (vacancy: Vacancy) => {
+    // Convert Vacancy to VacancyPayload
+    const payload: VacancyPayload = {
+      title: vacancy.title,
+      icon: vacancy.icon,
+      job_description: vacancy.jobDescription,
+      department: vacancy.department,
+      location: vacancy.location,
+      employment_type: vacancy.employmentType,
+      requirements: vacancy.requirements?.map(r => r.text),
+      isActive: vacancy.isActive,
+    };
+
     if (modalMode === 'create') {
-      const newVacancy = { 
-        ...vacancy, 
-        id: Date.now(),
-        postedDate: new Date().toISOString(),
-      };
-      setVacancies([...vacancies, newVacancy]);
-      toast.success('Vacancy posted successfully');
-    } else {
-      setVacancies(vacancies.map(v => v.id === vacancy.id ? vacancy : v));
-      toast.success('Vacancy updated successfully');
+      createVacancy(payload);
+    } else if (vacancy.id) {
+      updateVacancy({ id: vacancy.id, payload });
     }
+    setIsModalOpen(false);
   };
 
-  const activeVacancies = vacancies.filter(v => v.isActive !== false);
-  const inactiveVacancies = vacancies.filter(v => v.isActive === false);
+  const activeVacancies = vacancies.filter((v: any) => v.isActive !== false);
+  const inactiveVacancies = vacancies.filter((v: any) => v.isActive === false);
 
   return (
     <AdminDashboardLayout>
       <PageHeader 
         title="Vacancies" 
-        subtitle={`${activeVacancies.length} active positions`}
+        subtitle={isLoading ? 'Loading...' : `${activeVacancies.length} active positions`}
         action={
           <button
             onClick={handleCreate}
-            className="flex items-center gap-2 rounded-lg bg-[#0a1929] px-4 py-2 text-sm font-medium text-white hover:bg-[#0a1929]/90"
+            disabled={isCreating}
+            className="flex items-center gap-2 rounded-lg bg-[#0a1929] px-4 py-2 text-sm font-medium text-white hover:bg-[#0a1929]/90 disabled:opacity-50"
           >
             <Plus className="h-4 w-4" />
             Post Vacancy
@@ -136,15 +102,25 @@ export default function VacanciesPage() {
         }
       />
 
+      {/* Loading State */}
+      {isLoading && (
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#0a1929] border-t-transparent mx-auto"></div>
+            <p className="mt-4 text-sm text-gray-600">Loading vacancies...</p>
+          </div>
+        </div>
+      )}
+
       {/* Vacancies Grid */}
-      {vacancies.length > 0 ? (
+      {!isLoading && vacancies.length > 0 ? (
         <div className="space-y-8">
           {/* Active Vacancies */}
           {activeVacancies.length > 0 && (
             <div>
               <h2 className="mb-4 text-lg font-semibold text-gray-900">Active Positions</h2>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
-                {activeVacancies.map((vacancy) => (
+                {activeVacancies.map((vacancy: Vacancy) => (
                   <VacancyCard
                     key={vacancy.id}
                     vacancy={vacancy}
@@ -161,19 +137,19 @@ export default function VacanciesPage() {
             <div>
               <h2 className="mb-4 text-lg font-semibold text-gray-500">Inactive Positions</h2>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
-                {inactiveVacancies.map((vacancy) => (
-                  <VacancyCard
-                    key={vacancy.id}
-                    vacancy={vacancy}
-                    onEdit={handleEdit}
-                    onDelete={handleDeleteClick}
-                  />
+                {inactiveVacancies.map((vacancy: Vacancy) => (
+                    <VacancyCard
+                        key={vacancy.id}
+                        vacancy={vacancy}
+                        onEdit={handleEdit}
+                        onDelete={handleDeleteClick}
+                    />
                 ))}
               </div>
             </div>
           )}
         </div>
-      ) : (
+      ) : !isLoading ? (
         <div className="rounded-lg border-2 border-dashed border-gray-300 bg-white p-12 text-center">
           <Briefcase className="mx-auto h-12 w-12 text-gray-400" />
           <h3 className="mt-4 text-lg font-medium text-gray-900">No vacancies posted</h3>
@@ -188,7 +164,7 @@ export default function VacanciesPage() {
             Post Vacancy
           </button>
         </div>
-      )}
+      ) : null}
 
       {/* Create/Edit Modal */}
       <VacancyModal
@@ -214,9 +190,10 @@ export default function VacanciesPage() {
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteConfirm}
-              className="bg-red-600 hover:bg-red-700"
+              disabled={isDeleting}
+              className="bg-red-600 hover:bg-red-700 disabled:opacity-50"
             >
-              Delete
+              {isDeleting ? 'Deleting...' : 'Delete'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
