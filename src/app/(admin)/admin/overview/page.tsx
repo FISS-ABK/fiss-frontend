@@ -45,7 +45,7 @@ export default function AdminDashboard() {
       <PageHeader title="Overview" />
 
       {/* Stats Grid */}
-      <div className="mb-8 grid gap-6 md:grid-cols-3">
+      <div className="mb-6 grid gap-4 sm:gap-6 md:grid-cols-3 lg:gap-6">
         <StatCard
           title="Total student enrolled"
           value={stats.totalStudents.toLocaleString()}
