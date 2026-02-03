@@ -8,8 +8,10 @@ import { useVacancies } from '@/hooks/useVacancies';
 export default function JoinTeamSection() {
   const { vacancies, isLoading } = useVacancies();
   
-  // Filter only active vacancies
-  const activeVacancies = vacancies.filter((v: any) => v.isActive !== false);
+  // Filter only active vacancies - ensure vacancies is always an array
+  const activeVacancies = Array.isArray(vacancies) 
+    ? vacancies.filter((v: any) => v.isActive !== false) 
+    : [];
 
   if (isLoading) {
     return (

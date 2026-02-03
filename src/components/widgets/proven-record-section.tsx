@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function ProvenRecordSection() {
     return (
-        <section className="relative bg-white py-4 sm:py-6 md:py-8">
+        <section className="relative bg-white py-4 sm:py-6 md:py-8 md:px-4">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-0">
                 {/* Title */}
                 <div className="mb-6 text-center sm:mb-8 md:mb-10">

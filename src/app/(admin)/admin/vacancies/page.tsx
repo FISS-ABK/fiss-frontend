@@ -82,8 +82,10 @@ export default function VacanciesPage() {
     setIsModalOpen(false);
   };
 
-  const activeVacancies = vacancies.filter((v: any) => v.isActive !== false);
-  const inactiveVacancies = vacancies.filter((v: any) => v.isActive === false);
+  // Ensure vacancies is always an array before filtering
+  const safeVacancies = Array.isArray(vacancies) ? vacancies : [];
+  const activeVacancies = safeVacancies.filter((v: any) => v.isActive !== false);
+  const inactiveVacancies = safeVacancies.filter((v: any) => v.isActive === false);
 
   return (
     <AdminDashboardLayout>
@@ -113,7 +115,7 @@ export default function VacanciesPage() {
       )}
 
       {/* Vacancies Grid */}
-      {!isLoading && vacancies.length > 0 ? (
+      {!isLoading && safeVacancies.length > 0 ? (
         <div className="space-y-8">
           {/* Active Vacancies */}
           {activeVacancies.length > 0 && (

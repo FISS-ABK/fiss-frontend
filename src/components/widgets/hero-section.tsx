@@ -7,7 +7,7 @@ const imgBadgeIcon = "https://www.figma.com/api/mcp/asset/b36a05ce-676f-44ef-804
 export default function HeroSection() {
   return (
     <section className="bg-[#edf5f5]">
-      <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 pb-12 pt-6 sm:gap-10 sm:px-6 sm:pb-16 sm:pt-8 md:pl-0 md:pr-8 md:pt-12 lg:pb-20">
+      <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 pb-12 pt-6 sm:gap-10 sm:px-6 sm:pb-16 sm:pt-8 md:px-8 md:pt-12 lg:pb-20">
         {/* Content Grid - Stack on mobile, side by side on lg */}
         <div className="grid items-center gap-8 sm:gap-10 lg:grid-cols-[1fr_480px] lg:gap-12 xl:grid-cols-[1fr_520px]">
           {/* Text Content */}
