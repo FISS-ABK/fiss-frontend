@@ -55,12 +55,12 @@ const createVacancyApi = async (payload: VacancyPayload) => {
 };
 
 const updateVacancyApi = async ({ id, payload }: { id: string | number; payload: VacancyPayload }) => {
-  const response = await axiosConfig.put(`/vacancy/${id}`, payload);
+  const response = await axiosConfig.put(`/update-vacancy/${id}`, payload);
   return response.data.data;
 };
 
 const deleteVacancyApi = async (id: string | number) => {
-  const response = await axiosConfig.delete(`/vacancy/${id}`);
+  const response = await axiosConfig.delete(`/delete-vacancy/${id}`);
   return response.data.data;
 };
 

@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Vacancy, VacancyRequirement } from '@/types/vacancies';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface VacancyModalProps {
   isOpen: boolean;
@@ -32,6 +32,34 @@ export default function VacancyModal({ isOpen, onClose, onSave, vacancy, mode }:
     employmentType: vacancy?.employmentType || 'Full-time',
     isActive: vacancy?.isActive ?? true,
   });
+
+  // Update form data when vacancy or mode changes
+  useEffect(() => {
+    if (mode === 'edit' && vacancy) {
+      setFormData({
+        id: vacancy.id,
+        title: vacancy.title || '',
+        jobDescription: vacancy.jobDescription || '',
+        requirements: vacancy.requirements && vacancy.requirements.length > 0 
+          ? vacancy.requirements 
+          : [{ text: '' }],
+        department: vacancy.department || '',
+        location: vacancy.location || '',
+        employmentType: vacancy.employmentType || 'Full-time',
+        isActive: vacancy.isActive ?? true,
+      });
+    } else if (mode === 'create') {
+      setFormData({
+        title: '',
+        jobDescription: '',
+        requirements: [{ text: '' }],
+        department: '',
+        location: '',
+        employmentType: 'Full-time',
+        isActive: true,
+      });
+    }
+  }, [vacancy, mode, isOpen]);
 
   const handleRequirementChange = (index: number, value: string) => {
     const newRequirements = [...formData.requirements];

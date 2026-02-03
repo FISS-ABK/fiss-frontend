@@ -74,6 +74,11 @@ export default function JoinTeamSection() {
                     {vacancy.title}
                   </h3>
                 </div>
+                <div className='flex'>
+                    <h4 className='bg-accent-foreground text-gray-500 rounded-3xl p-2'>{vacancy.department}</h4>
+                    <h4 className='bg-accent-foreground text-gray-500 rounded-3xl p-2'>{vacancy.location}</h4>
+                    <h4 className='bg-accent-foreground text-gray-500 rounded-3xl p-2'>{vacancy.employment_type}</h4>
+                </div>
               </div>
 
               {/* Job Description */}
