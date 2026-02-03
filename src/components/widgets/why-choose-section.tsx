@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function WhyChooseSection() {
     return (
@@ -17,9 +18,11 @@ export default function WhyChooseSection() {
                         <p className="font-suisse max-w-[320px] text-sm leading-6 text-gray-600 md:text-right">
                             A balanced approach to education that nurtures the mind, character, and faith.
                         </p>
+                        <Link href="/admissions">
                         <button className="font-poppins flex h-11.5 w-fit items-center gap-2 rounded-lg border-2 border-[#0b2c4d] bg-transparent px-5 text-[14px] font-semibold text-[#0b2c4d] transition-colors hover:bg-[#0b2c4d] hover:text-white">
                             Apply for Admission Now
                         </button>
+                        </Link>
                     </div>
                 </div>
 
