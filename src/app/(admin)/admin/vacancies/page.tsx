@@ -27,6 +27,7 @@ export default function VacanciesPage() {
     updateVacancy, 
     deleteVacancy,
     isCreating,
+    isUpdating,
     isDeleting 
   } = useVacancies();
 
@@ -55,9 +56,12 @@ export default function VacanciesPage() {
 
   const handleDeleteConfirm = () => {
     if (vacancyToDelete && vacancyToDelete.id) {
-      deleteVacancy(vacancyToDelete.id);
-      setDeleteDialogOpen(false);
-      setVacancyToDelete(null);
+      deleteVacancy(vacancyToDelete.id, {
+        onSuccess: () => {
+          setDeleteDialogOpen(false);
+          setVacancyToDelete(null);
+        },
+      });
     }
   };
 
@@ -75,11 +79,21 @@ export default function VacanciesPage() {
     };
 
     if (modalMode === 'create') {
-      createVacancy(payload);
+      createVacancy(payload, {
+        onSuccess: () => {
+          setIsModalOpen(false);
+        },
+      });
     } else if (vacancy.id) {
-      updateVacancy({ id: vacancy.id, payload });
+      updateVacancy(
+        { id: vacancy.id, payload },
+        {
+          onSuccess: () => {
+            setIsModalOpen(false);
+          },
+        }
+      );
     }
-    setIsModalOpen(false);
   };
 
   // Ensure vacancies is always an array before filtering
@@ -197,6 +211,7 @@ export default function VacanciesPage() {
         onSave={handleSave}
         vacancy={selectedVacancy}
         mode={modalMode}
+        isLoading={isCreating || isUpdating}
       />
 
       {/* Delete Confirmation Dialog */}

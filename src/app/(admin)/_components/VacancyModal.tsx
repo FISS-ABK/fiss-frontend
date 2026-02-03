@@ -17,11 +17,12 @@ interface VacancyModalProps {
   onSave: (vacancy: Vacancy) => void;
   vacancy?: Vacancy | null;
   mode: 'create' | 'edit';
+  isLoading?: boolean;
 }
 
 const EMPLOYMENT_TYPES = ['Full-time', 'Part-time', 'Contract'] as const;
 
-export default function VacancyModal({ isOpen, onClose, onSave, vacancy, mode }: VacancyModalProps) {
+export default function VacancyModal({ isOpen, onClose, onSave, vacancy, mode, isLoading = false }: VacancyModalProps) {
   const [formData, setFormData] = useState<Vacancy>({
     id: vacancy?.id,
     title: vacancy?.title || '',
@@ -88,7 +89,7 @@ export default function VacancyModal({ isOpen, onClose, onSave, vacancy, mode }:
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={isLoading ? undefined : onClose}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{mode === 'create' ? 'Post New Vacancy' : 'Edit Vacancy'}</DialogTitle>
@@ -240,15 +241,22 @@ export default function VacancyModal({ isOpen, onClose, onSave, vacancy, mode }:
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              disabled={isLoading}
+              className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="rounded-lg bg-[#0a1929] px-4 py-2 text-sm font-medium text-white hover:bg-[#0a1929]/90"
+              disabled={isLoading}
+              className="rounded-lg bg-[#0a1929] px-4 py-2 text-sm font-medium text-white hover:bg-[#0a1929]/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
-              {mode === 'create' ? 'Post Vacancy' : 'Update Vacancy'}
+              {isLoading && (
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+              )}
+              {isLoading 
+                ? (mode === 'create' ? 'Posting...' : 'Updating...') 
+                : (mode === 'create' ? 'Post Vacancy' : 'Update Vacancy')}
             </button>
           </div>
         </form>
