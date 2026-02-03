@@ -8,6 +8,7 @@ import AdmissionsSection from "@/components/widgets/admissions-section";
 import LifeAtFissSection from "@/components/widgets/life-at-fiss-section";
 import TestimonialsSection from "@/components/widgets/testimonials-section";
 import FloatingNavWrapper from "@/components/floating-nav-wrapper";
+import JoinTeamSection from "@/components/widgets/join-team-section";
 
 export default function Home() {
   return (
@@ -30,6 +31,8 @@ export default function Home() {
       <LifeAtFissSection />
       <DotSeparator />
       <TestimonialsSection />
+      <DotSeparator />
+      <JoinTeamSection />
       <DotSeparator />
       <Footer />
     </div>
