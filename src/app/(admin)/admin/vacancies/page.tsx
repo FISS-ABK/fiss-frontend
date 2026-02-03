@@ -87,6 +87,22 @@ export default function VacanciesPage() {
   const activeVacancies = safeVacancies.filter((v: any) => v.isActive !== false);
   const inactiveVacancies = safeVacancies.filter((v: any) => v.isActive === false);
 
+  // Helper to convert VacancyResponse to Vacancy for display
+  const convertToVacancy = (v: any): Vacancy => ({
+    id: v.id,
+    title: v.title,
+    icon: v.icon,
+    jobDescription: v.job_description || v.jobDescription || '',
+    requirements: Array.isArray(v.requirements) 
+      ? v.requirements.map((r: any) => typeof r === 'string' ? { text: r } : r)
+      : [],
+    department: v.department,
+    location: v.location,
+    employmentType: v.employment_type || v.employmentType,
+    postedDate: v.createdAt || v.postedDate,
+    isActive: v.isActive,
+  });
+
   return (
     <AdminDashboardLayout>
       <PageHeader 
@@ -122,14 +138,17 @@ export default function VacanciesPage() {
             <div>
               <h2 className="mb-4 text-lg font-semibold text-gray-900">Active Positions</h2>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
-                {activeVacancies.map((vacancy: Vacancy) => (
-                  <VacancyCard
-                    key={vacancy.id}
-                    vacancy={vacancy}
-                    onEdit={handleEdit}
-                    onDelete={handleDeleteClick}
-                  />
-                ))}
+                {activeVacancies.map((v: any) => {
+                  const vacancy = convertToVacancy(v);
+                  return (
+                    <VacancyCard
+                      key={vacancy.id}
+                      vacancy={vacancy}
+                      onEdit={handleEdit}
+                      onDelete={handleDeleteClick}
+                    />
+                  );
+                })}
               </div>
             </div>
           )}
@@ -139,14 +158,17 @@ export default function VacanciesPage() {
             <div>
               <h2 className="mb-4 text-lg font-semibold text-gray-500">Inactive Positions</h2>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
-                {inactiveVacancies.map((vacancy: Vacancy) => (
+                {inactiveVacancies.map((v: any) => {
+                  const vacancy = convertToVacancy(v);
+                  return (
                     <VacancyCard
-                        key={vacancy.id}
-                        vacancy={vacancy}
-                        onEdit={handleEdit}
-                        onDelete={handleDeleteClick}
+                      key={vacancy.id}
+                      vacancy={vacancy}
+                      onEdit={handleEdit}
+                      onDelete={handleDeleteClick}
                     />
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}

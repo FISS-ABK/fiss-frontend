@@ -19,12 +19,15 @@ export interface VacancyResponse {
   title: string;
   icon?: string;
   job_description: string;
+  jobDescription?: string; // Support both snake_case and camelCase
   department?: string;
   location?: string;
   employment_type?: 'Full-time' | 'Part-time' | 'Contract';
-  requirements?: string[];
+  employmentType?: 'Full-time' | 'Part-time' | 'Contract'; // Support both snake_case and camelCase
+  requirements?: string[] | Array<{text: string}>; // Support both formats
   isActive?: boolean;
   createdAt?: string;
+  postedDate?: string;
 }
 
 const fetchVacancies = async (): Promise<VacancyResponse[]> => {
