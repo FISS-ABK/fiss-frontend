@@ -4,7 +4,7 @@ export interface VacancyRequirement {
 }
 
 export interface Vacancy {
-  id?: string | number;
+  _id?: string | number;
   title: string;
   icon?: string; // Optional icon identifier
   jobDescription: string;

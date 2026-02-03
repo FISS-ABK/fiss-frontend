@@ -24,7 +24,7 @@ const EMPLOYMENT_TYPES = ['Full-time', 'Part-time', 'Contract'] as const;
 
 export default function VacancyModal({ isOpen, onClose, onSave, vacancy, mode, isLoading = false }: VacancyModalProps) {
   const [formData, setFormData] = useState<Vacancy>({
-    id: vacancy?.id,
+    _id: vacancy?._id,
     title: vacancy?.title || '',
     jobDescription: vacancy?.jobDescription || '',
     requirements: vacancy?.requirements || [{ text: '' }],
@@ -38,7 +38,7 @@ export default function VacancyModal({ isOpen, onClose, onSave, vacancy, mode, i
   useEffect(() => {
     if (mode === 'edit' && vacancy) {
       setFormData({
-        id: vacancy.id,
+        _id: vacancy._id,
         title: vacancy.title || '',
         jobDescription: vacancy.jobDescription || '',
         requirements: vacancy.requirements && vacancy.requirements.length > 0 

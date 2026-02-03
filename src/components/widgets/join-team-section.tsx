@@ -69,15 +69,15 @@ export default function JoinTeamSection() {
                 <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-[#09283b] text-white md:h-20 md:w-20">
                   <Briefcase className="h-8 w-8 md:h-10 md:w-10" />
                 </div>
-                <div className="flex-1 pt-2">
+                <div className="flex-1 pt-2 flex-col">
                   <h3 className="text-2xl font-bold text-[#09283b] md:text-3xl">
                     {vacancy.title}
                   </h3>
+                <div className='flex text-sm'>
+                    <h4 className='bg-gray-200 text-gray-500 rounded-3xl p-2'>{vacancy.department}</h4>
+                    <h4 className='bg-gray-200 text-gray-500 rounded-3xl p-2'>{vacancy.location}</h4>
+                    <h4 className='bg-gray-200 text-gray-500 rounded-3xl p-2'>{vacancy.employment_type}</h4>
                 </div>
-                <div className='flex'>
-                    <h4 className='bg-accent-foreground text-gray-500 rounded-3xl p-2'>{vacancy.department}</h4>
-                    <h4 className='bg-accent-foreground text-gray-500 rounded-3xl p-2'>{vacancy.location}</h4>
-                    <h4 className='bg-accent-foreground text-gray-500 rounded-3xl p-2'>{vacancy.employment_type}</h4>
                 </div>
               </div>
 

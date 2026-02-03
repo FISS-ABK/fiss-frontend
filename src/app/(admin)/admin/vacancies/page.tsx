@@ -55,8 +55,8 @@ export default function VacanciesPage() {
   };
 
   const handleDeleteConfirm = () => {
-    if (vacancyToDelete && vacancyToDelete.id) {
-      deleteVacancy(vacancyToDelete.id, {
+    if (vacancyToDelete && vacancyToDelete._id) {
+      deleteVacancy(vacancyToDelete._id, {
         onSuccess: () => {
           setDeleteDialogOpen(false);
           setVacancyToDelete(null);
@@ -84,9 +84,9 @@ export default function VacanciesPage() {
           setIsModalOpen(false);
         },
       });
-    } else if (vacancy.id) {
+    } else if (vacancy._id) {
       updateVacancy(
-        { id: vacancy.id, payload },
+        { id: vacancy._id, payload },
         {
           onSuccess: () => {
             setIsModalOpen(false);
@@ -103,7 +103,7 @@ export default function VacanciesPage() {
 
   // Helper to convert VacancyResponse to Vacancy for display
   const convertToVacancy = (v: any): Vacancy => ({
-    id: v.id,
+    _id: v._id,
     title: v.title,
     icon: v.icon,
     jobDescription: v.job_description || v.jobDescription || '',
@@ -156,7 +156,7 @@ export default function VacanciesPage() {
                   const vacancy = convertToVacancy(v);
                   return (
                     <VacancyCard
-                      key={vacancy.id}
+                      key={vacancy._id}
                       vacancy={vacancy}
                       onEdit={handleEdit}
                       onDelete={handleDeleteClick}
@@ -176,7 +176,7 @@ export default function VacanciesPage() {
                   const vacancy = convertToVacancy(v);
                   return (
                     <VacancyCard
-                      key={vacancy.id}
+                      key={vacancy._id}
                       vacancy={vacancy}
                       onEdit={handleEdit}
                       onDelete={handleDeleteClick}
