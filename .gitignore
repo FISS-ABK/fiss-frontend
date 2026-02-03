@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# documentation (internal use only)
+PRODUCTION_READY.md
+DEPLOYMENT.md
+BACKEND_DOCS_*.md
