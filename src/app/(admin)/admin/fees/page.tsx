@@ -17,54 +17,20 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { FeeStructure } from '@/types/fees';
-import { toast } from 'sonner';
-
-// Mock data - replace with actual API calls
-const mockFees: FeeStructure[] = [
-  {
-    id: 1,
-    feeType: 'School Fee',
-    academicSession: '2024/2025',
-    class: 'JSS 1',
-    description: 'First term school fees for JSS 1 students',
-    term: '1st Term',
-    breakdown: [
-      { description: 'Tuition', amount: 80000 },
-      { description: 'Development Levy', amount: 15000 },
-      { description: 'Library Fee', amount: 5000 },
-    ],
-    totalAmount: 100000,
-  },
-  {
-    id: 2,
-    feeType: 'Hostel Fee',
-    academicSession: '2024/2025',
-    class: 'SSS 1',
-    description: 'Hostel accommodation for SSS 1 students',
-    term: '1st Term',
-    breakdown: [
-      { description: 'Accommodation', amount: 50000 },
-      { description: 'Maintenance', amount: 10000 },
-    ],
-    totalAmount: 60000,
-  },
-  {
-    id: 3,
-    feeType: 'Sport Fee',
-    academicSession: '2024/2025',
-    class: 'JSS 2',
-    description: 'Sports and athletics program',
-    term: '2nd Term',
-    breakdown: [
-      { description: 'Sports Kit', amount: 8000 },
-      { description: 'Training Fee', amount: 7000 },
-    ],
-    totalAmount: 15000,
-  },
-];
+import { useFees, FeePayload } from '@/hooks/useFees';
 
 export default function FeesManagementPage() {
-  const [fees, setFees] = useState<FeeStructure[]>(mockFees);
+  const { 
+    fees, 
+    isLoading, 
+    createFee, 
+    updateFee, 
+    deleteFee,
+    isCreating,
+    isUpdating,
+    isDeleting 
+  } = useFees();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
   const [selectedFee, setSelectedFee] = useState<FeeStructure | null>(null);
@@ -89,34 +55,59 @@ export default function FeesManagementPage() {
   };
 
   const handleDeleteConfirm = () => {
-    if (feeToDelete) {
-      setFees(fees.filter(f => f.id !== feeToDelete.id));
-      toast.success(`${feeToDelete.feeType} has been deleted successfully`);
-      setDeleteDialogOpen(false);
-      setFeeToDelete(null);
+    if (feeToDelete && feeToDelete.id) {
+      deleteFee(feeToDelete.id, {
+        onSuccess: () => {
+          setDeleteDialogOpen(false);
+          setFeeToDelete(null);
+        },
+      });
     }
   };
 
   const handleSave = (fee: FeeStructure) => {
+    // Convert FeeStructure to FeePayload
+    const payload: FeePayload = {
+      feeType: fee.feeType,
+      academicSession: fee.academicSession,
+      class: fee.class,
+      description: fee.description,
+      term: fee.term,
+      breakdown: fee.breakdown,
+      totalAmount: fee.totalAmount,
+    };
+
     if (modalMode === 'create') {
-      const newFee = { ...fee, id: Date.now() };
-      setFees([...fees, newFee]);
-      toast.success('Fee created successfully');
-    } else {
-      setFees(fees.map(f => f.id === fee.id ? fee : f));
-      toast.success('Fee updated successfully');
+      createFee(payload, {
+        onSuccess: () => {
+          setIsModalOpen(false);
+        },
+      });
+    } else if (fee.id) {
+      updateFee(
+        { id: fee.id, payload },
+        {
+          onSuccess: () => {
+            setIsModalOpen(false);
+          },
+        }
+      );
     }
   };
+
+  // Ensure fees is always an array
+  const safeFees = Array.isArray(fees) ? fees : [];
 
   return (
     <AdminDashboardLayout>
       <PageHeader 
         title="Fee Management" 
-        subtitle={`${fees.length} fee structures configured`}
+        subtitle={isLoading ? 'Loading...' : `${safeFees.length} fee structures configured`}
         action={
           <button
             onClick={handleCreate}
-            className="flex items-center gap-2 rounded-lg bg-[#0a1929] px-4 py-2 text-sm font-medium text-white hover:bg-[#0a1929]/90"
+            disabled={isCreating}
+            className="flex items-center gap-2 rounded-lg bg-[#0a1929] px-4 py-2 text-sm font-medium text-white hover:bg-[#0a1929]/90 disabled:opacity-50"
           >
             <Plus className="h-4 w-4" />
             Create Fee
@@ -124,10 +115,20 @@ export default function FeesManagementPage() {
         }
       />
 
+      {/* Loading State */}
+      {isLoading && (
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#0a1929] border-t-transparent mx-auto"></div>
+            <p className="mt-4 text-sm text-gray-600">Loading fees...</p>
+          </div>
+        </div>
+      )}
+
       {/* Fees Grid */}
-      {fees.length > 0 ? (
+      {!isLoading && safeFees.length > 0 ? (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {fees.map((fee) => (
+          {safeFees.map((fee: any) => (
             <FeeCard
               key={fee.id}
               fee={fee}
@@ -136,7 +137,7 @@ export default function FeesManagementPage() {
             />
           ))}
         </div>
-      ) : (
+      ) : !isLoading ? (
         <div className="rounded-lg border-2 border-dashed border-gray-300 bg-white p-12 text-center">
           <FileText className="mx-auto h-12 w-12 text-gray-400" />
           <h3 className="mt-4 text-lg font-medium text-gray-900">No fees configured</h3>
@@ -151,7 +152,7 @@ export default function FeesManagementPage() {
             Create Fee
           </button>
         </div>
-      )}
+      ) : null}
 
       {/* Create/Edit Modal */}
       <FeeModal
@@ -160,6 +161,7 @@ export default function FeesManagementPage() {
         onSave={handleSave}
         fee={selectedFee}
         mode={modalMode}
+        isLoading={isCreating || isUpdating}
       />
 
       {/* Delete Confirmation Dialog */}
@@ -178,9 +180,10 @@ export default function FeesManagementPage() {
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteConfirm}
-              className="bg-red-600 hover:bg-red-700"
+              disabled={isDeleting}
+              className="bg-red-600 hover:bg-red-700 disabled:opacity-50"
             >
-              Delete
+              {isDeleting ? 'Deleting...' : 'Delete'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

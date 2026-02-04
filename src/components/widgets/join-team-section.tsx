@@ -69,7 +69,7 @@ export default function JoinTeamSection() {
                 <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-[#09283b] text-white md:h-20 md:w-20">
                   <Briefcase className="h-8 w-8 md:h-10 md:w-10" />
                 </div>
-                <div className="flex-1 pt-2 flex-col">
+                <div className="flex-1 pt-2 flex-col flex justify-between">
                   <h3 className="text-2xl font-bold text-[#09283b] md:text-3xl">
                     {vacancy.title}
                   </h3>
@@ -105,12 +105,12 @@ export default function JoinTeamSection() {
               </div>
 
               {/* Apply Button */}
-              <Link
+              {/* <Link
                 href={`/careers/apply?position=${encodeURIComponent(vacancy.title)}`}
                 className="block w-full rounded-lg bg-[#09283b] py-4 text-center text-base font-semibold text-white transition-colors hover:bg-[#09283b]/90 md:text-lg"
               >
                 Apply Now
-              </Link>
+              </Link> */}
             </div>
           ))}
         </div>
