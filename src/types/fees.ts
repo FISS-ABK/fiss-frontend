@@ -12,5 +12,5 @@ export interface FeeStructure {
   description: string;
   term: '1st Term' | '2nd Term' | '3rd Term';
   breakdown: FeeBreakdownItem[];
-  totalAmount: number;
+  amount: number;
 }

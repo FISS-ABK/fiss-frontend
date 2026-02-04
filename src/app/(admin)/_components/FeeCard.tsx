@@ -74,7 +74,7 @@ export default function FeeCard({ fee, onEdit, onDelete }: FeeCardProps) {
         <div className="flex justify-between items-center">
           <span className="text-sm font-semibold text-gray-700">Total Amount</span>
           <span className="text-xl font-bold text-gray-900">
-            ₦{fee.totalAmount.toLocaleString()}
+            ₦{fee.amount.toLocaleString()}
           </span>
         </div>
       </div>

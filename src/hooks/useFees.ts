@@ -13,7 +13,7 @@ export interface FeePayload {
     description: string;
     amount: number;
   }>;
-  totalAmount: number;
+  amount: number;
 }
 
 export interface FeeResponse {
@@ -27,7 +27,7 @@ export interface FeeResponse {
     description: string;
     amount: number;
   }>;
-  totalAmount: number;
+  amount: number;
   createdAt?: string;
 }
 
