@@ -41,7 +41,7 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
     description: fee?.description || '',
     term: fee?.term || '1st Term',
     breakdown: fee?.breakdown || [{ description: '', amount: 0 }],
-    totalAmount: fee?.totalAmount || 0,
+    amount: fee?.amount || 0,
   });
 
   const [customFeeType, setCustomFeeType] = useState(
@@ -61,7 +61,7 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
         breakdown: fee.breakdown && fee.breakdown.length > 0 
           ? fee.breakdown 
           : [{ description: '', amount: 0 }],
-        totalAmount: fee.totalAmount || 0,
+        amount: fee.amount || 0,
       });
       setCustomFeeType(
         fee.feeType && !FEE_TYPE_OPTIONS.includes(fee.feeType) ? fee.feeType : ''
@@ -74,7 +74,7 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
         description: '',
         term: '1st Term',
         breakdown: [{ description: '', amount: 0 }],
-        totalAmount: 0,
+        amount: 0,
       });
       setCustomFeeType('');
     }
@@ -91,7 +91,7 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
       [field]: field === 'amount' ? Number(value) : value,
     };
     const total = calculateTotal(newBreakdown);
-    setFormData({ ...formData, breakdown: newBreakdown, totalAmount: total });
+    setFormData({ ...formData, breakdown: newBreakdown, amount: total });
   };
 
   const addBreakdownItem = () => {
@@ -104,7 +104,7 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
   const removeBreakdownItem = (index: number) => {
     const newBreakdown = formData.breakdown.filter((_, i) => i !== index);
     const total = calculateTotal(newBreakdown);
-    setFormData({ ...formData, breakdown: newBreakdown, totalAmount: total });
+    setFormData({ ...formData, breakdown: newBreakdown, amount: total });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -289,7 +289,7 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-gray-700">Total Amount</span>
               <span className="text-xl font-bold text-gray-900">
-                ₦{formData.totalAmount.toLocaleString()}
+                ₦{formData.amount.toLocaleString()}
               </span>
             </div>
           </div>

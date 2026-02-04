@@ -74,7 +74,7 @@ export default function FeesManagementPage() {
       description: fee.description,
       term: fee.term,
       breakdown: fee.breakdown,
-      totalAmount: fee.totalAmount,
+      amount: fee.amount,
     };
 
     if (modalMode === 'create') {
