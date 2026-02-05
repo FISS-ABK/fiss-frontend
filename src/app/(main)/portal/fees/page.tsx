@@ -79,9 +79,11 @@ export default function FeesPage() {
                     </div>
                 </header>
                 <DotSeparator />
-                
+
                 <main className="mx-auto w-full max-w-7xl px-6 py-8 pb-16">
-                    <PaymentSteps currentStep={currentStep} />
+                    <div className="flex mx-auto w-full">
+                        <PaymentSteps currentStep={currentStep} />
+                    </div>
 
                     {currentStep === "personal" && (
                         <PersonalInformationForm
@@ -107,7 +109,7 @@ export default function FeesPage() {
                         />
                     )}
                 </main>
-                
+
                 <DotSeparator />
                 <Footer />
             </div>
@@ -130,7 +132,7 @@ export default function FeesPage() {
                 </div>
             </header>
             <DotSeparator />
-            
+
             <main className="mx-auto w-full max-w-7xl px-6 pb-16">
                 {/* Loading State */}
                 {isLoading && (
@@ -183,7 +185,7 @@ export default function FeesPage() {
                     </div>
                 ) : null}
             </main>
-            
+
             <DotSeparator />
             <Footer />
         </div>
