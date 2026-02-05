@@ -21,7 +21,7 @@ export default function FeeCard({ fee, onEdit, onDelete }: FeeCardProps) {
           </div>
           <div className="mt-1 flex flex-wrap gap-2 text-sm text-gray-600">
             <span className="rounded-full bg-blue-100 px-2 py-0.5 text-blue-700">
-              {fee.class}
+              {fee.className}
             </span>
             <span className="rounded-full bg-purple-100 px-2 py-0.5 text-purple-700">
               {fee.term}

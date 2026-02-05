@@ -37,7 +37,7 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
     id: fee?.id,
     feeType: fee?.feeType || 'School Fee',
     academicSession: fee?.academicSession || '',
-    class: fee?.class || '',
+    className: fee?.className  || '',
     description: fee?.description || '',
     term: fee?.term || '1st Term',
     breakdown: fee?.breakdown || [{ description: '', amount: 0 }],
@@ -55,7 +55,7 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
         id: fee.id,
         feeType: fee.feeType || 'School Fee',
         academicSession: fee.academicSession || '',
-        class: fee.class || '',
+        className: fee.className || '',
         description: fee.description || '',
         term: fee.term || '1st Term',
         breakdown: fee.breakdown && fee.breakdown.length > 0 
@@ -70,7 +70,7 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
       setFormData({
         feeType: 'School Fee',
         academicSession: '',
-        class: '',
+        className: '',
         description: '',
         term: '1st Term',
         breakdown: [{ description: '', amount: 0 }],
@@ -205,8 +205,8 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
               </label>
               <select
                 required
-                value={formData.class}
-                onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+                value={formData.className}
+                onChange={(e) => setFormData({ ...formData, className: e.target.value })}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               >
                 <option value="">Select Class</option>

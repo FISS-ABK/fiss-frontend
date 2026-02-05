@@ -70,7 +70,7 @@ export default function FeesManagementPage() {
     const payload: FeePayload = {
       feeType: fee.feeType,
       academicSession: fee.academicSession,
-      class: fee.class,
+      className: fee.className,
       description: fee.description,
       term: fee.term,
       breakdown: fee.breakdown,
@@ -172,7 +172,7 @@ export default function FeesManagementPage() {
             <AlertDialogDescription>
               This will permanently delete the fee structure for{' '}
               <span className="font-semibold">{feeToDelete?.feeType}</span> 
-              {' '}({feeToDelete?.class} - {feeToDelete?.term}).
+              {' '}({feeToDelete?.className} - {feeToDelete?.term}).
               This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
