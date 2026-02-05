@@ -5,7 +5,7 @@ export interface FeeBreakdownItem {
 }
 
 export interface FeeStructure {
-  id?: string | number;
+  _id?: string | number;
   feeType: 'School Fee' | 'Hostel Fee' | 'Textbooks & Study Materials' | 'Sport Fee' | string;
   academicSession: string;
   className: string;

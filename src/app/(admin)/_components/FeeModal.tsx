@@ -34,7 +34,7 @@ const CLASS_OPTIONS = ['JSS 1', 'JSS 2', 'JSS 3', 'SSS 1', 'SSS 2', 'SSS 3'];
 
 export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading = false }: FeeModalProps) {
   const [formData, setFormData] = useState<FeeStructure>({
-    id: fee?.id,
+    _id: fee?._id,
     feeType: fee?.feeType || 'School Fee',
     academicSession: fee?.academicSession || '',
     className: fee?.className  || '',
@@ -52,7 +52,7 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
   useEffect(() => {
     if (mode === 'edit' && fee) {
       setFormData({
-        id: fee.id,
+        _id: fee._id,
         feeType: fee.feeType || 'School Fee',
         academicSession: fee.academicSession || '',
         className: fee.className || '',

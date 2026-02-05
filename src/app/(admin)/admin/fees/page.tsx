@@ -55,8 +55,8 @@ export default function FeesManagementPage() {
   };
 
   const handleDeleteConfirm = () => {
-    if (feeToDelete && feeToDelete.id) {
-      deleteFee(feeToDelete.id, {
+    if (feeToDelete && feeToDelete._id) {
+      deleteFee(feeToDelete._id, {
         onSuccess: () => {
           setDeleteDialogOpen(false);
           setFeeToDelete(null);
@@ -83,9 +83,9 @@ export default function FeesManagementPage() {
           setIsModalOpen(false);
         },
       });
-    } else if (fee.id) {
+    } else if (fee._id) {
       updateFee(
-        { id: fee.id, payload },
+        { id: fee._id, payload },
         {
           onSuccess: () => {
             setIsModalOpen(false);
