@@ -31,7 +31,7 @@ export default function PaymentReview({ data, onBack, onNext }: PaymentReviewPro
             </div>
             <div>
               <p className="text-sm font-medium text-gray-700">Class</p>
-              <p className="text-base text-gray-900">{fee.class}</p>
+              <p className="text-base text-gray-900">{fee.className}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-gray-700">Term</p>

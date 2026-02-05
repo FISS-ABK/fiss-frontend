@@ -8,7 +8,7 @@ export interface FeeStructure {
   id?: string | number;
   feeType: 'School Fee' | 'Hostel Fee' | 'Textbooks & Study Materials' | 'Sport Fee' | string;
   academicSession: string;
-  class: string;
+  className: string;
   description: string;
   term: '1st Term' | '2nd Term' | '3rd Term';
   breakdown: FeeBreakdownItem[];

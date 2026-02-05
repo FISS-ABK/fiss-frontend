@@ -6,7 +6,7 @@ import { toast } from "sonner";
 export interface FeePayload {
   feeType: string;
   academicSession: string;
-  class: string;
+  className: string;
   description: string;
   term: '1st Term' | '2nd Term' | '3rd Term';
   breakdown: Array<{
@@ -20,7 +20,7 @@ export interface FeeResponse {
   id: string | number;
   feeType: string;
   academicSession: string;
-  class: string;
+  className: string;
   description: string;
   term: '1st Term' | '2nd Term' | '3rd Term';
   breakdown: Array<{

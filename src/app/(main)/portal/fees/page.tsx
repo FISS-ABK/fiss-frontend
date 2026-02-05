@@ -150,7 +150,7 @@ export default function FeesPage() {
                                 <div className="flex items-start justify-between">
                                     <div className="flex-1">
                                         <h3 className="text-lg font-medium text-[#09283b]">{fee.feeType}</h3>
-                                        <p className="mt-1 text-sm text-gray-600">{fee.class} - {fee.term}</p>
+                                        <p className="mt-1 text-sm text-gray-600">{fee.className} - {fee.term}</p>
                                         <p className="mt-1 text-xs text-gray-500">{fee.academicSession}</p>
                                     </div>
                                 </div>
