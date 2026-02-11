@@ -80,8 +80,8 @@ export default function FeesPage() {
                 </header>
                 <DotSeparator />
 
-                <main className="mx-auto w-full max-w-7xl px-6 py-8 pb-16 items-center justify-center flex-1">
-                    <div className="flex mx-auto w-full items-center justify-center">
+                <main className="mx-auto w-full max-w-7xl px-6 py-8 pb-16 flex flex-col items-center flex-1">
+                    <div className="flex w-full justify-center items-center min-h-[80px]">
                         <PaymentSteps currentStep={currentStep} />
                     </div>
 
