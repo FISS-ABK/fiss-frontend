@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ZendFiEmbeddedCheckout } from "@zendfi/sdk";
 import { PaymentData } from "@/types/payment";
 import { ArrowLeft, CreditCard, Loader2, CheckCircle2 } from "lucide-react";
+import { usePayment } from "@/hooks/usePayment";
 
 interface PaymentGatewayProps {
   data: PaymentData;
@@ -13,32 +14,26 @@ interface PaymentGatewayProps {
 
 export default function PaymentGateway({ data, onBack, onComplete }: PaymentGatewayProps) {
   const [isSuccess, setIsSuccess] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const zendfiRef = useRef<HTMLDivElement | null>(null);
 
   const { fee, personalInfo } = data;
+  const { createPaymentAsync, isCreating } = usePayment();
 
   useEffect(() => {
     let checkout: ZendFiEmbeddedCheckout | null = null;
     let isMounted = true;
     async function setupCheckout() {
-      setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch("/api/checkout", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            amount: fee.amount,
-            studentId: personalInfo.studentId,
-            fullName: personalInfo.fullName,
-            email: personalInfo.email,
-            phone: personalInfo.contact,
-          }),
+        const result = await createPaymentAsync({
+          amount: fee.amount,
+          studentId: personalInfo.studentId,
+          fullName: personalInfo.fullName,
+          email: personalInfo.email,
+          phone: personalInfo.contact,
         });
-        if (!response.ok) throw new Error("Failed to create checkout");
-        const { linkCode } = await response.json();
+        const { linkCode } = result;
         if (!linkCode) throw new Error("No linkCode returned");
         if (zendfiRef.current && isMounted) {
           checkout = new ZendFiEmbeddedCheckout({
@@ -59,8 +54,6 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
         }
       } catch (err: any) {
         setError(err.message || "An error occurred");
-      } finally {
-        setIsLoading(false);
       }
     }
     setupCheckout();
@@ -69,7 +62,7 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
       if (zendfiRef.current) zendfiRef.current.innerHTML = "";
       // Optionally: checkout?.unmount();
     };
-  }, [fee.amount, personalInfo, onComplete]);
+  }, [fee.amount, personalInfo, onComplete, createPaymentAsync]);
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -101,7 +94,7 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
 
         {/* Loading/Error/Checkout UI */}
         <div className="mt-6">
-          {isLoading && (
+          {isCreating && (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
               <span className="ml-2 text-sm text-gray-600">Loading payment gateway...</span>
