@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { ZendFiEmbeddedCheckout } from "@zendfi/sdk";
 import { PaymentData } from "@/types/payment";
 import { ArrowLeft, CreditCard, Loader2, CheckCircle2 } from "lucide-react";
 
@@ -11,54 +12,64 @@ interface PaymentGatewayProps {
 }
 
 export default function PaymentGateway({ data, onBack, onComplete }: PaymentGatewayProps) {
-  const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const zendfiRef = useRef<HTMLDivElement | null>(null);
 
   const { fee, personalInfo } = data;
 
-  const handlePayment = async () => {
-    setIsProcessing(true);
-    // Simulate payment processing
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    setIsProcessing(false);
-    setIsSuccess(true);
-    
-    // Redirect to receipts page after 2 seconds
-    setTimeout(() => {
-      onComplete();
-    }, 2000);
-  };
-
-  if (isSuccess) {
-    return (
-      <div className="mx-auto max-w-2xl">
-        <div className="rounded-lg border bg-white p-8 text-center shadow-sm">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-            <CheckCircle2 className="h-10 w-10 text-green-600" />
-          </div>
-          <h2 className="mt-4 text-2xl font-semibold text-[#09283b]">
-            Payment Successful!
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Your payment has been processed successfully.
-          </p>
-          <div className="mt-6 rounded-md bg-gray-50 p-4">
-            <p className="text-sm font-medium text-gray-700">
-              Transaction Details
-            </p>
-            <div className="mt-2 space-y-1 text-sm text-gray-600">
-              <p>Amount: ₦{fee.amount.toLocaleString()}</p>
-              <p>Student ID: {personalInfo.studentId}</p>
-              <p>Reference: TXN{Date.now()}</p>
-            </div>
-          </div>
-          <p className="mt-4 text-sm text-gray-500">
-            Redirecting to receipts page...
-          </p>
-        </div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    let checkout: ZendFiEmbeddedCheckout | null = null;
+    let isMounted = true;
+    async function setupCheckout() {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch("/api/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: fee.amount,
+            studentId: personalInfo.studentId,
+            fullName: personalInfo.fullName,
+            email: personalInfo.email,
+            phone: personalInfo.contact,
+          }),
+        });
+        if (!response.ok) throw new Error("Failed to create checkout");
+        const { linkCode } = await response.json();
+        if (!linkCode) throw new Error("No linkCode returned");
+        if (zendfiRef.current && isMounted) {
+          checkout = new ZendFiEmbeddedCheckout({
+            linkCode,
+            containerId: zendfiRef.current.id,
+            mode: "live",
+            onSuccess: (payment) => {
+              setIsSuccess(true);
+              setTimeout(() => {
+                onComplete();
+              }, 2000);
+            },
+            onError: (err) => {
+              setError("Payment failed or cancelled. Please try again.");
+            },
+          });
+          await checkout.mount();
+        }
+      } catch (err: any) {
+        setError(err.message || "An error occurred");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    setupCheckout();
+    return () => {
+      isMounted = false;
+      if (zendfiRef.current) zendfiRef.current.innerHTML = "";
+      // Optionally: checkout?.unmount();
+    };
+  }, [fee.amount, personalInfo, onComplete]);
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -88,20 +99,23 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
           </div>
         </div>
 
-        {/* Payment Gateway Integration Placeholder */}
-        <div className="mt-6 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-8">
-          <div className="text-center">
-            <CreditCard className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-4 text-lg font-medium text-gray-900">
-              Payment Gateway Integration
-            </h3>
-            <p className="mt-2 text-sm text-gray-600">
-              This is where your payment gateway (Paystack, Flutterwave, etc.) will be integrated.
-            </p>
-            <p className="mt-1 text-xs text-gray-500">
-              For demo purposes, click the button below to simulate a payment.
-            </p>
-          </div>
+        {/* Loading/Error/Checkout UI */}
+        <div className="mt-6">
+          {isLoading && (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+              <span className="ml-2 text-sm text-gray-600">Loading payment gateway...</span>
+            </div>
+          )}
+          {error && (
+            <div className="rounded-md bg-red-50 p-4 text-red-700 text-sm mb-4">
+              {error}
+            </div>
+          )}
+          <div id="zendfi-checkout-container" ref={el => {
+            zendfiRef.current = el;
+            if (el) el.id = "zendfi-checkout-container";
+          }} />
         </div>
 
         {/* Action Buttons */}
@@ -109,29 +123,10 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
           <button
             type="button"
             onClick={onBack}
-            disabled={isProcessing}
-            className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
             <ArrowLeft className="h-4 w-4" />
             Back
-          </button>
-          <button
-            type="button"
-            onClick={handlePayment}
-            disabled={isProcessing}
-            className="flex flex-1 items-center justify-center gap-2 rounded-md bg-green-600 px-6 py-3 text-sm font-medium text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {isProcessing ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Processing Payment...
-              </>
-            ) : (
-              <>
-                <CreditCard className="h-4 w-4" />
-                Pay ₦{fee.amount.toLocaleString()}
-              </>
-            )}
           </button>
         </div>
 
