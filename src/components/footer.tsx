@@ -11,6 +11,7 @@ const quickLinks = [
     { name: "Academics", href: "/academics" },
     { name: "Gallery", href: "/gallery" },
     { name: "Contact Us", href: "/contact" },
+    { name: "Admin", href: "/admin/overview" },
 ];
 
 export default function Footer() {
@@ -27,7 +28,7 @@ export default function Footer() {
                         {/* Logo */}
                         <div className="flex items-start justify-center sm:justify-start">
                             <Image
-                                src="/logo.png"
+                                src="/FOURSQUARE PICTURES/fisshead.png"
                                 alt="Foursquare International Schools"
                                 width={150}
                                 height={60}
@@ -63,12 +64,12 @@ export default function Footer() {
 
                                 {/* Phone */}
                                 <p className="font-poppins mb-3 text-lg font-semibold text-[#0a1628] sm:mb-4 sm:text-xl md:text-2xl">
-                                    ( +234 09 989-11-91 )
+                                    ( 08079951366 )
                                 </p>
 
                                 {/* Call Us Button */}
                                 <Link
-                                    href="tel:+2349098911-91"
+                                    href="tel:+2348079951366"
                                     className="font-poppins mb-5 flex w-full items-center justify-center gap-2 rounded-lg bg-[#0B2C4D] px-5 py-2.5 text-sm text-white transition-colors hover:bg-[#1a2a42] sm:mb-6 sm:rounded-xl sm:px-6 sm:py-3"
                                 >
                                     Call Us
@@ -83,7 +84,7 @@ export default function Footer() {
                                     href="mailto:hello@logoipsum.com"
                                     className="font-suisse text-sm text-[#0a1628] transition-colors hover:text-[#203572]"
                                 >
-                                    hello@logoipsum.com
+                                    fissabk@yahoo.com
                                 </a>
                             </div>
 
@@ -93,9 +94,9 @@ export default function Footer() {
                                     Location
                                 </p>
                                 <p className="font-suisse text-sm text-[#0a1628]">
-                                    2972 Westheimer Rd. Santa Ana,
+                                    Besde Muda Lawal Stadium, Asero
                                     <br />
-                                    Illinois 85486
+                                    Abeokuta, Ogun State.
                                 </p>
                             </div>
                         </div>
@@ -105,7 +106,7 @@ export default function Footer() {
                             {/* Social Icons */}
                             <div className="flex items-center gap-2 sm:gap-3">
                                 <a
-                                    href="https://instagram.com"
+                                    href="https://instagram.com/fiss_abk"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0a1628] transition-colors hover:bg-[#1a2a42] sm:h-10 sm:w-10"
@@ -114,7 +115,7 @@ export default function Footer() {
                                     <Instagram className="h-4 w-4 text-white sm:h-5 sm:w-5" />
                                 </a>
                                 <a
-                                    href="https://facebook.com"
+                                    href="https://facebook.com/fiss_abk"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0a1628] transition-colors hover:bg-[#1a2a42] sm:h-10 sm:w-10"
@@ -123,7 +124,7 @@ export default function Footer() {
                                     <Facebook className="h-4 w-4 text-white sm:h-5 sm:w-5" />
                                 </a>
                                 <a
-                                    href="https://x.com"
+                                    href="https://x.com/fiss_abk"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0a1628] transition-colors hover:bg-[#1a2a42] sm:h-10 sm:w-10"
@@ -169,8 +170,8 @@ export default function Footer() {
                     <p className="font-suisse text-xs text-gray-600 sm:text-sm">© 2026 — Copyright</p>
                     <sub className="order-last text-xs text-gray-500 sm:order-0 sm:text-sm">
                         Built by
-                        <Link href={"https://x.com/mhet"} className="hover:underline">
-                            {" "} MhetLabs
+                        <Link href={"https://x.com/mhetHQ"} className="hover:underline">
+                            {" "} mhetLabs
                         </Link>
                     </sub>
                     <Link

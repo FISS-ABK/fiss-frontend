@@ -80,7 +80,7 @@ export default function ContactPage() {
                   <h3 className="text-sm font-semibold text-[#09283b]">Chat to support</h3>
                   <p className="mt-2 text-sm text-gray-600">We are here to help.</p>
                   <a href="mailto:support@foursquareschools.com" className="mt-3 block text-sm font-medium text-[#09283b]">
-                    support@foursquareschools.com
+                    fissabk@yahoo.com
                   </a>
                 </div>
               </div>
@@ -95,7 +95,7 @@ export default function ContactPage() {
                   <h3 className="text-sm font-semibold text-[#09283b]">Call Us</h3>
                   <p className="mt-2 text-sm text-gray-600">Mon-Fri 8am to 5pm.</p>
                   <a href="tel:+15550000000" className="mt-3 block text-sm font-medium text-[#09283b]">
-                    +1 (555) 000-0000
+                    ( 08079951366 )
                   </a>
                 </div>
               </div>

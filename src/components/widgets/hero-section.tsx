@@ -2,7 +2,7 @@ import { FileCheck, BookOpen } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
-const imgBadgeIcon = "https://www.figma.com/api/mcp/asset/b36a05ce-676f-44ef-8049-4fd281437365";
+
 
 export default function HeroSection() {
   return (
@@ -54,7 +54,7 @@ export default function HeroSection() {
             <div className="absolute left-[12%] top-0 h-60 w-45 sm:left-[15%] sm:h-75 sm:w-57.5 md:left-[18%] md:h-92.5 md:w-75 lg:left-[20%] lg:h-110 lg:w-90 xl:left-[22%] xl:h-135 xl:w-110">
               <Image
                 alt="Teacher reading with students"
-                src="/imgImage.png"
+                src="/FOURSQUARE PICTURES/val/cipal.JPG"
                 fill
                 className="object-cover"
                 sizes="(max-width: 640px) 180px, (max-width: 768px) 230px, (max-width: 1024px) 300px, (max-width: 1280px) 360px, 440px"
@@ -66,7 +66,7 @@ export default function HeroSection() {
             <div className="absolute left-0 top-7.5 h-25 w-22.5 -rotate-10 sm:top-10 sm:h-32.5 sm:w-28.75 md:top-12.5 md:h-40 md:w-36.25 lg:top-15 lg:h-50 lg:w-45 xl:top-17.5 xl:h-57.5 xl:w-52.5">
               <Image
                 alt="Smiling student"
-                src="/imgImage1.png"
+                src="/FOURSQUARE PICTURES/others/1.jpg"
                 fill
                 className="object-cover"
                 sizes="(max-width: 640px) 90px, (max-width: 768px) 115px, (max-width: 1024px) 145px, (max-width: 1280px) 180px, 210px"
@@ -78,7 +78,7 @@ export default function HeroSection() {
             <div className="absolute bottom-1 right-0 h-20 w-16 rotate-[-4deg] sm:h-28 sm:w-24 md:h-36 md:w-32 lg:h-44 lg:w-40 xl:h-55 xl:w-50">
               <Image
                 alt="Student writing"
-                src="/imgImage2.png"
+                src="/FOURSQUARE PICTURES/others/3.jpg"
                 fill
                 className="object-contain"
                 sizes="(max-width: 640px) 64px, (max-width: 768px) 96px, (max-width: 1024px) 128px, (max-width: 1280px) 160px, 200px"
@@ -89,7 +89,7 @@ export default function HeroSection() {
             {/* Accredited Badge */}
             <div className="absolute bottom-5 left-[16%] flex flex-col items-center sm:bottom-7.5 sm:left-[20%] md:bottom-10 md:left-[24%] lg:bottom-12 lg:left-[26%] xl:bottom-13.5 xl:left-[28%]">
               <div className="relative h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 lg:h-11 lg:w-11">
-                <Image alt="Accredited badge" src={imgBadgeIcon} fill className="object-contain" sizes="44px" loading="lazy" />
+                <Image alt="Accredited badge" src="/FOURSQUARE PICTURES/others/1.jpg" fill className="object-contain" sizes="44px" loading="lazy" />
               </div>
               <p className="mt-0.5 text-[7px] leading-3 text-[#0b2c4d] sm:text-[8px] md:mt-1 md:text-[9px] lg:text-[10px] lg:leading-4">
                 Accredited JAMB Center

@@ -5,19 +5,19 @@ const coreValues = [
     title: "Faith",
     description:
       "We teach our children to love God, practice tolerance, integrity, and respect in every aspect of learning and daily life.",
-    image: "/gallery/faith.jpg",
+    image: "/FOURSQUARE PICTURES/inter/100.JPG",
   },
   {
     title: "Excellence",
     description:
       "We strive for high academic standards and exemplary character, encouraging every student to reach their potential.",
-    image: "/gallery/excellence.jpg",
+    image: "/FOURSQUARE PICTURES/inter/200.JPG",
   },
   {
     title: "Discipline",
     description:
       "We promote responsibility, self-control, and respect for others, fostering a positive and structured learning culture.",
-    image: "/gallery/discipline.jpg",
+    image: "/FOURSQUARE PICTURES/prs.png",
   },
 ];
 

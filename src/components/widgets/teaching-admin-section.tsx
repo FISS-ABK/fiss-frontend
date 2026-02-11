@@ -2,19 +2,19 @@ import Image from "next/image";
 
 const leaders = [
   {
-    name: "Rev. K. S. Oloruntola",
+    name: "Mr. Konigbagbe Gbenga Moses",
     role: "Principal",
-    image: "/imgImage.png",
+    image: "/2.png",
   },
   {
     name: "Mrs. Yeku O. I.",
-    role: "Vice Principal (SSS)",
-    image: "/imgImage1.png",
+    role: "Vice Principal Academics",
+    image: "/10.png",
   },
   {
     name: "Mrs. Efunuga F. B",
-    role: "Vice Principal (JSS)",
-    image: "/imgImage2.png",
+    role: "Vice Principal Admin",
+    image: "/3.png",
   },
 ];
 
@@ -44,7 +44,7 @@ export default function TeachingAdminSection() {
                   src={leader.image}
                   alt={leader.name}
                   fill
-                  className="object-cover"
+                  className="fit"
                   sizes="(max-width: 1024px) 50vw, 33vw"
                 />
               </div>

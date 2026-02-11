@@ -10,35 +10,35 @@ const historyData = [
     title: "FOUNDATION",
     description:
       "Foursquare International Secondary School was established in 2006 with a clear purpose: to provide quality education that combines strong academic foundations with Christian values, discipline, and character development. From the very beginning, the school was designed to nurture students academically while being rooted in morality and spirituality. In its early years, the school began with a modest student population and a small team of dedicated educators who shared a common vision for excellence.",
-    images: ["/gallery/history-1a.jpg", "/gallery/history-1b.jpg"],
+    images: ["/FOURSQUARE PICTURES/rss.png", "/FOURSQUARE PICTURES/inter/1.jpg"],
   },
   {
     period: "2011 – 2015",
     title: "GROWTH",
     description:
       "During this period, FISS experienced significant growth in student enrollment and expanded its facilities to accommodate the growing community. The school introduced new academic programs and extracurricular activities, establishing itself as a leading institution in the region. Our commitment to excellence attracted talented educators and motivated students from diverse backgrounds.",
-    images: ["/gallery/history-2a.jpg", "/gallery/history-2b.jpg"],
+    images: ["/FOURSQUARE PICTURES/pst.png", "/FOURSQUARE PICTURES/inter/17.jpg"],
   },
   {
     period: "2015 – 2019",
     title: "EXPANSION",
     description:
       "FISS continued to expand its infrastructure with modern classrooms, science laboratories, and sports facilities. The school achieved remarkable academic results with students excelling in national examinations. New partnerships with educational institutions enhanced our curriculum and provided students with broader opportunities for growth and development.",
-    images: ["/gallery/history-3a.jpg", "/gallery/history-3b.jpg"],
+    images: ["/FOURSQUARE PICTURES/inter/pr.JPG", "/FOURSQUARE PICTURES/inter/imm.png"],
   },
   {
     period: "2019 – 2023",
     title: "INNOVATION",
     description:
       "Embracing technology and modern teaching methods, FISS integrated digital learning tools into its curriculum. Despite global challenges, the school adapted quickly, maintaining academic excellence while prioritizing student well-being. This period saw the introduction of new programs focused on leadership development and community service.",
-    images: ["/gallery/history-4a.jpg", "/gallery/history-4b.jpg"],
+    images: ["/FOURSQUARE PICTURES/inter/PRO_0189.JPG", "/FOURSQUARE PICTURES/inter/PRO_0201.JPG"],
   },
   {
     period: "2023 – 2025",
     title: "EXCELLENCE",
     description:
       "Today, FISS stands as a beacon of educational excellence, continuing to nurture students who are academically proficient, morally upright, and ready to make positive contributions to society. Our alumni network spans across various professions, testament to the solid foundation provided by FISS education.",
-    images: ["/gallery/history-5a.jpg", "/gallery/history-5b.jpg"],
+    images: ["/FOURSQUARE PICTURES/image.png", "/FOURSQUARE PICTURES/mg.jpeg"],
   },
 ];
 

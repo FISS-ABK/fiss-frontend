@@ -2,34 +2,44 @@ import Image from "next/image";
 
 const teamMembers = [
   {
-    name: "Dr. Toyin Makinde",
-    role: "Member",
-    image: "/team/member-1.jpg",
+    name: "Rev. J.O Dawodu",
+    role: "Chairman",
+    image: "/1.png",
   },
   {
-    name: "Dr. Mosunmola Amusan",
-    role: "Member",
-    image: "/team/member-2.jpg",
+    name: "Mr. Konigbagbe Gbenga Moses",
+    role: "Pincipal",
+    image: "/2.png",
   },
   {
-    name: "Dr. Moronmubo Akinseli",
+    name: "Engr. Tunde Olumoko",
     role: "Member",
-    image: "/team/member-3.jpg",
+    image: "/6.png",
   },
   {
-    name: "Pastor Micheal Aremu",
+    name: "Dr. Mrs Mosunmola Amusan",
     role: "Member",
-    image: "/team/member-4.jpg",
+    image: "/7.png",
   },
   {
-    name: "Rev. Oluniyi Akewodu",
+    name: "Dr. Mrs Toyin Makinde",
     role: "Member",
-    image: "/team/member-5.jpg",
+    image: "/4.png",
   },
   {
-    name: "Dr. Moronmubo Akinseli",
+    name: "Dr. Mrs Akiseli Moronmubo",
     role: "Member",
-    image: "/team/member-6.jpg",
+    image: "/9.png",
+  },
+   {
+    name: "Rev. Kayode Talabi",
+    role: "Member",
+    image: "/11.png",
+  },
+   {
+    name: "Pastor Michael Aremu",
+    role: "Member",
+    image: "/8.png",
   },
 ];
 

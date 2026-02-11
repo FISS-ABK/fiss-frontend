@@ -6,8 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const imgLogo =
-  "https://www.figma.com/api/mcp/asset/1be565c6-7ea0-4650-8f56-ca2f051ecab4";
+
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -30,14 +29,14 @@ export default function AboutNavbar() {
           href="/"
           className="relative h-8 w-24 shrink-0 sm:h-9 sm:w-28 md:h-10 md:w-32 lg:h-11 lg:w-36"
         >
-          <Image
-            alt="Foursquare International Secondary School logo"
-            src={imgLogo}
-            fill
-            className="object-contain"
-            sizes="(max-width: 640px) 96px, (max-width: 768px) 112px, (max-width: 1024px) 128px, 145px"
-            priority
-          />
+        <Image
+          alt="Foursquare International Secondary School logo"
+          src="/FOURSQUARE PICTURES/fisshead.png" 
+          fill
+          className="object-contain"
+          sizes="(max-width: 640px) 96px, (max-width: 768px) 112px, (max-width: 1024px) 128px, 145px"
+          priority
+       />
         </Link>
 
         {/* Desktop Navigation */}

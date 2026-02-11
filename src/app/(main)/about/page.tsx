@@ -20,7 +20,7 @@ export default function AboutPage() {
             </FloatingNavWrapper>
             <section className="relative min-h-150 sm:min-h-175 lg:min-h-screen -mt-22 sm:-mt-26 md:-mt-32.5">
                 <Image
-                    src="/fiss.png"
+                    src="/FOURSQUARE PICTURES/OTHERS/14.jpg"
                     alt="FISS Campus Building"
                     fill
                     className="object-cover"

@@ -31,7 +31,7 @@ export default function AdmissionsSection() {
                         <div className="flex flex-col gap-3 sm:gap-4 md:w-[45%] lg:w-[48%]">
                             <div className="relative h-48 w-full overflow-hidden border-4 border-white shadow-lg sm:h-56 sm:border-6 md:h-64 lg:h-80 lg:border-8">
                                 <Image
-                                    src="/teacher.png"
+                                    src="/FOURSQUARE PICTURES/val/image.png"
                                     alt="Students in classroom"
                                     fill
                                     className="object-cover object-top"
@@ -53,7 +53,7 @@ export default function AdmissionsSection() {
                         <div className="flex flex-col gap-3 sm:gap-4 md:w-[45%] lg:w-[48%]">
                             <div className="relative h-48 w-full overflow-hidden border-4 border-white shadow-lg sm:h-56 sm:border-6 md:h-64 lg:h-80 lg:border-8">
                                 <Image
-                                    src="/pupils_02.png"
+                                    src="/FOURSQUARE PICTURES/inter/pr.JPG"
                                     alt="Parent helping child with studies"
                                     fill
                                     className="object-cover object-top"

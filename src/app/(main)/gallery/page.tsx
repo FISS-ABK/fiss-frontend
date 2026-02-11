@@ -5,13 +5,13 @@ import FloatingNavWrapper from "@/components/floating-nav-wrapper";
 import DotSeparator from "@/components/dot-separator";
 
 const items = [
-  { src: "/gallery/excursion.png", caption: "Children at the community service", wide: true, tall: false },
-  { src: "/gallery/excursion.png", caption: "Students at science fair", wide: false, tall: true },
-  { src: "/gallery/excursion.png", caption: "Classroom Experience", wide: false, tall: true },
-  { src: "/gallery/excursion.png", caption: "Writing Competition", wide: false, tall: false },
-  { src: "/gallery/excursion.png", caption: "School Clinic", wide: false, tall: false },
-  { src: "/gallery/excursion.png", caption: "School Library", wide: false, tall: false },
-  { src: "/gallery/excursion.png", caption: "Children at the community service", wide: true, tall: false },
+  { src: "/FOURSQUARE PICTURES/OTHERS/2.jpg", caption: "School Clinic", wide: true, tall: false },
+  { src: "/FOURSQUARE PICTURES/val/tomiwa.JPG", caption: "Prize giving day", wide: false, tall: true },
+  { src: "/FOURSQUARE PICTURES/val/cipal.JPG", caption: "Event", wide: false, tall: true },
+  { src: "/FOURSQUARE PICTURES/mmm.jpeg", caption: "Excursion", wide: false, tall: false },
+  { src: "/FOURSQUARE PICTURES/summer/BARBING.JPG", caption: "Summer Lesson", wide: false, tall: false },
+  { src: "/FOURSQUARE PICTURES/OTHERS/14.jpg", caption: "School view", wide: false, tall: false },
+  { src: "/FOURSQUARE PICTURES/OTHERS/1.jpg", caption: "Classroom", wide: true, tall: false },
 ];
 
 export default function GalleryPage() {

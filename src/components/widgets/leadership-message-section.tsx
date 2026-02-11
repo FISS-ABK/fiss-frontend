@@ -32,7 +32,7 @@ export default function LeadershipMessageSection() {
           <div className="relative">
             <div className="relative aspect-4/3 overflow-hidden rounded-2xl shadow-lg sm:rounded-3xl">
               <Image
-                src="/gallery/chairman.jpg"
+                src="/1.png"
                 alt="Rev J. Olukunle Dawodu - Chairman"
                 fill
                 className="object-cover"
