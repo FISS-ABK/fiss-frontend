@@ -81,7 +81,7 @@ export default function FeesPage() {
                 <DotSeparator />
 
                 <main className="mx-auto w-full max-w-7xl px-6 py-8 pb-16 flex flex-col items-center flex-1">
-                    <div className="flex w-full justify-center items-center min-h-[80px]">
+                    <div className="flex w-full justify-center items-center min-h-20">
                         <PaymentSteps currentStep={currentStep} />
                     </div>
 
