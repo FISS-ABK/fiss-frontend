@@ -18,8 +18,8 @@ export interface PaymentResponse {
 }
 
 const createPaymentApi = async (payload: PaymentPayload): Promise<PaymentResponse> => {
-  const response = await axiosConfig.post("/api/checkout", payload);
-  return response.data.data;
+  const response = await axiosConfig.post("/api/create-checkout", payload);
+  return response.data;
 };
 
 export const usePayment = () => {
