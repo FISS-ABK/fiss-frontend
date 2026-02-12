@@ -18,7 +18,7 @@ export default function AboutPage() {
             <FloatingNavWrapper initialBg="bg-transparent">
                 <Navbar />
             </FloatingNavWrapper>
-            <section className="relative min-h-150 sm:min-h-175 lg:min-h-screen -mt-22 sm:-mt-26 md:-mt-32.5">
+            <section className="relative min-h-150 sm:min-h-175 lg:min-h-screen -mt-40 sm:-mt-42 md:-mt-42">
                 <Image
                     src="/FOURSQUARE PICTURES/OTHERS/14.jpg"
                     alt="FISS Campus Building"

@@ -123,7 +123,26 @@ const classLevels: ClassLevel[] = [
 ];
 
 export default function ClassStructureSection() {
-  const [activeTab, setActiveTab] = useState("creche");
+  // Separate class levels
+  const primaryLevels = classLevels.filter(
+    (level) => ["creche", "kindergarten", "nursery", "primary"].includes(level.id)
+  );
+  const secondaryLevels = classLevels.filter(
+    (level) => ["jss", "sss"].includes(level.id)
+  );
+
+  const [group, setGroup] = useState("primary");
+  const [activeTab, setActiveTab] = useState(
+    group === "primary" ? primaryLevels[0].id : secondaryLevels[0].id
+  );
+
+  // Update activeTab when group changes
+  const handleGroupChange = (newGroup: "primary" | "secondary") => {
+    setGroup(newGroup);
+    setActiveTab(
+      newGroup === "primary" ? primaryLevels[0].id : secondaryLevels[0].id
+    );
+  };
 
   const activeLevel = classLevels.find((level) => level.id === activeTab);
 
@@ -140,23 +159,28 @@ export default function ClassStructureSection() {
           </p>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="mb-8 rounded-2xl bg-[#0b2c4d] p-2 sm:mb-12">
-          <div className="flex flex-wrap gap-2">
-            {classLevels.map((level) => (
-              <button
-                key={level.id}
-                onClick={() => setActiveTab(level.id)}
-                className={`flex-1 min-w-30 rounded-xl px-3 py-3 font-poppins text-sm font-medium transition-all sm:px-4 sm:text-base ${
-                  activeTab === level.id
-                    ? "bg-white text-[#0b2c4d] shadow-lg"
-                    : "text-white hover:bg-white/10"
-                }`}
-              >
+        {/* Group Dropdowns */}
+        <div className="mb-8 flex flex-col items-center gap-4 sm:mb-12 sm:flex-row sm:justify-center">
+          <select
+            value={group}
+            onChange={(e) => handleGroupChange(e.target.value as "primary" | "secondary")}
+            className="rounded-xl border border-[#0b2c4d] bg-white px-4 py-2 font-poppins text-base text-[#0b2c4d] shadow-sm focus:outline-none"
+          >
+            <option value="primary">Primary School</option>
+            <option value="secondary">Secondary School</option>
+          </select>
+
+          <select
+            value={activeTab}
+            onChange={(e) => setActiveTab(e.target.value)}
+            className="rounded-xl border border-[#0b2c4d] bg-white px-4 py-2 font-poppins text-base text-[#0b2c4d] shadow-sm focus:outline-none"
+          >
+            {(group === "primary" ? primaryLevels : secondaryLevels).map((level) => (
+              <option key={level.id} value={level.id}>
                 {level.name}
-              </button>
+              </option>
             ))}
-          </div>
+          </select>
         </div>
 
         {/* Content Cards */}

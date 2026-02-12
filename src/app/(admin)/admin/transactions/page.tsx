@@ -5,62 +5,16 @@ import { Download, Search, Filter } from 'lucide-react';
 import AdminDashboardLayout from '@/app/(admin)/_components/AdminDashboardLayout';
 import PageHeader from '@/app/(admin)/_components/PageHeader';
 import TransactionsTable from '@/app/(admin)/_components/TransactionsTable';
-
-// Mock data - replace with actual API call
-const mockTransactions = [
-  {
-    id: 1,
-    studentName: 'Zedious Zutonendu',
-    studentId: 'STU-2024-001',
-    feeType: 'Tuition Fee',
-    class: 'JSS 1',
-    amount: '₦120,000.00',
-    date: 'June 12, 2025',
-    status: 'Approved' as const,
-  },
-  {
-    id: 2,
-    studentName: 'Amara Johnson',
-    studentId: 'STU-2024-002',
-    feeType: 'School Bus',
-    class: 'JSS 2',
-    amount: '₦45,000.00',
-    date: 'June 11, 2025',
-    status: 'Pending' as const,
-  },
-  {
-    id: 3,
-    studentName: 'Chioma Okafor',
-    studentId: 'STU-2024-003',
-    feeType: 'Lab Fee',
-    class: 'SSS 1',
-    amount: '₦15,000.00',
-    date: 'June 10, 2025',
-    status: 'Approved' as const,
-  },
-  {
-    id: 4,
-    studentName: 'Emeka Williams',
-    studentId: 'STU-2024-004',
-    feeType: 'Tuition Fee',
-    class: 'JSS 3',
-    amount: '₦120,000.00',
-    date: 'June 09, 2025',
-    status: 'Rejected' as const,
-  },
-  {
-    id: 5,
-    studentName: 'Faith Adeyemi',
-    studentId: 'STU-2024-005',
-    feeType: 'Sports Fee',
-    class: 'SSS 2',
-    amount: '₦10,000.00',
-    date: 'June 08, 2025',
-    status: 'Approved' as const,
-  },
-];
+import { useAdminTransactions } from '@/hooks/useTransaction';
+import { useRouter } from 'next/navigation';
 
 export default function TransactionsPage() {
+  const router = useRouter();
+  const {
+    transactions,
+    isLoadingTransactions,
+  } = useAdminTransactions();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [classFilter, setClassFilter] = useState('All');
@@ -68,7 +22,32 @@ export default function TransactionsPage() {
   const [showFilters, setShowFilters] = useState(false);
 
   // Filter transactions based on search and filters
-  const filteredTransactions = mockTransactions.filter((transaction) => {
+  const normalizedTransactions = (transactions ?? []).map((t, index) => {
+    const amountValue = typeof t.amount === 'number' ? t.amount : Number(t.amount ?? 0);
+    const amountFormatted = isNaN(amountValue) ? `${t.amount ?? ''}` : `₦${amountValue.toLocaleString()}`;
+
+    const createdDate = t.date || t.createdAt;
+    const formattedDate = createdDate
+      ? new Date(createdDate).toLocaleDateString(undefined, {
+          year: 'numeric',
+          month: 'short',
+          day: '2-digit',
+        })
+      : '';
+
+    return {
+      id: t.id ?? index,
+      studentName: (t.studentName || t.student_name || 'Unknown Student') as string,
+      studentId: (t.studentId || t.student_id || '—') as string,
+      feeType: (t.feeType || t.fee_type || '—') as string,
+      class: (t.className || t.class || '—') as string,
+      amount: amountFormatted,
+      date: formattedDate,
+      status: (t.status || 'Pending') as string,
+    };
+  });
+
+  const filteredTransactions = normalizedTransactions.filter((transaction) => {
     const matchesSearch = 
       transaction.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       transaction.studentId.toLowerCase().includes(searchQuery.toLowerCase());
@@ -121,7 +100,11 @@ export default function TransactionsPage() {
     <AdminDashboardLayout>
       <PageHeader 
         title="Transactions" 
-        subtitle={`${filteredTransactions.length} total transactions`}
+        subtitle={
+          isLoadingTransactions
+            ? 'Loading transactions...'
+            : `${filteredTransactions.length} total transactions`
+        }
       />
 
       {/* Search and Actions Bar */}
@@ -224,10 +207,13 @@ export default function TransactionsPage() {
       )}
 
       {/* Transactions Table */}
-      <TransactionsTable transactions={filteredTransactions} />
+      <TransactionsTable
+        transactions={filteredTransactions}
+        onRowClick={(transaction) => router.push(`/admin/transactions/${transaction.id}`)}
+      />
 
       {/* No Results */}
-      {filteredTransactions.length === 0 && (
+      {!isLoadingTransactions && filteredTransactions.length === 0 && (
         <div className="mt-8 text-center">
           <p className="text-gray-500">No transactions found matching your criteria.</p>
         </div>

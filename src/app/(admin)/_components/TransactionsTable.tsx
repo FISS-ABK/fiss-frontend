@@ -8,16 +8,17 @@ interface Transaction {
   class: string;
   amount: string;
   date: string;
-  status: 'Approved' | 'Pending' | 'Rejected';
+  status: 'Approved' | 'Pending' | 'Rejected' | string;
 }
 
 interface TransactionsTableProps {
   transactions: Transaction[];
   showSeeAll?: boolean;
   onSeeAll?: () => void;
+  onRowClick?: (transaction: Transaction) => void;
 }
 
-const statusStyles = {
+const statusStyles: Record<string, string> = {
   Approved: 'bg-green-100 text-green-700',
   Pending: 'bg-yellow-100 text-yellow-700',
   Rejected: 'bg-red-100 text-red-700',
@@ -26,7 +27,8 @@ const statusStyles = {
 export default function TransactionsTable({ 
   transactions, 
   showSeeAll = false, 
-  onSeeAll 
+  onSeeAll,
+  onRowClick,
 }: TransactionsTableProps) {
   return (
     <div className="rounded-lg bg-white p-4 shadow-sm sm:p-6">
@@ -59,8 +61,18 @@ export default function TransactionsTable({
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {transactions.map((transaction) => (
-                <tr key={transaction.id} className="text-xs sm:text-sm">
+              {transactions.map((transaction) => {
+                const badgeClass =
+                  statusStyles[transaction.status] ?? 'bg-gray-100 text-gray-700';
+
+                return (
+                <tr
+                  key={transaction.id}
+                  className={`text-xs sm:text-sm ${
+                    onRowClick ? 'cursor-pointer hover:bg-gray-50' : ''
+                  }`}
+                  onClick={onRowClick ? () => onRowClick(transaction) : undefined}
+                >
                   <td className="px-4 py-3 sm:px-0 sm:py-4">
                     <div className="flex items-center gap-2 sm:gap-3">
                       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-700 text-xs font-medium text-white sm:h-10 sm:w-10 sm:text-sm">
@@ -77,12 +89,12 @@ export default function TransactionsTable({
                   <td className="whitespace-nowrap px-4 py-3 font-medium text-gray-900 sm:px-0 sm:py-4">{transaction.amount}</td>
                   <td className="hidden whitespace-nowrap px-4 py-3 text-gray-600 lg:table-cell lg:px-0 lg:py-4">{transaction.date}</td>
                   <td className="whitespace-nowrap px-4 py-3 sm:px-0 sm:py-4">
-                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium sm:px-3 sm:py-1 ${statusStyles[transaction.status]}`}>
+                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium sm:px-3 sm:py-1 ${badgeClass}`}>
                       {transaction.status}
                     </span>
                   </td>
                 </tr>
-              ))}
+              )})}
             </tbody>
           </table>
         </div>

@@ -20,7 +20,7 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <header className="relative w-full px-4 py-6 md:px-8">
+    <header className="relative w-full px-4 py-6 md:px-4">
       {/* Main White Container */}
       <div className="mx-auto flex max-w-7xl items-center justify-between rounded-2xl bg-[#faf9f6] px-6 py-3 shadow-sm md:px-10">
         
@@ -59,7 +59,7 @@ export default function Navbar() {
         </div>
 
         {/* RIGHT SECTION: Action Buttons */}
-        <div className="flex items-center">
+        <div className="flex items-center gap-x-2">
           <Link 
             href="/portal" 
             className="hidden h-11 items-center gap-2 rounded-xl bg-[#324e69] px-6 text-sm font-semibold text-white transition-all hover:bg-[#263b50] sm:flex"
