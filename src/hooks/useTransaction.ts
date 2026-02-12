@@ -43,7 +43,7 @@ const extractTransactionsArray = (data: any): ApiTransaction[] => {
 
 // ADMIN: authenticated GET /payment
 const fetchAllTransactions = async (): Promise<ApiTransaction[]> => {
-  const response = await axiosConfig.get("/payment");
+  const response = await axiosConfig.get("/payments");
   return extractTransactionsArray(response.data);
 };
 
@@ -51,7 +51,7 @@ const fetchAllTransactions = async (): Promise<ApiTransaction[]> => {
 const fetchStudentTransactions = async (
   payload: StudentPaymentPayload
 ): Promise<ApiTransaction[]> => {
-  const response = await axiosConfig.post("/payment", payload,
+  const response = await axiosConfig.post("/payments", payload,
     {
       withCredentials: false,
     }
