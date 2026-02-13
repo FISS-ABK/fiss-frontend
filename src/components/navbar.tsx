@@ -22,7 +22,7 @@ const navLinks = [
   { name: "Academics", href: "/academics" },
   { name: "Gallery", href: "/gallery" },
   { name: "Contact", href: "/contact" },
-  { name: "Admin", href: "/admin/login" },
+  //{ name: "Admin", href: "/admin/login" },
 ];
 
 export default function Navbar() {
@@ -35,7 +35,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="relative w-full px-4 py-6 md:px-8">
+    <header className="relative w-full py-6">
       {/* Main Container */}
       <div className="mx-auto flex max-w-7xl min-h-[90px] items-center justify-between rounded-2xl bg-[#faf9f6] px-6 py-2 shadow-sm md:px-10">
         

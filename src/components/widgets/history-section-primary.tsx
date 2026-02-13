@@ -9,21 +9,21 @@ const historyData = [
     period: "2006 – 2015",
     title: "FOUNDATION",
     description:
-      "Foursquare International Secondary School, Asero, Abeokuta was established on Monday 18th of September 2006 under the then District Overseer of Foursquare Gospel Church, Abeokuta Rev (Dr.) D. O. Ibidun and his wife. The school started with eight students, three boys, five girls and five staff, which include the Pioneering Principal Rev. K. S. Oloruntola. The school co-habits with the primary section but has acquired a 2.5 hectares of land up the hill Arokoje Obantoko Abeokuta.",
+      "The journey of academic distinction began in September 1997 with the establishment of Foursquare Nursery and Primary School in Asero, Abeokuta. Founded with a clear vision to provide a solid educational bedrock for children in the community, the school has remained committed to nurturing young minds for over two decades. What started as a modest initiative has blossomed into a thriving center for early childhood learning, currently catering to 532 learners. This steady growth is a testament to the school’s dedication to instilling both academic curiosity and moral discipline from the very start of a child's life.",
     images: ["/28.png", "/13.png"],
   },
   {
     period: "2015 - 2020",
     title: "GROWTH",
     description:
-      "The Opening Ceremony was held on Thursday 28th September 2006, with important dignitaries in attendance, such as the District Overseer of Foursquare Gospel Church, Abeokuta and his wife Rev. (Dr.) and Rev. Mrs. D. O. Ibidun. He was accompanied by the District Secretary Rev. Prof. S. A. Onadeko, District Treasurer Rev Soyele. Also in attendance were District Administrative Secretary Rev. Oluronke, Zonal Superintendents Rev. and Rev.(Mrs.) Bamisile, Rev Adetola. The Board Members led by the Chairman Rev. Dawodu were also in attendance.",
+      "Building on the success of the primary arm, the vision for comprehensive education was expanded on the 16th of September, 2006, with the commencement of Foursquare International Secondary School. This strategic step was taken to ensure that the values and academic rigor established at the primary level could be sustained through the teenage years. Since its inception, the secondary school has experienced tremendous growth and acceptance within the state, currently boasting a robust student enrollment of 1,184. This impressive number reflects the parents' continued trust in the school’s ability to deliver quality education and character molding.",
     images: ["/29.png", "/14.png"],
   },
   {
     period: "2020 - 2026",
     title: "EXPANSION",
     description:
-      "The school at inception was run by a five-man board which was dissolved after three months. The Primary board absorbed the Secondary and both school are being run by a single board, led by Rev. Dawodu till March, 2020 The pioneer governing Board members are Rev. P.A Akinyede, Revd. D. Dasaolu, Revd. (Mrs) M. B. Bamisile, Revd. (Mrs.) Babatunde, Past. L.K. Dixon, Rev. K. S. Oloruntola, Mrs. C. P. Adeyeni, Mrs. E.T. Fabunmi (Secretary).",
+      "Foursquare Schools, Abeokuta, operates under the steadfast proprietorship of the Foursquare Gospel Church (Abeokuta and Ita-Oshin Districts). Being fully owned by the church ensures that the institution is not just focused on academic grades but is also deeply rooted in Christian values and spiritual guidance. This backing provides the moral compass that guides the school's administration, ensuring that every student is groomed to be not only intellectually sound but also spiritually alive and socially responsible.",
     images: ["/30.png", "/15.png"],
   },
 ];

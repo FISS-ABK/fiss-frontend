@@ -49,7 +49,7 @@ export default function HeroSection() {
           </div>
 
           {/* Image Collage */}
-          <div className="relative mx-auto h-70 w-full max-w-125 sm:h-85 md:h-105 lg:mx-0 lg:h-120 lg:max-w-none xl:h-140">
+          <div className="relative mx-auto h-70 w-full max-w-125 hidden md:flex sm:h-85 md:h-105 lg:mx-0 lg:h-120 lg:max-w-none xl:h-140">
             {/* Main Image */}
             <div className="absolute left-[12%] top-0 h-60 w-45 sm:left-[15%] sm:h-75 sm:w-57.5 md:left-[18%] md:h-92.5 md:w-75 lg:left-[20%] lg:h-110 lg:w-90 xl:left-[22%] xl:h-135 xl:w-110">
               <Image
