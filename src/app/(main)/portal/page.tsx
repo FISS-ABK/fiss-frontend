@@ -51,7 +51,7 @@ export default function PortalPage() {
                             </div>
                         </div>
                         <div className="mt-6">
-                            <Link href="/portal/results" className="inline-block rounded-md bg-[#09283b] px-4 py-2 text-sm font-medium text-white">
+                            <Link href="https://fiss.edutams.net/login" className="inline-block rounded-md bg-[#09283b] px-4 py-2 text-sm font-medium text-white">
                                 Check Results
                             </Link>
                         </div>
