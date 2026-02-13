@@ -11,7 +11,7 @@ const quickLinks = [
     { name: "Academics", href: "/academics" },
     { name: "Gallery", href: "/gallery" },
     { name: "Contact Us", href: "/contact" },
-    { name: "Admin", href: "/admin/overview" },
+    { name: "Admin", href: "/admin/login" },
 ];
 
 export default function Footer() {

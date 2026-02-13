@@ -35,7 +35,7 @@ export default function LeadershipMessageSection() {
                 src="/1.png"
                 alt="Rev J. Olukunle Dawodu - Chairman"
                 fill
-                className="object-cover"
+                className="object-cover object-[center_20%]"
               />
             </div>
 

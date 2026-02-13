@@ -66,7 +66,7 @@ export default function HeroSection() {
             <div className="absolute left-0 top-7.5 h-25 w-22.5 -rotate-10 sm:top-10 sm:h-32.5 sm:w-28.75 md:top-12.5 md:h-40 md:w-36.25 lg:top-15 lg:h-50 lg:w-45 xl:top-17.5 xl:h-57.5 xl:w-52.5">
               <Image
                 alt="Smiling student"
-                src="/FOURSQUARE PICTURES/others/1.jpg"
+                src="/FOURSQUARE PICTURES/mmm.jpeg"
                 fill
                 className="object-cover"
                 sizes="(max-width: 640px) 90px, (max-width: 768px) 115px, (max-width: 1024px) 145px, (max-width: 1280px) 180px, 210px"
@@ -78,7 +78,7 @@ export default function HeroSection() {
             <div className="absolute bottom-1 right-0 h-20 w-16 rotate-[-4deg] sm:h-28 sm:w-24 md:h-36 md:w-32 lg:h-44 lg:w-40 xl:h-55 xl:w-50">
               <Image
                 alt="Student writing"
-                src="/FOURSQUARE PICTURES/others/3.jpg"
+                src="/FOURSQUARE PICTURES/OTHERS/1.jpg"
                 fill
                 className="object-contain"
                 sizes="(max-width: 640px) 64px, (max-width: 768px) 96px, (max-width: 1024px) 128px, (max-width: 1280px) 160px, 200px"

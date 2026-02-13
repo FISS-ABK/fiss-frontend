@@ -7,43 +7,38 @@ const teamMembers = [
     image: "/1.png",
   },
   {
-    name: "Mr. Konigbagbe Gbenga Moses",
-    role: "Principal",
-    image: "/2.png",
+    name: "Mrs Michael O.T",
+    role: "Head Mistress Primary School",
+    image: "/19.png",
   },
   {
-    name: "Engr. Tunde Olumoko",
+    name: "",
     role: "Member",
-    image: "/6.png",
+    image: "/23.png",
   },
   {
-    name: "Dr. Mrs Mosunmola Amusan",
+    name: "",
     role: "Member",
-    image: "/7.png",
+    image: "/24.png",
   },
   {
-    name: "Dr. Mrs Toyin Makinde",
+    name: "",
     role: "Member",
-    image: "/4.png",
+    image: "/25.png",
   },
   {
-    name: "Dr. Mrs Akiseli Moronmubo",
+    name: "",
     role: "Member",
-    image: "/9.png",
+    image: "/26.png",
   },
    {
-    name: "Rev. Kayode Talabi",
+    name: "",
     role: "Member",
-    image: "/11.png",
-  },
-   {
-    name: "Pastor Michael Aremu",
-    role: "Member",
-    image: "/8.png",
+    image: "/27.png",
   },
 ];
 
-export default function LeadershipTeamSection() {
+export default function LeadershipTeamSectionPrimary() {
   return (
     <section className="bg-white py-12 sm:py-16 md:py-20 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

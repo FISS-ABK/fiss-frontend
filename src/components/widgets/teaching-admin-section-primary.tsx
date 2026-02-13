@@ -2,23 +2,23 @@ import Image from "next/image";
 
 const leaders = [
   {
-    name: "Mr. Konigbagbe Gbenga Moses",
-    role: "Principal",
-    image: "/2.png",
+    name: "Mrs Michael O.T",
+    role: "Head Mistress Primary School",
+    image: "/19.png",
   },
   {
-    name: "Mrs. Yeku O. I.",
-    role: "Vice Principal Academics",
-    image: "/10.png",
+    name: "Mrs. YE.T Fabunmi",
+    role: "Head Mistress Nursery School",
+    image: "/20.png",
   },
   {
-    name: "Mrs. Efunuga F. B",
-    role: "Vice Principal Admin",
-    image: "/3.png",
+    name: "Mrs. Adegbite O. Janet",
+    role: "Bursar",
+    image: "/21.png",
   },
 ];
 
-export default function TeachingAdminSection() {
+export default function TeachingAdminSectionPrimary() {
   return (
     <section className="bg-white py-12 sm:py-16 md:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

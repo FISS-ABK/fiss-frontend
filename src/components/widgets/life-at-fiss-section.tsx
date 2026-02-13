@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 const galleryItems = [
-  { label: "Classroom", image: "/FOURSQUARE PICTURES/others/1.jpg", rotation: "-rotate-3" },
+  { label: "Classroom", image: "/FOURSQUARE PICTURES/OTHERS/1.jpg", rotation: "-rotate-3" },
   { label: "Events", image: "/FOURSQUARE PICTURES/mmm.jpeg", rotation: "rotate-2" },
   { label: "Excursion", image: "/FOURSQUARE PICTURES/mg.jpeg", rotation: "-rotate-1" },
   { label: "Environment", image: "/FOURSQUARE PICTURES/OTHERS/15.jpg", rotation: "rotate-3" },
@@ -9,7 +9,7 @@ const galleryItems = [
 
 const galleryItemsRow2 = [
   { label: "Buildings", image: "/FOURSQUARE PICTURES/OTHERS/13.jpg", rotation: "-rotate-2" },
-  { label: "Healthcare", image: "/FOURSQUARE PICTURES/others/3.jpg", rotation: "rotate-2" },
+  { label: "Healthcare", image: "/FOURSQUARE PICTURES/OTHERS/2.jpg", rotation: "rotate-2" },
 ];
 
 export default function LifeAtFissSection() {
