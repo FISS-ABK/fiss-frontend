@@ -1,82 +1,157 @@
+"use client";
+
+import { useRef } from "react";
 import Image from "next/image";
+import { motion, useScroll, useTransform } from "framer-motion"; 
+
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
 import FloatingNavWrapper from "@/components/floating-nav-wrapper";
 import DotSeparator from "@/components/dot-separator";
 
-const items = [
-  { src: "/FOURSQUARE PICTURES/OTHERS/2.jpg", caption: "School Clinic", wide: true, tall: false },
-  { src: "/FOURSQUARE PICTURES/val/tomiwa.JPG", caption: "Prize giving day", wide: false, tall: true },
-  { src: "/FOURSQUARE PICTURES/val/cipal.JPG", caption: "Event", wide: false, tall: true },
-  { src: "/FOURSQUARE PICTURES/mmm.jpeg", caption: "Excursion", wide: false, tall: false },
-  { src: "/FOURSQUARE PICTURES/summer/BARBING.JPG", caption: "Summer Lesson", wide: false, tall: false },
-  { src: "/FOURSQUARE PICTURES/OTHERS/14.jpg", caption: "School view", wide: false, tall: false },
-  { src: "/FOURSQUARE PICTURES/OTHERS/1.jpg", caption: "Classroom", wide: true, tall: false },
+
+
+const row1 = [
+  { src: "/32.png", alt: "Jamb Center" },
+  { src: "/FOURSQUARE PICTURES/val/tomiwa.JPG", alt: "Prize Giving" },
+  { src: "/FOURSQUARE PICTURES/val/cipal.JPG", alt: "Event" },
+  { src: "/FOURSQUARE PICTURES/mmm.jpeg", alt: "Excursion" },
+  { src: "/FOURSQUARE PICTURES/OTHERS/2.jpg", alt: "Clinic" },
+  { src: "/31.png", alt: "CBT" },
+];
+
+const row2 = [
+  { src: "/FOURSQUARE PICTURES/summer/BARBING.JPG", alt: "Summer Lesson" },
+  { src: "/38.png", alt: "School View" },
+  { src: "/FOURSQUARE PICTURES/OTHERS/1.jpg", alt: "Classroom" },
+  { src: "/FOURSQUARE PICTURES/val/DSC_0224.JPG", alt: "Assembly" }, // Added for variety
+  { src: "/39.png", alt: "Summer Lesson " },
+  { src: "/40.png", alt: "School View " },
+];
+
+const row3 = [
+  { src: "/FOURSQUARE PICTURES/val/DSC_0116.JPG", alt: "Students" }, // Added for variety
+  { src: "/FOURSQUARE PICTURES/val/DSC_0122.JPG", alt: "Sports" },   // Added for variety
+  { src: "/FOURSQUARE PICTURES/OTHERS/15.jpg", alt: "Environment" }, // Added for variety
+  { src: "/FOURSQUARE PICTURES/OTHERS/13.jpg", alt: "Building" },    // Added for variety
+  { src: "/FOURSQUARE PICTURES/val/DSC_0151.JPG", alt: "Students" },
+  { src: "/FOURSQUARE PICTURES/val/DSC_0211.JPG", alt: "Sports " },
 ];
 
 export default function GalleryPage() {
+  const containerRef = useRef(null);
+  
+  // Optional: Parallax effect on vertical scroll
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], [0, -50]);
+
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-[#faf9f6] overflow-x-hidden">
       <FloatingNavWrapper initialBg="bg-[#edf5f5]">
         <Navbar />
       </FloatingNavWrapper>
 
-      <section className="bg-[#edf5f5]">
-        <div className="mx-auto max-w-7xl px-6 py-24 lg:py-32">
-          <div className="md:flex md:items-start md:justify-between">
-            <div className="md:max-w-xl">
-              <h1 className="text-5xl font-extrabold text-[#09283b]">Gallery</h1>
-              <p className="mt-4 text-sm text-[#12303f]">
-                A glimpse into learning, growth, and everyday life at FISS.
-              </p>
-            </div>
-            <div className="mt-12 md:mt-0 md:flex md:items-center md:justify-center md:w-1/3">
-              <div className="text-center text-xs text-gray-500">
-                <div>scroll to get the full experience</div>
-                <div className="mt-6 flex items-center justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-gray-600 animate-bounce"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-              </div>
-            </div>
+      {/* --- HEADER SECTION --- */}
+      <section className="bg-[#edf5f5] pt-32 pb-16 relative overflow-hidden">
+        <div className="mx-auto max-w-7xl px-6 relative z-10">
+          <div className="max-w-2xl">
+            <h1 className="text-5xl md:text-7xl font-bold text-[#09283b] tracking-tight">
+              Our Moments
+            </h1>
+            <p className="mt-6 text-lg text-[#12303f]/80 leading-relaxed">
+              A continuous stream of memories, capturing the joy, growth, and excellence 
+              that define life at FISS.
+            </p>
           </div>
         </div>
+        
+        {/* Decorative Background Blur */}
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 h-96 w-96 rounded-full bg-[#0b2c4d]/5 blur-3xl" />
       </section>
-<DotSeparator />
-      <main className="mx-auto w-full max-w-7xl px-6 py-16">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          {items.map((it, idx) => {
-            const span = it.wide ? "md:col-span-2" : "md:col-span-1";
-            const height = it.tall ? "h-80" : "h-48";
-            return (
-              <figure key={idx} className={`${span} overflow-hidden rounded bg-white shadow-sm`}>
-                <div className={`relative ${height} w-full bg-gray-100`}> 
-                  <Image
-                    src={it.src}
-                    alt={it.caption}
-                    fill
-                    sizes="(min-width: 768px) 50vw, 100vw"
-                    className="object-cover"
-                  />
+
+      <DotSeparator />
+
+      {/* --- THE MOVING PUZZLE WALL --- */}
+      <main ref={containerRef} className="py-12 flex flex-col gap-4 overflow-hidden bg-white">
+        
+        {/* ROW 1: Moves LEFT */}
+        <div className="w-full rotate-[-1deg] scale-105 origin-left"> {/* Slight tilt for creative "messy" look */}
+          <motion.div 
+            className="flex w-max"
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{ duration: 40, ease: "linear", repeat: Infinity }}
+          >
+            {[...row1, ...row1, ...row1].map((item, idx) => ( // Tripled for safety length
+              <div key={idx} className="relative h-[250px] w-[350px] flex-shrink-0 border-r-4 border-white">
+                <Image 
+                  src={item.src} 
+                  alt={item.alt} 
+                  fill 
+                  className="object-cover grayscale transition-all duration-500 hover:grayscale-0 hover:scale-105"
+                  sizes="350px"
+                />
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* ROW 2: Moves RIGHT (Center focus) */}
+        <div className="w-full z-10 scale-110 shadow-2xl"> 
+          <motion.div 
+            className="flex w-max"
+            initial={{ x: "-50%" }}
+            animate={{ x: "0%" }}
+            transition={{ duration: 35, ease: "linear", repeat: Infinity }}
+          >
+            {[...row2, ...row2, ...row2].map((item, idx) => (
+              <div key={idx} className="relative h-[320px] w-[450px] flex-shrink-0 border-r-4 border-white">
+                <Image 
+                  src={item.src} 
+                  alt={item.alt} 
+                  fill 
+                  className="object-cover" // Kept color for the middle row to make it pop
+                  sizes="450px"
+                />
+                {/* Optional Caption Overlay on Hover */}
+                <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center text-white font-medium text-xl">
+                  {item.alt}
                 </div>
-                <figcaption className="border-t px-3 py-2 text-xs text-gray-700">{it.caption}</figcaption>
-              </figure>
-            );
-          })}
+              </div>
+            ))}
+          </motion.div>
         </div>
+
+        {/* ROW 3: Moves LEFT */}
+        <div className="w-full rotate-[1deg] scale-105 origin-right">
+          <motion.div 
+            className="flex w-max"
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{ duration: 45, ease: "linear", repeat: Infinity }}
+          >
+            {[...row3, ...row3, ...row3].map((item, idx) => (
+              <div key={idx} className="relative h-[250px] w-[350px] flex-shrink-0 border-r-4 border-white">
+                <Image 
+                  src={item.src} 
+                  alt={item.alt} 
+                  fill 
+                  className="object-cover grayscale transition-all duration-500 hover:grayscale-0 hover:scale-105"
+                  sizes="350px"
+                />
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
       </main>
-<DotSeparator />
-      <div className="mt-auto">
-        <div className="px-6 pb-12">
-          <Footer />
-        </div>
+
+      <DotSeparator />
+      
+      <div className="mt-auto px-6 pb-12">
+        <Footer />
       </div>
     </div>
   );

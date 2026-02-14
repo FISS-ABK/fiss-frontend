@@ -33,7 +33,7 @@ export default function LeadershipMessageSection() {
             <div className="relative aspect-4/3 overflow-hidden rounded-2xl shadow-lg sm:rounded-3xl">
               <Image
                 src="/1.png"
-                alt="Rev J. Olukunle Dawodu - Chairman"
+                alt="Rev J. Olalekan Dawodu - Chairman"
                 fill
                 className="object-cover object-[center_20%]"
               />
@@ -42,7 +42,7 @@ export default function LeadershipMessageSection() {
             {/* Caption Overlay */}
             <div className="absolute bottom-4 right-4 rounded-lg bg-[#c9a227] px-4 py-2 text-right shadow-md sm:bottom-6 sm:right-6 sm:px-5 sm:py-3">
               <p className="font-poppins text-sm font-semibold text-white sm:text-base">
-                Rev J. Olukunle Dawodu
+                Rev J. Olalekan Dawodu
               </p>
               <p className="font-suisse text-xs text-white/90 sm:text-sm">
                 Chairman
