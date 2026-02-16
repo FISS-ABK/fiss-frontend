@@ -1,7 +1,8 @@
 "use client";
 
-import { ChevronDown, Flame, FileText, Shield, Users, Image as ImageIcon, UserCheck, ClipboardCheck, Check, DollarSign } from "lucide-react";
+import { ChevronDown, Flame, FileText, Shield, Users, Image as ImageIcon, UserCheck, ClipboardCheck, DollarSign, Wallet } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 
 interface AccordionItem {
   id: string;
@@ -91,40 +92,10 @@ const documents = [
     title: "Transfer Certificate",
     description: "Official transfer certificate from previous school (if applicable)",
   },
-];
-
-const tuitionPlans = [
   {
-    level: "Primary Level",
-    grades: "JSS 1 - JSS 3",
-    fees: {
-      tuition: "₦450,000",
-      registration: "₦25,000",
-      development: "₦50,000",
-    },
-    includes: [
-      "Standard curriculum materials",
-      "School uniform (2 sets)",
-      "Library access",
-      "Basic sports facilities",
-    ],
-  },
-  {
-    level: "Secondary Level",
-    grades: "SSS 1 - SSS 3",
-    fees: {
-      tuition: "₦550,000",
-      registration: "₦25,000",
-      development: "₦75,000",
-    },
-    includes: [
-      "Advanced curriculum materials",
-      "School uniform (2 sets)",
-      "Science laboratory access",
-      "Library and digital resources",
-      "Sports and extracurricular activities",
-      "Exam preparation support",
-    ],
+    icon: <FileText className="h-5 w-5 text-red-500" />,
+    title: "Learner's Identification Number (LIN)",
+    description: "Proof of Learning",
   },
 ];
 
@@ -234,81 +205,66 @@ export default function AdmissionsAccordion() {
     {
       id: "tuition",
       number: "04",
-      title: "Tuition Overview",
+      title: "Tuition & Payment Structure",
       content: (
-        <>
-          <div className="grid gap-6 lg:grid-cols-2">
-            {tuitionPlans.map((plan, index) => (
-              <div
-                key={index}
-                className="rounded-xl border-2 border-gray-200 bg-[#f5f7f7] p-6 shadow-md transition-all hover:shadow-lg"
-              >
-                <div className="mb-4 border-b border-gray-200 pb-4">
-                  <h3 className="mb-1 font-poppins text-xl font-bold text-[#0b2c4d]">
-                    {plan.level}
-                  </h3>
-                  <p className="font-suisse text-sm text-gray-600">
-                    {plan.grades}
-                  </p>
-                </div>
-                <div className="mb-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="font-suisse text-sm text-gray-600">
-                      Tuition Fee
-                    </span>
-                    <span className="font-poppins text-lg font-bold text-[#0b2c4d]">
-                      {plan.fees.tuition}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="font-suisse text-sm text-gray-600">
-                      Registration Fee
-                    </span>
-                    <span className="font-poppins text-base font-semibold text-gray-700">
-                      {plan.fees.registration}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="font-suisse text-sm text-gray-600">
-                      Development Levy
-                    </span>
-                    <span className="font-poppins text-base font-semibold text-gray-700">
-                      {plan.fees.development}
-                    </span>
-                  </div>
-                </div>
-                <div className="my-4 border-t border-gray-200" />
-                <div>
-                  <h4 className="mb-3 font-poppins text-sm font-semibold text-[#0b2c4d]">
-                    Fee Includes:
-                  </h4>
-                  <ul className="space-y-2">
-                    {plan.includes.map((item, idx) => (
-                      <li
-                        key={idx}
-                        className="flex items-start gap-2 font-suisse text-sm text-gray-600"
-                      >
-                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-500" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-5">
-            <div className="mb-2 flex items-center gap-2">
-              <DollarSign className="h-5 w-5 text-amber-600" />
-              <h4 className="font-poppins text-base font-semibold text-amber-900">
-                Payment Information
-              </h4>
-            </div>
-            <p className="font-suisse text-sm leading-relaxed text-amber-800">
-              Payment plans are available for families. Tuition can be paid in installments: 60% at resumption and 40% mid-term. Additional fees may apply for extracurricular activities, field trips, and special programs.
+        <div className="space-y-6">
+          {/* Main Statement */}
+          <div className="rounded-xl border border-blue-100 bg-blue-50 p-6 sm:p-8">
+            <h3 className="mb-3 font-poppins text-xl font-semibold text-[#0b2c4d]">
+              Quality Education at Affordable Rates
+            </h3>
+            <p className="font-suisse text-base leading-relaxed text-gray-700">
+              At Foursquare International Secondary School, we believe that world-class education should be accessible. We have structured our fees to be highly competitive and affordable, ensuring that you get excellent value for your child's academic and moral development without compromising on quality.
             </p>
           </div>
-        </>
+
+          <div className="grid gap-6 sm:grid-cols-2">
+            {/* Payment Flexibility */}
+            <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-md">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600">
+                <Wallet className="h-6 w-6" />
+              </div>
+              <h4 className="mb-2 font-poppins text-lg font-semibold text-[#0b2c4d]">Flexible Payment Plans</h4>
+              <p className="font-suisse text-sm leading-relaxed text-gray-600">
+                We understand the varying financial needs of families. To assist with planning, tuition fees can be paid in convenient installments:
+              </p>
+              <ul className="mt-3 list-disc space-y-1 pl-5 text-sm font-medium text-gray-700">
+                <li>60% payment at resumption</li>
+                <li>40% payment by mid-term</li>
+              </ul>
+            </div>
+
+            {/* Value for Money */}
+            <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-md">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-orange-100 text-orange-600">
+                <DollarSign className="h-6 w-6" />
+              </div>
+              <h4 className="mb-2 font-poppins text-lg font-semibold text-[#0b2c4d]">All-Inclusive Value</h4>
+              <p className="font-suisse text-sm leading-relaxed text-gray-600">
+                Our fees are structured to provide holistic support for your child. The cost covers:
+              </p>
+              <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-gray-600">
+                <li>Tuition & Standard Curriculum Materials</li>
+                <li>Access to Science & ICT Laboratories</li>
+                <li>Sports Facilities & Library Access</li>
+                <li>Examination Support & Development Levies</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Contact for Details */}
+          <div className="mt-4 flex flex-col items-center justify-center gap-4 rounded-lg border border-gray-200 bg-gray-50 p-6 text-center">
+            <p className="font-suisse text-sm text-gray-600 max-w-lg">
+              For a detailed breakdown of the fee schedule for specific classes (JSS 1 - SSS 3), please visit the school bursary or contact our accounts department.
+            </p>
+            <Link 
+              href="/contact" 
+              className="rounded-lg bg-[#0b2c4d] px-6 py-2.5 font-poppins text-sm font-medium text-white transition-colors hover:bg-[#1a3b5c]"
+            >
+              Contact Bursary Department
+            </Link>
+          </div>
+        </div>
       ),
     },
   ];
@@ -347,7 +303,7 @@ export default function AdmissionsAccordion() {
                 className={`transition-all duration-300 ${
                   openItem === item.id
                     ? "max-h-[5000px] opacity-100"
-                    : "max-h-0 opacity-0 overflow-hidden"
+                    : "max-h-0 overflow-hidden opacity-0"
                 }`}
               >
                 <div className="bg-[#f5f7f7] p-6 sm:p-8">{item.content}</div>
