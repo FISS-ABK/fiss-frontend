@@ -22,6 +22,11 @@ const createPaymentApi = async (payload: PaymentPayload): Promise<PaymentRespons
   return response.data;
 };
 
+const verifyPaymentApi = async (paymentId: string): Promise<{ success: boolean }> => {
+  const response = await axiosConfig.get(`/api/payment-status/${paymentId}`);
+  return response.data;
+}
+
 export const usePayment = () => {
   const createPaymentMutation = useMutation({
     mutationFn: createPaymentApi,
@@ -33,13 +38,26 @@ export const usePayment = () => {
     }
   });
 
+  const verifyPaymentMutation = useMutation({
+    mutationFn: verifyPaymentApi,
+    onSuccess: () => {
+      toast.success("Payment verified successfully!");
+    }, 
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || "Failed to verify payment");
+    }
+});
+
   return {
     // Mutations
     createPayment: createPaymentMutation.mutate,
     createPaymentAsync: createPaymentMutation.mutateAsync,
-    
+    verifyPayment: verifyPaymentMutation.mutate,
+    verifyPaymentAsync: verifyPaymentMutation.mutateAsync,
     // Mutation states
     isCreating: createPaymentMutation.isPending,
+    isVerifying: verifyPaymentMutation.isPending,
     createError: createPaymentMutation.error,
+    verifyError: verifyPaymentMutation.error,
   };
 };
