@@ -113,7 +113,7 @@ export const useAdminAuth = (): UseSignInReturn => {
   const setupAuthListener = (popup: Window) => {
     const handleMessage = async (event: MessageEvent) => {
       // Validate origin
-      if (!event.origin.includes("fiss-backend") && !event.origin.includes("fiss-abk")) {
+      if (!event.origin.includes("fissbackend") && !event.origin.includes("foursquareschoolsabk")) {
         return;
       }
 
