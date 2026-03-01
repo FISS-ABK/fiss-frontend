@@ -41,7 +41,7 @@ export const usePayment = () => {
   const verifyPaymentMutation = useMutation({
     mutationFn: verifyPaymentApi,
     onSuccess: () => {
-      toast.success("Payment verified successfully!");
+      toast.success("Payment Status Gotten!");
     }, 
     onError: (error: any) => {
       toast.error(error?.response?.data?.message || "Failed to verify payment");
