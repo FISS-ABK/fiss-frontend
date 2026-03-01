@@ -35,7 +35,7 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
         phone: personalInfo.contact,
         feeType: fee.feeType,
         term: fee.term,
-        academicSession: fee.academicSession,
+        academic_session: fee.academicSession,
         className: fee.className,
       });
 

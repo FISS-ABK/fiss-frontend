@@ -13,7 +13,7 @@ export interface PaymentPayload {
   feeType: string;
   term: string;
   className: string;
-  academicSession: string;
+  academic_session: string;
 }
 
 export interface PaymentResponse {
