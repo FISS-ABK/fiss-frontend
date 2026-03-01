@@ -2,7 +2,7 @@ import axios from "axios";
 import { logger } from "@/lib/logger";
 
 export const axiosConfig = axios.create({
-  baseURL: "https://fiss-backend-4sjq.onrender.com",
+  baseURL: "https://fissbackend.online",
   withCredentials: true,
 });
 
