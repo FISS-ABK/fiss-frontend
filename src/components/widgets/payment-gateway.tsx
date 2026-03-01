@@ -127,7 +127,7 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
 
                     if (status) {
                       // allowed statuses: pending, expired, completed, failed
-                      if (status === "completed") {
+                      if (status === "confirmed") {
                         setStatusInfo("completed", "payment completed successfully");
                         setIsSuccess(true);
                         if (onComplete) onComplete();
