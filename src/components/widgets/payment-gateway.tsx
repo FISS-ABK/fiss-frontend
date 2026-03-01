@@ -33,6 +33,10 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
         fullName: personalInfo.fullName,
         email: personalInfo.email,
         phone: personalInfo.contact,
+        feeType: fee.feeType,
+        term: fee.term,
+        academicSession: fee.academicSession,
+        className: fee.className,
       });
 
       // backend may return hosted_page_url; be tolerant of types
@@ -97,7 +101,7 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
           <button
             type="button"
             onClick={handlePayment}
-            disabled={isCreating}
+            disabled={isCreating || paymentId !== null}
             className="ml-auto rounded-md bg-[#09283b] px-6 py-3 text-sm font-medium text-white hover:opacity-95 disabled:opacity-50"
           >
             {isCreating ? "Processing..." : "Pay Now"}

@@ -5,6 +5,11 @@ export interface PersonalInformation {
   studentId: string;
   email: string;
   contact: string;
+  feeType: string;
+  term: string;
+  academicSession: string;
+  className: string;
+  amount: number;
 }
 
 export interface PaymentData {

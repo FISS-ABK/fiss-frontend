@@ -10,6 +10,10 @@ export interface PaymentPayload {
   fullName: string;
   email: string;
   phone: string;
+  feeType: string;
+  term: string;
+  className: string;
+  academicSession: string;
 }
 
 export interface PaymentResponse {
