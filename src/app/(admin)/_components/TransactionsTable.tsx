@@ -13,6 +13,7 @@ interface Transaction {
 
 interface TransactionsTableProps {
   transactions: Transaction[];
+  title?: string;
   showSeeAll?: boolean;
   onSeeAll?: () => void;
   onRowClick?: (transaction: Transaction) => void;
@@ -25,7 +26,8 @@ const statusStyles: Record<string, string> = {
 };
 
 export default function TransactionsTable({ 
-  transactions, 
+  transactions,
+  title = 'Recent Transactions',
   showSeeAll = false, 
   onSeeAll,
   onRowClick,
@@ -33,7 +35,7 @@ export default function TransactionsTable({
   return (
     <div className="rounded-lg bg-white p-4 shadow-sm sm:p-6">
       <div className="mb-4 flex items-center justify-between sm:mb-6">
-        <h2 className="text-base font-semibold text-gray-900 sm:text-lg">Recent Transactions</h2>
+        <h2 className="text-base font-semibold text-gray-900 sm:text-lg">{title}</h2>
         {showSeeAll && (
           <button 
             onClick={onSeeAll}

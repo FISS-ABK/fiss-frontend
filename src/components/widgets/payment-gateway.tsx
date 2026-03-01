@@ -37,7 +37,7 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
 
       // backend may return hosted_page_url; be tolerant of types
       const hostedUrl = (response as any)?.paymentUrl as string | undefined;
-      const returnedPaymentId = (response as any)?.id;
+      const returnedPaymentId = (response as any)?.linkCode;
       if (hostedUrl) {
         window.open(hostedUrl, "_blank");
         setPaymentId(String(returnedPaymentId ?? ""));
@@ -107,7 +107,7 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
         {/* Post-payment actions */}
         {paymentId && (
           <div className="mt-6">
-            <p className="text-sm text-gray-700">Payment initiated. Payment ID: <span className="font-mono">{paymentId}</span></p>
+            <p className="text-sm text-gray-700">Payment initiated. Payment Code: <span className="font-mono">{paymentId}</span></p>
             <div className="mt-3 flex gap-3">
               <button
                 onClick={async () => {
