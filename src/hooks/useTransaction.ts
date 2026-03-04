@@ -5,9 +5,61 @@ import axios from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-export interface ApiTransaction {
-  id: string | number;
+export interface ZendfiMetadata {
+  TransactionID?: string;
+  academicSession?: string;
+  amount_ngn?: number;
+  className?: string;
+  description?: string;
+  email?: string;
+  fullName?: string;
+  onramp_escrow_deposit?: boolean;
+  payer_service_charge?: boolean;
+  phone?: string;
+  source?: string;
   studentId?: string;
+}
+
+export interface TransactionMetadata {
+  studentId?: string;
+  TransactionID?: string;
+  fullName?: string;
+  email?: string;
+  className?: string;
+  academicSession?: string;
+  zendfi?: ZendfiMetadata;
+}
+
+export interface ApiTransaction {
+  // MongoDB / server fields
+  _id?: string;
+  id?: string | number;           // alias used client-side
+  paymentId?: string | null;
+  linkCode?: string;
+  status?: string;
+
+  // Amounts
+  amount?: number;
+  amountNgn?: number;
+  token?: string;
+
+  // Metadata block (nested student / session info)
+  metadata?: TransactionMetadata;
+
+  // Top-level copies (from server)
+  studentId?: string;
+  TransactionID?: string;
+
+  // Timestamps
+  created_at?: string;
+  updated_at?: string;
+  confirmedAt?: string;
+
+  // On-chain / receipt
+  transactionSignature?: string;
+  receiptUrl?: string;
+
+  // Legacy / compatibility fields kept for older API shapes
   student_id?: string;
   studentName?: string;
   student_name?: string;
@@ -15,13 +67,13 @@ export interface ApiTransaction {
   fee_type?: string;
   className?: string;
   class?: string;
-  amount?: number | string;
   currency?: string;
-  status?: string;
   date?: string;
   createdAt?: string;
   academic_session?: string;
   academicSession?: string;
+
+  __v?: number;
   [key: string]: any;
 }
 

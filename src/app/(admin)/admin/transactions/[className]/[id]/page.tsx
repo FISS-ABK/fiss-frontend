@@ -4,7 +4,116 @@ import AdminDashboardLayout from "@/app/(admin)/_components/AdminDashboardLayout
 import PageHeader from "@/app/(admin)/_components/PageHeader";
 import { useClassTransactions } from "@/hooks/useTransaction";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Clock, XCircle, ExternalLink, Copy } from "lucide-react";
+import { useState } from "react";
+
+// ─── helpers ────────────────────────────────────────────────────────────────
+
+function formatDate(iso?: string | null) {
+  if (!iso) return "—";
+  try {
+    return new Date(iso).toLocaleString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch {
+    return iso;
+  }
+}
+
+function CopyButton({ value }: { value: string }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <button
+      className="ml-1.5 text-gray-400 hover:text-gray-600 transition-colors"
+      title="Copy"
+      onClick={(e) => {
+        e.stopPropagation();
+        navigator.clipboard.writeText(value);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      }}
+    >
+      {copied ? (
+        <span className="text-xs text-green-600 font-medium">Copied!</span>
+      ) : (
+        <Copy className="h-3.5 w-3.5" />
+      )}
+    </button>
+  );
+}
+
+function DetailRow({
+  label,
+  value,
+  mono = false,
+  copyable = false,
+}: {
+  label: string;
+  value: React.ReactNode;
+  mono?: boolean;
+  copyable?: boolean;
+}) {
+  return (
+    <div className="flex items-start justify-between gap-4 py-2.5 border-b border-gray-100 last:border-0">
+      <dt className="shrink-0 text-sm text-gray-500">{label}</dt>
+      <dd
+        className={`text-sm font-medium text-gray-900 text-right flex items-center gap-1 ${
+          mono ? "font-mono text-xs break-all" : ""
+        }`}
+      >
+        {value}
+        {copyable && typeof value === "string" && value !== "—" && (
+          <CopyButton value={value} />
+        )}
+      </dd>
+    </div>
+  );
+}
+
+function StatusBadge({ status }: { status: string }) {
+  type StatusEntry = { icon: React.ReactNode; cls: string; label: string };
+  const map: Record<string, StatusEntry> = {
+    confirmed: {
+      icon: <CheckCircle2 className="h-4 w-4" />,
+      cls: "bg-green-100 text-green-700",
+      label: "Confirmed",
+    },
+    pending: {
+      icon: <Clock className="h-4 w-4" />,
+      cls: "bg-yellow-100 text-yellow-700",
+      label: "Pending",
+    },
+    failed: {
+      icon: <XCircle className="h-4 w-4" />,
+      cls: "bg-red-100 text-red-700",
+      label: "Failed",
+    },
+    expired: {
+      icon: <XCircle className="h-4 w-4" />,
+      cls: "bg-gray-100 text-gray-600",
+      label: "Expired",
+    },
+  };
+  const s: StatusEntry = map[status?.toLowerCase()] ?? {
+    icon: null,
+    cls: "bg-gray-100 text-gray-700",
+    label: status,
+  };
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium ${s.cls}`}
+    >
+      {s.icon}
+      {s.label}
+    </span>
+  );
+}
+
+// ─── page ────────────────────────────────────────────────────────────────────
 
 export default function TransactionDetailsPage() {
   const params = useParams<{ className: string; id: string }>();
@@ -12,54 +121,57 @@ export default function TransactionDetailsPage() {
   const decodedClassName = decodeURIComponent(params.className);
   const { transactions, isLoadingTransactions } = useClassTransactions(decodedClassName);
 
-  const transaction = (transactions ?? []).find((t) => `${t.id}` === params.id);
+  // Match _id (MongoDB) or legacy id field
+  const transaction = (transactions ?? []).find(
+    (t) => t._id === params.id || `${t.id}` === params.id
+  );
 
-  const studentName =
-    (transaction?.studentName as string) ||
-    (transaction?.student_name as string) ||
-    "Unknown Student";
+  const meta = transaction?.metadata;
+
+  // Student info — prefer metadata block, fall back to top-level
+  const fullName =
+    meta?.fullName || transaction?.studentName || transaction?.student_name || "Unknown Student";
   const studentId =
-    (transaction?.studentId as string) ||
-    (transaction?.student_id as string) ||
-    "\u2014";
-  const feeType =
-    (transaction?.feeType as string) ||
-    (transaction?.fee_type as string) ||
-    "\u2014";
-  const classDisplay =
-    (transaction?.className as string) || (transaction?.class as string) || decodedClassName;
-  const amount =
-    typeof transaction?.amount === "number"
-      ? `\u20A6${transaction.amount.toLocaleString()}`
-      : (transaction?.amount as string) || "\u2014";
-  const status = (transaction?.status as string) || "Pending";
+    meta?.studentId || transaction?.studentId || transaction?.student_id || "—";
+  const email = meta?.email || "—";
+  const className =
+    meta?.className || transaction?.className || transaction?.class || decodedClassName;
+  const academicSession = meta?.academicSession || transaction?.academicSession || "—";
+  const feeType = transaction?.feeType || transaction?.fee_type || "—";
 
-  const dateSource = (transaction as any)?.date || (transaction as any)?.createdAt;
-  const formattedDate = dateSource
-    ? new Date(dateSource).toLocaleString()
-    : "\u2014";
+  // Amounts
+  const status = (transaction?.status ?? "pending").toLowerCase();
+  const amountUsdc =
+    transaction?.amount != null ? `${transaction.amount} ${transaction?.token ?? "USDC"}` : "—";
+  const amountNgn =
+    transaction?.amountNgn != null ? `₦${transaction.amountNgn.toLocaleString()}` : "—";
 
-  const statusColor: Record<string, string> = {
-    Approved: "bg-green-100 text-green-700",
-    Pending: "bg-yellow-100 text-yellow-700",
-    Rejected: "bg-red-100 text-red-700",
-  };
-  const badgeClass = statusColor[status] ?? "bg-gray-100 text-gray-700";
+  // IDs
+  const mongoId = transaction?._id ?? `${transaction?.id ?? "—"}`;
+  const paymentId = transaction?.paymentId ?? "—";
+  const linkCode = transaction?.linkCode ?? "—";
+
+  // Timestamps
+  const createdAt = formatDate(transaction?.created_at ?? transaction?.createdAt ?? transaction?.date);
+  const updatedAt = formatDate(transaction?.updated_at);
+  const confirmedAt = formatDate(transaction?.confirmedAt);
+
+  // On-chain
+  const sig = transaction?.transactionSignature;
+  const receiptUrl = transaction?.receiptUrl;
 
   return (
     <AdminDashboardLayout>
       <PageHeader
         title="Transaction Details"
-        subtitle={
-          transaction
-            ? `Details for transaction ${transaction.id}`
-            : "View full payment information"
-        }
+        subtitle={transaction ? `#${mongoId}` : "View full payment information"}
       />
 
       <div className="mb-6">
         <button
-          onClick={() => router.push(`/admin/transactions/${encodeURIComponent(decodedClassName)}`)}
+          onClick={() =>
+            router.push(`/admin/transactions/${encodeURIComponent(decodedClassName)}`)
+          }
           className="flex items-center gap-1.5 text-sm text-gray-600 transition-colors hover:text-gray-900"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -67,15 +179,17 @@ export default function TransactionDetailsPage() {
         </button>
       </div>
 
+      {/* Loading */}
       {isLoadingTransactions && (
         <div className="flex items-center justify-center rounded-lg bg-white py-16 shadow-sm">
           <div className="text-center">
             <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
-            <p className="text-sm text-gray-500">Loading transaction details...</p>
+            <p className="text-sm text-gray-500">Loading transaction details…</p>
           </div>
         </div>
       )}
 
+      {/* Not found */}
       {!isLoadingTransactions && !transaction && (
         <div className="rounded-lg bg-white p-6 shadow-sm">
           <p className="text-sm text-gray-600">
@@ -84,58 +198,134 @@ export default function TransactionDetailsPage() {
         </div>
       )}
 
+      {/* Main content */}
       {!isLoadingTransactions && transaction && (
-        <div className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-lg bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-base font-semibold text-gray-900">
-              Student Information
-            </h2>
-            <dl className="space-y-3 text-sm">
-              <div className="flex justify-between">
-                <dt className="text-gray-500">Student Name</dt>
-                <dd className="font-medium text-gray-900">{studentName}</dd>
-              </div>
-              <div className="flex justify-between">
-                <dt className="text-gray-500">Student ID</dt>
-                <dd className="font-medium text-gray-900">{studentId}</dd>
-              </div>
-              <div className="flex justify-between">
-                <dt className="text-gray-500">Class</dt>
-                <dd className="font-medium text-gray-900">{classDisplay}</dd>
-              </div>
-            </dl>
+        <div className="space-y-6">
+
+          {/* Status banner */}
+          <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg bg-white p-5 shadow-sm">
+            <div>
+              <p className="mb-1 text-xs uppercase tracking-wide text-gray-500">Status</p>
+              <StatusBadge status={status} />
+            </div>
+            <div className="text-right">
+              <p className="mb-0.5 text-xs text-gray-500">Amount Paid</p>
+              <p className="text-2xl font-bold text-gray-900">{amountNgn}</p>
+              <p className="text-xs text-gray-400">{amountUsdc}</p>
+            </div>
           </div>
 
-          <div className="rounded-lg bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-base font-semibold text-gray-900">
-              Payment Information
-            </h2>
-            <dl className="space-y-3 text-sm">
-              <div className="flex justify-between">
-                <dt className="text-gray-500">Transaction ID</dt>
-                <dd className="font-medium text-gray-900">{transaction.id}</dd>
-              </div>
-              <div className="flex justify-between">
-                <dt className="text-gray-500">Fee Type</dt>
-                <dd className="font-medium text-gray-900">{feeType}</dd>
-              </div>
-              <div className="flex justify-between">
-                <dt className="text-gray-500">Amount</dt>
-                <dd className="text-lg font-bold text-gray-900">{amount}</dd>
-              </div>
-              <div className="flex justify-between">
-                <dt className="text-gray-500">Status</dt>
-                <dd>
-                  <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${badgeClass}`}>
-                    {status}
+          <div className="grid gap-6 lg:grid-cols-2">
+
+            {/* Student Information */}
+            <div className="rounded-lg bg-white p-6 shadow-sm">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500">
+                Student Information
+              </h2>
+              <dl>
+                <DetailRow label="Full Name" value={fullName} />
+                <DetailRow label="Student ID" value={studentId} copyable />
+                <DetailRow label="Email" value={email} />
+                <DetailRow label="Class" value={className} />
+                <DetailRow label="Academic Session" value={academicSession} />
+                {feeType !== "—" && <DetailRow label="Fee Type" value={feeType} />}
+              </dl>
+            </div>
+
+            {/* Payment Details */}
+            <div className="rounded-lg bg-white p-6 shadow-sm">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500">
+                Payment Details
+              </h2>
+              <dl>
+                <DetailRow label="Amount (NGN)" value={amountNgn} />
+                <DetailRow label="Amount (Crypto)" value={amountUsdc} />
+                <DetailRow label="Payment ID" value={paymentId} mono copyable />
+                <DetailRow label="Link Code" value={linkCode} mono copyable />
+                <DetailRow label="Record ID" value={mongoId} mono copyable />
+              </dl>
+            </div>
+
+            {/* Transaction Timeline */}
+            <div className="rounded-lg bg-white p-6 shadow-sm lg:col-span-2">
+              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-500">
+                Transaction Timeline
+              </h2>
+              <ol className="relative ml-3 space-y-6 border-l border-gray-200">
+
+                {/* Initiated */}
+                <li className="ml-5">
+                  <span className="absolute -left-2 flex h-4 w-4 items-center justify-center rounded-full bg-blue-100 ring-4 ring-white">
+                    <span className="h-2 w-2 rounded-full bg-blue-500" />
                   </span>
-                </dd>
+                  <p className="text-sm font-medium text-gray-900">Payment initiated</p>
+                  <p className="text-xs text-gray-500">{createdAt}</p>
+                  {transaction?.TransactionID && (
+                    <p className="mt-0.5 flex items-center gap-1 font-mono text-xs text-gray-400">
+                      {transaction.TransactionID}
+                      <CopyButton value={transaction.TransactionID} />
+                    </p>
+                  )}
+                </li>
+
+                {/* Updated (only if different from created) */}
+                {transaction?.updated_at && transaction.updated_at !== transaction.created_at && (
+                  <li className="ml-5">
+                    <span className="absolute -left-2 flex h-4 w-4 items-center justify-center rounded-full bg-yellow-100 ring-4 ring-white">
+                      <span className="h-2 w-2 rounded-full bg-yellow-500" />
+                    </span>
+                    <p className="text-sm font-medium text-gray-900">Last updated</p>
+                    <p className="text-xs text-gray-500">{updatedAt}</p>
+                  </li>
+                )}
+
+                {/* Confirmed */}
+                {transaction?.confirmedAt && (
+                  <li className="ml-5">
+                    <span className="absolute -left-2 flex h-4 w-4 items-center justify-center rounded-full bg-green-100 ring-4 ring-white">
+                      <span className="h-2 w-2 rounded-full bg-green-500" />
+                    </span>
+                    <p className="text-sm font-medium text-gray-900">Payment confirmed</p>
+                    <p className="text-xs text-gray-500">{confirmedAt}</p>
+                  </li>
+                )}
+
+                {/* Still pending */}
+                {status === "pending" && !transaction?.confirmedAt && (
+                  <li className="ml-5">
+                    <span className="absolute -left-2 flex h-4 w-4 items-center justify-center rounded-full bg-yellow-100 ring-4 ring-white">
+                      <span className="h-2 w-2 rounded-full bg-yellow-400" />
+                    </span>
+                    <p className="text-sm font-medium text-yellow-700">Awaiting confirmation</p>
+                    <p className="text-xs text-gray-400">No confirmation recorded yet</p>
+                  </li>
+                )}
+              </ol>
+            </div>
+
+            {/* On-chain info */}
+            {sig && (
+              <div className="rounded-lg bg-white p-6 shadow-sm lg:col-span-2">
+                <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500">
+                  On-Chain Information
+                </h2>
+                <dl>
+                  <DetailRow label="Transaction Signature" value={sig} mono copyable />
+                </dl>
+                {receiptUrl && (
+                  <a
+                    href={receiptUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-4 inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-700"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    View Receipt PDF
+                  </a>
+                )}
               </div>
-              <div className="flex justify-between">
-                <dt className="text-gray-500">Date</dt>
-                <dd className="font-medium text-gray-900">{formattedDate}</dd>
-              </div>
-            </dl>
+            )}
+
           </div>
         </div>
       )}

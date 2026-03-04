@@ -36,12 +36,12 @@ export default function ClassTransactionsPage() {
     () =>
       (transactions ?? []).map((t, index) => {
         const amountValue =
-          typeof t.amount === 'number' ? t.amount : Number(t.amount ?? 0);
+          typeof t.amountNgn === 'number' ? t.amountNgn : Number(t.amountNgn ?? 0);
         const amountFormatted = isNaN(amountValue)
-          ? `${t.amount ?? ''}`
+          ? `${t.amountNgn ?? ''}`
           : `₦${amountValue.toLocaleString()}`;
 
-        const createdDate = t.date || t.createdAt;
+        const createdDate = t.created_at || t.date || t.updated_at;
         const formattedDate = createdDate
           ? new Date(createdDate).toLocaleDateString(undefined, {
               year: 'numeric',
@@ -51,14 +51,16 @@ export default function ClassTransactionsPage() {
           : '';
 
         return {
-          id: t.id ?? index,
-          studentName: (t.studentName ||
+          // Prefer MongoDB _id so the detail-page route resolves correctly
+          id: (t._id ?? t.id ?? index) as string | number,
+          fullName: (t.metadata?.fullName ||
+            t.fullName ||
             t.student_name ||
             'Unknown Student') as string,
-          studentId: (t.studentId || t.student_id || '—') as string,
+          studentId: (t.metadata?.studentId || t.studentId || t.student_id || '—') as string,
           feeType: (t.feeType || t.fee_type || '—') as string,
-          class: (t.className || t.class || className) as string,
-          amount: amountFormatted,
+          class: (t.metadata?.className || t.className || t.class || className) as string,
+          amountNgn: amountFormatted,
           date: formattedDate,
           status: (t.status || 'Pending') as string,
         };
@@ -71,7 +73,7 @@ export default function ClassTransactionsPage() {
     () =>
       normalizedTransactions.filter((transaction) => {
         const matchesSearch =
-          transaction.studentName
+          transaction.fullName
             .toLowerCase()
             .includes(searchQuery.toLowerCase()) ||
           transaction.studentId
@@ -100,10 +102,10 @@ export default function ClassTransactionsPage() {
     ];
     const csvData = filteredTransactions.map((t) => [
       t.studentId,
-      t.studentName,
+      t.fullName,
       t.feeType,
       t.class,
-      t.amount,
+      t.amountNgn,
       t.date,
       t.status,
     ]);
