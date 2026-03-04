@@ -4,18 +4,13 @@ import AdminDashboardLayout from '@/app/(admin)/_components/AdminDashboardLayout
 import PageHeader from '@/app/(admin)/_components/PageHeader';
 import StatCard from '@/app/(admin)/_components/StatCard';
 import TransactionsTable from '@/app/(admin)/_components/TransactionsTable';
+import { useAdminInfo } from '@/hooks/useAdminInfo';
 import { Users, DollarSign, UserCheck } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function AdminDashboard() {
   const router = useRouter();
-  
-  // Mock data - replace with actual API calls
-  const stats = {
-    totalStudents: 2430,
-    netAmount: 1250000,
-    liveCount: 870,
-  };
+  const { totalCount, totalAmount, statusCounts, isLoading } = useAdminInfo();
 
   const recentTransactions = [
     {
@@ -47,28 +42,28 @@ export default function AdminDashboard() {
       {/* Stats Grid */}
       <div className="mb-6 grid gap-4 sm:gap-6 md:grid-cols-3 lg:gap-6">
         <StatCard
-          title="Total student enrolled"
-          value={stats.totalStudents.toLocaleString()}
+          title="Total payments"
+          value={isLoading ? '—' : totalCount.toLocaleString()}
           icon={<Users className="h-6 w-6" />}
         />
         <StatCard
           title="Net amount"
-          value={`₦${stats.netAmount.toLocaleString()}`}
+          value={isLoading ? '—' : `₦${totalAmount.toLocaleString()}`}
           icon={<DollarSign className="h-6 w-6" />}
         />
         <StatCard
-          title="Live counting"
-          value={stats.liveCount.toLocaleString()}
+          title="Confirmed payments"
+          value={isLoading ? '—' : statusCounts.confirmed.toLocaleString()}
           icon={<UserCheck className="h-6 w-6" />}
         />
       </div>
 
       {/* Recent Transactions */}
-      <TransactionsTable 
+      {/* <TransactionsTable 
         transactions={recentTransactions}
         showSeeAll={true}
         onSeeAll={() => router.push('/admin/transactions')}
-      />
+      /> */}
     </AdminDashboardLayout>
   );
 }
