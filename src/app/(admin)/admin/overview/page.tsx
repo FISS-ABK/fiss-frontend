@@ -20,23 +20,23 @@ export default function AdminDashboard() {
   const recentTransactions = [
     {
       id: 1,
-      studentName: 'Zedious Zutonendu',
+      fullName: 'Zedious Zutonendu',
       studentId: 'STU-2024-001',
       feeType: 'Tuition Fee',
       class: 'JSS 1',
-      amount: '₦120,000.00',
+      amountNgn: '₦120,000.00',
       date: 'June 12, 2025',
-      status: 'Approved' as const,
+      status: 'confirmed',
     },
     {
       id: 2,
-      studentName: 'Zedious Zutonendu',
+      fullName: 'Zedious Zutonendu',
       studentId: 'STU-2024-002',
       feeType: 'School Bus',
       class: 'JSS 1',
-      amount: '₦120,000.00',
+      amountNgn: '₦120,000.00',
       date: 'June 12, 2025',
-      status: 'Approved' as const,
+      status: 'confirmed',
     },
   ];
 
