@@ -49,7 +49,7 @@ export default function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProp
       isCollapsed ? 'w-20' : 'w-64'
     }`}>
       {/* Logo */}
-      <div className="flex h-20 items-center justify-between px-6">
+      <div className="flex h-20 items-center justify-between px-6 mt-20">
         {!isCollapsed && (
           <Image
             src="/FOURSQUARE PICTURES/fisshead.png"

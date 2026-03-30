@@ -12,6 +12,10 @@ export default function AdminDashboard() {
   const router = useRouter();
   const { totalCount, totalAmount, statusCounts, isLoading } = useAdminInfo();
 
+  const totalCountValue = totalCount ?? 0;
+  const totalAmountValue = totalAmount ?? 0;
+  const confirmedCount = statusCounts?.confirmed ?? 0;
+
   const recentTransactions = [
     {
       id: 1,
@@ -43,18 +47,19 @@ export default function AdminDashboard() {
       <div className="mb-6 grid gap-4 sm:gap-6 md:grid-cols-3 lg:gap-6">
         <StatCard
           title="Total payments"
-          value={isLoading ? '—' : totalCount.toLocaleString()}
+          value={isLoading ? '—' : totalCountValue.toLocaleString()}
           icon={<Users className="h-6 w-6" />}
         />
         <StatCard
           title="Net amount"
-          value={isLoading ? '—' : `₦${totalAmount.toLocaleString()}`}
+          value={isLoading ? '—' : `₦${totalAmountValue.toLocaleString()}`}
           icon={<DollarSign className="h-6 w-6" />}
         />
         <StatCard
           title="Confirmed payments"
-          value={isLoading ? '—' : statusCounts.confirmed.toLocaleString()}
+          value={isLoading ? '—' : confirmedCount.toLocaleString()}
           icon={<UserCheck className="h-6 w-6" />}
+          
         />
       </div>
 
