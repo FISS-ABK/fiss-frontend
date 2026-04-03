@@ -2,7 +2,6 @@
 import { axiosConfig } from "@/utils/axoisConfig";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { PaymentData } from "@/types/payment";
 
 export interface PaymentPayload {
   amount: number;
@@ -18,7 +17,16 @@ export interface PaymentPayload {
 
 export interface PaymentResponse {
   linkCode: string;
-  // Add other fields if needed
+  paymentUrl?: string;
+  status?: string;
+  payment_status?: string;
+  success?: boolean;
+}
+
+export interface PaymentStatusResponse {
+  success?: boolean;
+  status?: string;
+  payment_status?: string;
 }
 
 const createPaymentApi = async (payload: PaymentPayload): Promise<PaymentResponse> => {
@@ -26,19 +34,30 @@ const createPaymentApi = async (payload: PaymentPayload): Promise<PaymentRespons
   return response.data;
 };
 
-const verifyPaymentApi = async (paymentId: string): Promise<{ success: boolean }> => {
+const verifyPaymentApi = async (paymentId: string): Promise<PaymentStatusResponse> => {
   const response = await axiosConfig.get(`/api/payment-status/${paymentId}`);
   return response.data;
 }
 
 export const usePayment = () => {
+  const getErrorMessage = (error: unknown, fallback: string) => {
+    if (typeof error === "string") return error;
+    if (error && typeof error === "object") {
+      const message = (error as { message?: string }).message;
+      const responseMessage = (error as { response?: { data?: { message?: string } } })
+        .response?.data?.message;
+      return responseMessage || message || fallback;
+    }
+    return fallback;
+  };
+
   const createPaymentMutation = useMutation({
     mutationFn: createPaymentApi,
     onSuccess: () => {
       toast.success("Payment initiated successfully!");
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || "Failed to initiate payment");
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, "Failed to initiate payment"));
     }
   });
 
@@ -47,8 +66,8 @@ export const usePayment = () => {
     onSuccess: () => {
       toast.success("Payment Status Gotten!");
     }, 
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || "Failed to verify payment");
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, "Failed to verify payment"));
     }
 });
 

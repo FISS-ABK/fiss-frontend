@@ -67,6 +67,16 @@ const deleteFeeApi = async (id: string | number) => {
 
 export const useFees = () => {
   const queryClient = useQueryClient();
+  const getErrorMessage = (error: unknown, fallback: string) => {
+    if (typeof error === "string") return error;
+    if (error && typeof error === "object") {
+      const message = (error as { message?: string }).message;
+      const responseMessage = (error as { response?: { data?: { message?: string } } })
+        .response?.data?.message;
+      return responseMessage || message || fallback;
+    }
+    return fallback;
+  };
 
   const {
     data: fees = [],
@@ -89,8 +99,8 @@ export const useFees = () => {
       queryClient.invalidateQueries({ queryKey: ['fees'] });
       toast.success("Fee structure created successfully!");
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || "Failed to create fee structure");
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, "Failed to create fee structure"));
     }
   });
 
@@ -100,8 +110,8 @@ export const useFees = () => {
       queryClient.invalidateQueries({ queryKey: ['fees'] });
       toast.success("Fee structure updated successfully!");
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || "Failed to update fee structure");
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, "Failed to update fee structure"));
     }
   });
 
@@ -111,8 +121,8 @@ export const useFees = () => {
       queryClient.invalidateQueries({ queryKey: ['fees'] });
       toast.success("Fee structure deleted successfully!");
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || "Failed to delete fee structure");
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, "Failed to delete fee structure"));
     }
   });
 

@@ -15,10 +15,10 @@ export default function ContactPage() {
         <div className="mx-auto grid w-full grid-cols-1 gap-10 md:grid-cols-2">
           <section>
             <div className="text-center md:text-left">
-              <p className="text-xs text-gray-500">Let's Talk</p>
+              <p className="text-xs text-gray-500">Let&apos;s Talk</p>
               <h2 className="mt-2 text-3xl font-bold text-[#09283b]">Get In Touch With US</h2>
               <p className="mt-4 text-sm text-[#12303f] max-w-xl">
-                We're here to answer your questions, guide you through admissions, and support your child's
+                We&apos;re here to answer your questions, guide you through admissions, and support your child&apos;s
                 educational journey.
               </p>
             </div>

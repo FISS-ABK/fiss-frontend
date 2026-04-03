@@ -3,14 +3,14 @@
 import { Briefcase } from 'lucide-react';
 import { CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
-import { useVacancies } from '@/hooks/useVacancies';
+import { useVacancies, VacancyResponse } from '@/hooks/useVacancies';
 
 export default function JoinTeamSection() {
   const { vacancies, isLoading } = useVacancies();
 
   // Filter only active vacancies - ensure vacancies is always an array
   const activeVacancies = Array.isArray(vacancies)
-    ? vacancies.filter((v: any) => v.isActive !== false)
+    ? vacancies.filter((v: VacancyResponse) => v.isActive !== false)
     : [];
 
   if (isLoading) {
@@ -59,7 +59,7 @@ export default function JoinTeamSection() {
           <>
             {/* Vacancies Grid */}
             <div className="grid gap-8 md:grid-cols-2 lg:gap-12">
-              {activeVacancies.map((vacancy: any) => (
+              {activeVacancies.map((vacancy: VacancyResponse) => (
                 <div
                   key={vacancy.id}
                   className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md md:p-8"
@@ -93,7 +93,7 @@ export default function JoinTeamSection() {
                   <div className="mb-8">
                     <h4 className="mb-4 text-lg font-bold text-[#09283b]">Requirements</h4>
                     <ul className="space-y-3">
-                      {vacancy.requirements?.map((req: any, index: number) => (
+                      {vacancy.requirements?.map((req, index: number) => (
                         <li key={index} className="flex items-start gap-3">
                           <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#09283b]" />
                           <span className="text-sm text-gray-700 md:text-base">

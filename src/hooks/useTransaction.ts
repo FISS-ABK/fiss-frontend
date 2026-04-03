@@ -28,6 +28,7 @@ export interface TransactionMetadata {
   className?: string;
   academicSession?: string;
   zendfi?: ZendfiMetadata;
+  description?: string;
 }
 
 export interface ApiTransaction {
@@ -49,6 +50,7 @@ export interface ApiTransaction {
   // Top-level copies (from server)
   studentId?: string;
   TransactionID?: string;
+  fullName?: string;
 
   // Timestamps
   created_at?: string;
@@ -74,7 +76,7 @@ export interface ApiTransaction {
   academicSession?: string;
 
   __v?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface PaymentsResponse {
@@ -91,24 +93,32 @@ export interface StudentPaymentPayload {
   studentId: string;
 }
 
-const extractTransactionsArray = (data: any): ApiTransaction[] => {
+const extractTransactionsArray = (data: unknown): ApiTransaction[] => {
   if (!data) return [];
+
+  if (typeof data !== "object") return [];
+  const payload = data as Record<string, unknown>;
 
   // Direct array
   if (Array.isArray(data)) return data;
 
   // Common wrapped shapes
-  if (Array.isArray(data.data)) return data.data;
-  if (Array.isArray(data.payments)) return data.payments;
-  if (Array.isArray(data.transactions)) return data.transactions;
+  if (Array.isArray(payload.data)) return payload.data as ApiTransaction[];
+  if (Array.isArray(payload.payments)) return payload.payments as ApiTransaction[];
+  if (Array.isArray(payload.transactions)) return payload.transactions as ApiTransaction[];
 
   return [];
 };
 
-const extractPaymentsResponse = (data: any): PaymentsResponse => {
+const extractPaymentsResponse = (data: unknown): PaymentsResponse => {
   const payments = extractTransactionsArray(data);
+  const payload = typeof data === "object" && data !== null ? (data as Record<string, unknown>) : {};
   const totalAmount =
-    data?.totalAmount ?? data?.total_amount ?? data?.grandTotal ?? data?.grand_total ?? 0;
+    payload.totalAmount ??
+    payload.total_amount ??
+    payload.grandTotal ??
+    payload.grand_total ??
+    0;
   return { payments, totalAmount: Number(totalAmount) || 0 };
 };
 
@@ -209,11 +219,11 @@ export const useClassTransactions = (
 export const useStudentReceipts = () => {
   const studentTransactionsMutation = useMutation({
     mutationFn: fetchStudentTransactions,
-    onError: (error: any) => {
-      toast.error(
-        error?.response?.data?.message ||
-          "Failed to fetch transactions for this student"
-      );
+    onError: (error: unknown) => {
+      const message = axios.isAxiosError(error)
+        ? (error.response?.data as { message?: string } | undefined)?.message
+        : undefined;
+      toast.error(message || "Failed to fetch transactions for this student");
     },
   });
 

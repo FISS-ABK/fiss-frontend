@@ -214,7 +214,7 @@ export default function AdmissionsAccordion() {
               Quality Education at Affordable Rates
             </h3>
             <p className="font-suisse text-base leading-relaxed text-gray-700">
-              At Foursquare International Secondary School, we believe that world-class education should be accessible. We have structured our fees to be highly competitive and affordable, ensuring that you get excellent value for your child's academic and moral development without compromising on quality.
+              At Foursquare International Secondary School, we believe that world-class education should be accessible. We have structured our fees to be highly competitive and affordable, ensuring that you get excellent value for your child&apos;s academic and moral development without compromising on quality.
             </p>
           </div>
 

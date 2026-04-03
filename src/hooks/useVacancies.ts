@@ -66,6 +66,16 @@ const deleteVacancyApi = async (id: string | number) => {
 
 export const useVacancies = () => {
   const queryClient = useQueryClient();
+  const getErrorMessage = (error: unknown, fallback: string) => {
+    if (typeof error === "string") return error;
+    if (error && typeof error === "object") {
+      const message = (error as { message?: string }).message;
+      const responseMessage = (error as { response?: { data?: { message?: string } } })
+        .response?.data?.message;
+      return responseMessage || message || fallback;
+    }
+    return fallback;
+  };
 
   const {
     data: vacancies = [],
@@ -88,8 +98,8 @@ export const useVacancies = () => {
       queryClient.invalidateQueries({ queryKey: ['vacancies'] });
       toast.success("Vacancy created successfully!");
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || "Failed to create vacancy");
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, "Failed to create vacancy"));
     }
   });
 
@@ -99,8 +109,8 @@ export const useVacancies = () => {
       queryClient.invalidateQueries({ queryKey: ['vacancies'] });
       toast.success("Vacancy updated successfully!");
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || "Failed to update vacancy");
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, "Failed to update vacancy"));
     }
   });
 
@@ -110,8 +120,8 @@ export const useVacancies = () => {
       queryClient.invalidateQueries({ queryKey: ['vacancies'] });
       toast.success("Vacancy deleted successfully!");
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || "Failed to delete vacancy");
+    onError: (error: unknown) => {
+      toast.error(getErrorMessage(error, "Failed to delete vacancy"));
     }
   });
 

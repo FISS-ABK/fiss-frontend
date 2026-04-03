@@ -22,6 +22,17 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
   const [verifyStatus, setVerifyStatus] = useState<string | null>(null);
   const [verifyMessage, setVerifyMessage] = useState<string | null>(null);
   const router = useRouter();
+  const hasCreateError = Boolean(localError || createError);
+  const hasVerifyError = Boolean(verifyError);
+
+  const getErrorMessage = (error: unknown, fallback: string) => {
+    if (typeof error === "string") return error;
+    if (error && typeof error === "object") {
+      const message = (error as { message?: string }).message;
+      return message || fallback;
+    }
+    return fallback;
+  };
 
   const handlePayment = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -40,16 +51,16 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
       });
 
       // backend may return hosted_page_url; be tolerant of types
-      const hostedUrl = (response as any)?.paymentUrl as string | undefined;
-      const returnedPaymentId = (response as any)?.linkCode;
+      const hostedUrl = response.paymentUrl;
+      const returnedPaymentId = response.linkCode;
       if (hostedUrl) {
         window.open(hostedUrl, "_blank");
         setPaymentId(String(returnedPaymentId ?? ""));
       } else {
         setLocalError("No payment URL returned. Please try again later.");
       }
-    } catch (err: any) {
-      setLocalError(err?.message || "Failed to initiate payment");
+    } catch (err: unknown) {
+      setLocalError(getErrorMessage(err, "Failed to initiate payment"));
     }
   };
 
@@ -80,9 +91,9 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
             </div>
           )}
 
-          {(localError || createError) && (
+          {hasCreateError && (
             <div className="rounded-md bg-red-50 p-4 text-red-700 text-sm mb-4">
-              {localError || (createError as any)?.message || "An error occurred"}
+              {localError || getErrorMessage(createError, "An error occurred")}
             </div>
           )}
 
@@ -121,7 +132,7 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
                   try {
                     const res = await verifyPaymentAsync(paymentId);
                     // Accept multiple possible response shapes. Prefer explicit `status`.
-                    const statusRaw = (res as any)?.status ?? (res as any)?.payment_status ?? null;
+                    const statusRaw = res.status ?? res.payment_status ?? null;
                     const status = typeof statusRaw === "string" ? statusRaw.toLowerCase() : null;
 
                     const setStatusInfo = (s: string, msg: string) => {
@@ -146,7 +157,7 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
                       }
                     } else {
                       // fallback to boolean success field
-                      const ok = (res as any)?.success;
+                      const ok = res.success;
                       if (ok === true) {
                         setStatusInfo("completed", "payment completed successfully");
                         setIsSuccess(true);
@@ -157,8 +168,8 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
                         setStatusInfo("pending", "payment is pending — we are awaiting confirmation. If you completed payment, wait a few moments then click Verify Payment again.");
                       }
                     }
-                  } catch (err: any) {
-                    setLocalError(err?.message || "Failed to verify payment");
+                  } catch (err: unknown) {
+                    setLocalError(getErrorMessage(err, "Failed to verify payment"));
                   }
                 }}
                 disabled={isVerifying}
@@ -174,7 +185,11 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
                 Go to Receipts
               </button>
             </div>
-            {verifyError && <p className="mt-2 text-sm text-red-600">{(verifyError as any)?.message || "Verification error"}</p>}
+            {hasVerifyError && (
+              <p className="mt-2 text-sm text-red-600">
+                {getErrorMessage(verifyError, "Verification error")}
+              </p>
+            )}
             {verifyStatus && verifyMessage && (
               <div className="mt-3 rounded-md p-3" aria-live="polite">
                 <p className="text-xs text-gray-600">status: <span className="font-mono">{verifyStatus}</span></p>

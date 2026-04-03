@@ -5,7 +5,7 @@ import Navbar from "@/components/navbar";
 import FloatingNavWrapper from "@/components/floating-nav-wrapper";
 import DotSeparator from "@/components/dot-separator";
 import { FormEvent, useState } from "react";
-import { useStudentReceipts } from "@/hooks/useTransaction";
+import { useStudentReceipts, ApiTransaction } from "@/hooks/useTransaction";
 
 export default function ReceiptsPage() {
   const [studentId, setStudentId] = useState("");
@@ -15,6 +15,7 @@ export default function ReceiptsPage() {
     isFetchingStudentTransactions,
     studentTransactionsError,
   } = useStudentReceipts();
+  const hasTransactionsError = Boolean(studentTransactionsError);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -65,7 +66,7 @@ export default function ReceiptsPage() {
             </div>
           </form>
 
-          {studentTransactionsError && (
+          {hasTransactionsError && (
             <div className="mt-4 text-sm text-red-600">
               Failed to load receipts. Please try again.
             </div>
@@ -100,7 +101,7 @@ export default function ReceiptsPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y">
-                      {studentTransactions.map((tx: any, index: number) => {
+                      {studentTransactions.map((tx: ApiTransaction, index: number) => {
                         const amountValue =
                           typeof tx.amount === "number"
                             ? tx.amount

@@ -17,7 +17,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Vacancy } from '@/types/vacancies';
-import { useVacancies, VacancyPayload } from '@/hooks/useVacancies';
+import { useVacancies, VacancyPayload, VacancyResponse } from '@/hooks/useVacancies';
 
 export default function VacanciesPage() {
   const { 
@@ -98,17 +98,17 @@ export default function VacanciesPage() {
 
   // Ensure vacancies is always an array before filtering
   const safeVacancies = Array.isArray(vacancies) ? vacancies : [];
-  const activeVacancies = safeVacancies.filter((v: any) => v.isActive !== false);
-  const inactiveVacancies = safeVacancies.filter((v: any) => v.isActive === false);
+  const activeVacancies = safeVacancies.filter((v: VacancyResponse) => v.isActive !== false);
+  const inactiveVacancies = safeVacancies.filter((v: VacancyResponse) => v.isActive === false);
 
   // Helper to convert VacancyResponse to Vacancy for display
-  const convertToVacancy = (v: any): Vacancy => ({
-    _id: v._id,
+  const convertToVacancy = (v: VacancyResponse): Vacancy => ({
+    _id: v.id,
     title: v.title,
     icon: v.icon,
     jobDescription: v.job_description || v.jobDescription || '',
     requirements: Array.isArray(v.requirements) 
-      ? v.requirements.map((r: any) => typeof r === 'string' ? { text: r } : r)
+      ? v.requirements.map((r) => typeof r === 'string' ? { text: r } : r)
       : [],
     department: v.department,
     location: v.location,
@@ -152,7 +152,7 @@ export default function VacanciesPage() {
             <div>
               <h2 className="mb-4 text-lg font-semibold text-gray-900">Active Positions</h2>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
-                {activeVacancies.map((v: any) => {
+                {activeVacancies.map((v: VacancyResponse) => {
                   const vacancy = convertToVacancy(v);
                   return (
                     <VacancyCard
@@ -172,7 +172,7 @@ export default function VacanciesPage() {
             <div>
               <h2 className="mb-4 text-lg font-semibold text-gray-500">Inactive Positions</h2>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
-                {inactiveVacancies.map((v: any) => {
+                {inactiveVacancies.map((v: VacancyResponse) => {
                   const vacancy = convertToVacancy(v);
                   return (
                     <VacancyCard

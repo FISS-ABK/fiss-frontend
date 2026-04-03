@@ -128,9 +128,9 @@ export default function FeesManagementPage() {
       {/* Fees Grid */}
       {!isLoading && safeFees.length > 0 ? (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {safeFees.map((fee: any) => (
+          {safeFees.map((fee: FeeStructure) => (
             <FeeCard
-              key={fee.id}
+              key={fee._id ?? fee.feeType}
               fee={fee}
               onEdit={handleEdit}
               onDelete={handleDeleteClick}
