@@ -10,6 +10,7 @@ const quickLinks = [
   { name: "Admissions", href: "/admissions" },
   { name: "Academics", href: "/academics" },
   { name: "Gallery", href: "/gallery" },
+  { name: "Newsletter", href: "/newsletter" },
   { name: "Contact Us", href: "/contact" },
   { name: "Admin", href: "/admin/login" },
 ];

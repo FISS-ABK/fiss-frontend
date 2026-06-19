@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         hostname: "www.figma.com",
         pathname: "/api/**",
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
+      },
     ],
   },
   // Optimize production builds

@@ -9,7 +9,9 @@ import {
   DollarSign, 
   Briefcase,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Image as ImageIcon,
+  Newspaper
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -33,6 +35,16 @@ const navItems = [
     name: 'Vacancies',
     href: '/admin/vacancies',
     icon: Briefcase,
+  },
+  {
+    name: 'Gallery',
+    href: '/admin/gallery',
+    icon: ImageIcon,
+  },
+  {
+    name: 'Newsletter',
+    href: '/admin/newsletter',
+    icon: Newspaper,
   },
 ];
 

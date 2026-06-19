@@ -48,11 +48,12 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
         term: fee.term,
         academicSession: fee.academicSession,
         className: fee.className,
+        purpose: fee.term,
       });
 
-      // backend may return hosted_page_url; be tolerant of types
-      const hostedUrl = response.paymentUrl;
-      const returnedPaymentId = response.linkCode;
+      // backend may return hosted_page_url/authorization_url; be tolerant of types
+      const hostedUrl = response.authorization_url || response.paymentUrl || response.data?.authorization_url;
+      const returnedPaymentId = response.reference || response.linkCode || response.data?.reference;
       if (hostedUrl) {
         window.open(hostedUrl, "_blank");
         setPaymentId(String(returnedPaymentId ?? ""));
@@ -122,7 +123,7 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
         {/* Post-payment actions */}
         {paymentId && (
           <div className="mt-6">
-            <p className="text-sm text-gray-700">Payment initiated. Payment Code: <span className="font-mono">{paymentId}</span></p>
+            <p className="text-sm text-gray-700">Payment initiated. Payment Reference: <span className="font-mono">{paymentId}</span></p>
             <div className="mt-3 flex gap-3">
               <button
                 onClick={async () => {
@@ -132,7 +133,7 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
                   try {
                     const res = await verifyPaymentAsync(paymentId);
                     // Accept multiple possible response shapes. Prefer explicit `status`.
-                    const statusRaw = res.status ?? res.payment_status ?? null;
+                    const statusRaw = res.status ?? res.payment_status ?? res.data?.status ?? null;
                     const status = typeof statusRaw === "string" ? statusRaw.toLowerCase() : null;
 
                     const setStatusInfo = (s: string, msg: string) => {
@@ -142,7 +143,7 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
 
                     if (status) {
                       // allowed statuses: pending, expired, completed, failed
-                      if (status === "confirmed") {
+                      if (status === "confirmed" || status === "success" || status === "successful" || status === "completed") {
                         setStatusInfo("completed", "payment completed successfully");
                         setIsSuccess(true);
                         if (onComplete) onComplete();
@@ -157,7 +158,7 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
                       }
                     } else {
                       // fallback to boolean success field
-                      const ok = res.success;
+                      const ok = res.success ?? res.data?.success;
                       if (ok === true) {
                         setStatusInfo("completed", "payment completed successfully");
                         setIsSuccess(true);

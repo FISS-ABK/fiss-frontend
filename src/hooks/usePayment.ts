@@ -12,25 +12,38 @@ export interface PaymentPayload {
   feeType: string;
   term: string;
   className: string;
-  academicSession: string
+  academicSession: string;
+  purpose?: string;
 }
 
 export interface PaymentResponse {
-  linkCode: string;
+  linkCode?: string;
   paymentUrl?: string;
+  reference?: string;
+  authorization_url?: string;
   status?: string;
   payment_status?: string;
   success?: boolean;
+  data?: {
+    authorization_url?: string;
+    reference?: string;
+    status?: string;
+    success?: boolean;
+  };
 }
 
 export interface PaymentStatusResponse {
   success?: boolean;
   status?: string;
   payment_status?: string;
+  data?: {
+    status?: string;
+    success?: boolean;
+  };
 }
 
 const createPaymentApi = async (payload: PaymentPayload): Promise<PaymentResponse> => {
-  const response = await axiosConfig.post("/api/create-checkout", payload);
+  const response = await axiosConfig.post("/make-payment", payload);
   return response.data;
 };
 

@@ -8,6 +8,7 @@ import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
 import FloatingNavWrapper from "@/components/floating-nav-wrapper";
 import DotSeparator from "@/components/dot-separator";
+import { useGallery } from "@/hooks/useGallery";
 
 
 
@@ -24,14 +25,14 @@ const row2 = [
   { src: "/FOURSQUARE PICTURES/summer/BARBING.JPG", alt: "Summer Lesson" },
   { src: "/38.png", alt: "School View" },
   { src: "/FOURSQUARE PICTURES/OTHERS/1.jpg", alt: "Classroom" },
-  { src: "/FOURSQUARE PICTURES/val/DSC_0224.JPG", alt: "Assembly" }, // Added for variety
+  { src: "/FOURSQUARE PICTURES/val/DSC_0224.jpg", alt: "Assembly" }, // Added for variety
   { src: "/39.png", alt: "Summer Lesson " },
   { src: "/40.png", alt: "School View " },
 ];
 
 const row3 = [
   { src: "/FOURSQUARE PICTURES/val/DSC_0116.JPG", alt: "Students" }, // Added for variety
-  { src: "/FOURSQUARE PICTURES/val/DSC_0122.JPG", alt: "Sports" },   // Added for variety
+  { src: "/FOURSQUARE PICTURES/val/DSC_0122.jpg", alt: "Sports" },   // Added for variety
   { src: "/FOURSQUARE PICTURES/OTHERS/15.jpg", alt: "Environment" }, // Added for variety
   { src: "/FOURSQUARE PICTURES/OTHERS/13.jpg", alt: "Building" },    // Added for variety
   { src: "/FOURSQUARE PICTURES/val/DSC_0151.JPG", alt: "Students" },
@@ -40,6 +41,7 @@ const row3 = [
 
 export default function GalleryPage() {
   const containerRef = useRef(null);
+  const { galleryImages, isLoading } = useGallery();
   
   // Optional: Parallax effect on vertical scroll
   const { scrollYProgress } = useScroll({
@@ -48,6 +50,29 @@ export default function GalleryPage() {
   });
 
   const y = useTransform(scrollYProgress, [0, 1], [0, -50]);
+
+  // Distribute gallery images across three rows
+  const displayRow1 = (galleryImages || []).filter((_, idx) => idx % 3 === 0).map(img => ({ src: img.imageurl, alt: img.description || "School Gallery" }));
+  const displayRow2 = (galleryImages || []).filter((_, idx) => idx % 3 === 1).map(img => ({ src: img.imageurl, alt: img.description || "School Gallery" }));
+  const displayRow3 = (galleryImages || []).filter((_, idx) => idx % 3 === 2).map(img => ({ src: img.imageurl, alt: img.description || "School Gallery" }));
+
+  // Helper to ensure each row has enough elements for smooth loop scrolling
+  const getRowItems = (dynamicList: {src: string, alt: string}[], staticList: {src: string, alt: string}[]) => {
+    if (dynamicList.length === 0) return staticList;
+    const combined = [...dynamicList];
+    let staticIdx = 0;
+    while (combined.length < 6 && staticIdx < staticList.length) {
+      const staticItem = staticList[staticIdx++];
+      if (!combined.some(item => item.src === staticItem.src)) {
+        combined.push(staticItem);
+      }
+    }
+    return combined;
+  };
+
+  const finalRow1 = getRowItems(displayRow1, row1);
+  const finalRow2 = getRowItems(displayRow2, row2);
+  const finalRow3 = getRowItems(displayRow3, row3);
 
   return (
     <div className="flex min-h-screen flex-col bg-[#faf9f6] overflow-x-hidden">
@@ -85,7 +110,7 @@ export default function GalleryPage() {
             animate={{ x: ["0%", "-50%"] }}
             transition={{ duration: 40, ease: "linear", repeat: Infinity }}
           >
-            {[...row1, ...row1, ...row1].map((item, idx) => ( // Tripled for safety length
+            {[...finalRow1, ...finalRow1, ...finalRow1].map((item, idx) => ( // Tripled for safety length
               <div key={idx} className="relative h-[250px] w-[350px] flex-shrink-0 border-r-4 border-white">
                 <Image 
                   src={item.src} 
@@ -93,6 +118,7 @@ export default function GalleryPage() {
                   fill 
                   className="object-cover grayscale transition-all duration-500 hover:grayscale-0 hover:scale-105"
                   sizes="350px"
+                  unoptimized={item.src.includes("cloudinary")}
                 />
               </div>
             ))}
@@ -107,7 +133,7 @@ export default function GalleryPage() {
             animate={{ x: "0%" }}
             transition={{ duration: 35, ease: "linear", repeat: Infinity }}
           >
-            {[...row2, ...row2, ...row2].map((item, idx) => (
+            {[...finalRow2, ...finalRow2, ...finalRow2].map((item, idx) => (
               <div key={idx} className="relative h-[320px] w-[450px] flex-shrink-0 border-r-4 border-white">
                 <Image 
                   src={item.src} 
@@ -115,6 +141,7 @@ export default function GalleryPage() {
                   fill 
                   className="object-cover" // Kept color for the middle row to make it pop
                   sizes="450px"
+                  unoptimized={item.src.includes("cloudinary")}
                 />
                 {/* Optional Caption Overlay on Hover */}
                 <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center text-white font-medium text-xl">
@@ -132,7 +159,7 @@ export default function GalleryPage() {
             animate={{ x: ["0%", "-50%"] }}
             transition={{ duration: 45, ease: "linear", repeat: Infinity }}
           >
-            {[...row3, ...row3, ...row3].map((item, idx) => (
+            {[...finalRow3, ...finalRow3, ...finalRow3].map((item, idx) => (
               <div key={idx} className="relative h-[250px] w-[350px] flex-shrink-0 border-r-4 border-white">
                 <Image 
                   src={item.src} 
@@ -140,6 +167,7 @@ export default function GalleryPage() {
                   fill 
                   className="object-cover grayscale transition-all duration-500 hover:grayscale-0 hover:scale-105"
                   sizes="350px"
+                  unoptimized={item.src.includes("cloudinary")}
                 />
               </div>
             ))}
@@ -150,9 +178,7 @@ export default function GalleryPage() {
 
       <DotSeparator />
       
-      <div className="mt-auto px-6 pb-12">
         <Footer />
-      </div>
     </div>
   );
 }
