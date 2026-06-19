@@ -45,7 +45,7 @@ export default function WhyChooseSection() {
         <div className="mb-12 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
             <h2 className="font-poppins text-3xl font-bold leading-tight text-[#0b2c4d] md:text-4xl lg:text-[42px]">
-              Why Choose <span className="text-blue-600">FISS?</span>
+              Why Choose FISS?
             </h2>
             <p className="mt-4 font-suisse text-lg text-gray-600 leading-relaxed">
               We go beyond the classroom to raise Godly, well-rounded leaders who excel in every sphere of life.
