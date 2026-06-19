@@ -103,10 +103,6 @@ export default function WhyChooseSection() {
                 }}
                 transition={{ duration: 0.4 }}
               >
-                {/* Icon Badge */}
-                <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl ${feature.color} text-white shadow-lg`}>
-                  <feature.icon className="h-6 w-6" />
-                </div>
 
                 <h3 className="font-poppins text-xl font-bold leading-tight mb-2">
                   {feature.title}
