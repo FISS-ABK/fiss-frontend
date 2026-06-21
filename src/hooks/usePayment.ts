@@ -21,24 +21,44 @@ export interface PaymentResponse {
   paymentUrl?: string;
   reference?: string;
   authorization_url?: string;
+  authorizationUrl?: string;
   status?: string;
   payment_status?: string;
   success?: boolean;
   data?: {
     authorization_url?: string;
+    authorizationUrl?: string;
     reference?: string;
     status?: string;
     success?: boolean;
   };
 }
 
+export interface PaymentTransactionInfo {
+  receiptUrl?: string;
+  studentId?: string;
+  metadata?: {
+    studentId?: string;
+  };
+  [key: string]: unknown;
+}
+
 export interface PaymentStatusResponse {
   success?: boolean;
   status?: string;
   payment_status?: string;
+  receiptUrl?: string;
+  studentId?: string;
+  transaction?: PaymentTransactionInfo;
   data?: {
     status?: string;
     success?: boolean;
+    receiptUrl?: string;
+    transaction?: PaymentTransactionInfo;
+    studentId?: string;
+    metadata?: {
+      studentId?: string;
+    };
   };
 }
 

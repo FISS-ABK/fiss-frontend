@@ -51,11 +51,12 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
         purpose: fee.term,
       });
 
-      // backend may return hosted_page_url/authorization_url; be tolerant of types
-      const hostedUrl = response.authorization_url || response.paymentUrl || response.data?.authorization_url;
+      // backend may return hosted_page_url/authorization_url/authorizationUrl; be tolerant of types
+      const hostedUrl = response.authorizationUrl || response.authorization_url || response.paymentUrl || response.data?.authorizationUrl || response.data?.authorization_url;
       const returnedPaymentId = response.reference || response.linkCode || response.data?.reference;
       if (hostedUrl) {
-        window.open(hostedUrl, "_blank");
+        // Redirect in the same window/tab so Paystack can redirect back to our portal/receipts
+        window.location.href = hostedUrl;
         setPaymentId(String(returnedPaymentId ?? ""));
       } else {
         setLocalError("No payment URL returned. Please try again later.");

@@ -11,7 +11,7 @@ interface Transaction {
   // optional server timestamps — keep existing `date` for compatibility
   created_at?: string;
   updated_at?: string;
-  status: 'confirmed' | 'pending' | 'failed' | 'expired' | string;
+  status: 'successfull' | 'successful' | 'success' | 'confirmed' | 'pending' | 'failed' | 'expired' | string;
 }
 
 interface TransactionsTableProps {
@@ -23,6 +23,9 @@ interface TransactionsTableProps {
 }
 
 const statusStyles: Record<string, string> = {
+  successfull: 'bg-green-100 text-green-700',
+  successful: 'bg-green-100 text-green-700',
+  success: 'bg-green-100 text-green-700',
   confirmed: 'bg-green-100 text-green-700',
   pending: 'bg-yellow-100 text-yellow-700',
   failed: 'bg-red-100 text-red-700',
@@ -86,7 +89,7 @@ export default function TransactionsTable({
             <tbody className="divide-y divide-gray-100">
               {transactions.map((transaction) => {
                 const badgeClass =
-                  statusStyles[transaction.status] ?? 'bg-gray-100 text-gray-700';
+                  statusStyles[transaction.status?.toLowerCase()] ?? 'bg-gray-100 text-gray-700';
 
                 return (
                 <tr

@@ -36,9 +36,13 @@ export default function ClassTransactionsPage() {
     () =>
       (transactions ?? []).map((t, index) => {
         const amountValue =
-          typeof t.amountNgn === 'number' ? t.amountNgn : Number(t.amountNgn ?? 0);
+          typeof t.amount === 'number'
+            ? t.amount
+            : typeof t.amountNgn === 'number'
+            ? t.amountNgn
+            : Number(t.amount ?? t.amountNgn ?? 0);
         const amountFormatted = isNaN(amountValue)
-          ? `${t.amountNgn ?? ''}`
+          ? `${t.amount ?? t.amountNgn ?? ''}`
           : `₦${amountValue.toLocaleString()}`;
 
         const createdDate = t.created_at || t.date || t.updated_at;
@@ -58,7 +62,7 @@ export default function ClassTransactionsPage() {
             t.student_name ||
             'Unknown Student') as string,
           studentId: (t.metadata?.studentId || t.studentId || t.student_id || '—') as string,
-          feeType: (t.feeType || t.fee_type || '—') as string,
+          feeType: (((t.metadata as Record<string, unknown> | undefined)?.feeType as string | undefined) || t.feeType || t.fee_type || '—') as string,
           class: (t.metadata?.className || t.className || t.class || className) as string,
           amountNgn: amountFormatted,
           date: formattedDate,

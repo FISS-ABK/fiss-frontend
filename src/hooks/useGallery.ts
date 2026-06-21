@@ -4,7 +4,8 @@ import { toast } from "sonner";
 
 export interface GalleryItem {
   _id: string;
-  imageurl: string;
+  imageurl?: string;
+  imageUrl?: string;
   public_id: string;
   description: string;
   __v?: number;

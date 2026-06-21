@@ -32,7 +32,7 @@ export default function NewsletterDetailPage() {
       </FloatingNavWrapper>
 
       {/* Main Content */}
-      <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-12 pt-32">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-12">
         {/* Back Link */}
         <div className="mb-8">
           <Link

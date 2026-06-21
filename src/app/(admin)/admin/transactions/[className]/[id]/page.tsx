@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import AdminDashboardLayout from "@/app/(admin)/_components/AdminDashboardLayout";
 import PageHeader from "@/app/(admin)/_components/PageHeader";
@@ -137,14 +137,22 @@ export default function TransactionDetailsPage() {
   const className =
     meta?.className || transaction?.className || transaction?.class || decodedClassName;
   const academicSession = meta?.academicSession || transaction?.academicSession || "—";
-  const feeType = transaction?.feeType || transaction?.fee_type || "—";
+  const feeType = ((meta as Record<string, unknown> | undefined)?.feeType as string | undefined) || transaction?.feeType || transaction?.fee_type || "—";
 
   // Amounts
   const status = (transaction?.status ?? "pending").toLowerCase();
   const amountUsdc =
-    transaction?.amount != null ? `${transaction.amount} ${transaction?.token ?? "USDC"}` : "—";
+    transaction?.token ? `${transaction.amount} ${transaction.token}` : "—";
+  const amountValue = transaction?.amountNgn != null ? transaction.amountNgn : transaction?.amount;
   const amountNgn =
-    transaction?.amountNgn != null ? `₦${transaction.amountNgn.toLocaleString()}` : "—";
+    amountValue != null ? `₦${amountValue.toLocaleString()}` : "—";
+
+  // Gateway & Receipt details
+  const paymentMethod = (transaction?.paymentMethod || transaction?.channel || "—") as string;
+  const gatewayResponse = (transaction?.gatewayResponse || "—") as string;
+  const paidAt = formatDate(transaction?.paidAt as string | null | undefined);
+  const receiptStatus = (transaction?.receiptStatus || "—") as string;
+  const receiptSent = transaction?.receiptSent ? `Yes${transaction.receiptSentAt ? ` (${formatDate(transaction.receiptSentAt as string | null | undefined)})` : ""}` : "No";
 
   // IDs
   const mongoId = transaction?._id ?? `${transaction?.id ?? "—"}`;
@@ -239,10 +247,15 @@ export default function TransactionDetailsPage() {
               </h2>
               <dl>
                 <DetailRow label="Amount (NGN)" value={amountNgn} />
-                <DetailRow label="Amount (Crypto)" value={amountUsdc} />
+                {amountUsdc !== "—" && <DetailRow label="Amount (Crypto)" value={amountUsdc} />}
                 <DetailRow label="Payment ID" value={paymentId} mono copyable />
                 <DetailRow label="Link Code" value={linkCode} mono copyable />
                 <DetailRow label="Record ID" value={mongoId} mono copyable />
+                <DetailRow label="Payment Method" value={paymentMethod} />
+                <DetailRow label="Gateway Response" value={gatewayResponse} />
+                <DetailRow label="Paid At" value={paidAt} />
+                <DetailRow label="Receipt Status" value={receiptStatus} />
+                <DetailRow label="Receipt Sent" value={receiptSent} />
               </dl>
             </div>
 
@@ -260,16 +273,16 @@ export default function TransactionDetailsPage() {
                   </span>
                   <p className="text-sm font-medium text-gray-900">Payment initiated</p>
                   <p className="text-xs text-gray-500">{createdAt}</p>
-                  {transaction?.TransactionID && (
+                  {Boolean(transaction?.TransactionID) && (
                     <p className="mt-0.5 flex items-center gap-1 font-mono text-xs text-gray-400">
-                      {transaction.TransactionID}
-                      <CopyButton value={transaction.TransactionID} />
+                      {transaction?.TransactionID as string}
+                      <CopyButton value={transaction?.TransactionID as string} />
                     </p>
                   )}
                 </li>
 
                 {/* Updated (only if different from created) */}
-                {transaction?.updated_at && transaction.updated_at !== transaction.created_at && (
+                {Boolean(transaction?.updated_at && transaction.updated_at !== transaction.created_at) && (
                   <li className="ml-5">
                     <span className="absolute -left-2 flex h-4 w-4 items-center justify-center rounded-full bg-yellow-100 ring-4 ring-white">
                       <span className="h-2 w-2 rounded-full bg-yellow-500" />
@@ -279,19 +292,19 @@ export default function TransactionDetailsPage() {
                   </li>
                 )}
 
-                {/* Confirmed */}
-                {transaction?.confirmedAt && (
+                {/* Confirmed / Paid */}
+                {Boolean(transaction?.confirmedAt || transaction?.paidAt) && (
                   <li className="ml-5">
                     <span className="absolute -left-2 flex h-4 w-4 items-center justify-center rounded-full bg-green-100 ring-4 ring-white">
                       <span className="h-2 w-2 rounded-full bg-green-500" />
                     </span>
-                    <p className="text-sm font-medium text-gray-900">Payment confirmed</p>
-                    <p className="text-xs text-gray-500">{confirmedAt}</p>
+                    <p className="text-sm font-medium text-gray-900">Payment confirmed / completed</p>
+                    <p className="text-xs text-gray-500">{confirmedAt !== "—" ? confirmedAt : formatDate(transaction?.paidAt as string | null | undefined)}</p>
                   </li>
                 )}
 
                 {/* Still pending */}
-                {status === "pending" && !transaction?.confirmedAt && (
+                {status !== "successful" && status !== "successfull" && status !== "success" && status !== "confirmed" && status !== "completed" && !transaction?.confirmedAt && !transaction?.paidAt && (
                   <li className="ml-5">
                     <span className="absolute -left-2 flex h-4 w-4 items-center justify-center rounded-full bg-yellow-100 ring-4 ring-white">
                       <span className="h-2 w-2 rounded-full bg-yellow-400" />

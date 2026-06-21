@@ -115,8 +115,9 @@ const resolveStudentId = (tx: ApiTransaction) => {
   return tx.metadata?.studentId ?? tx.studentId ?? tx.student_id ?? "-";
 };
 
-const resolveFeeType = (tx: ApiTransaction) => {
+const resolveFeeType = (tx: ApiTransaction): string => {
   return (
+    ((tx.metadata as Record<string, unknown> | undefined)?.feeType as string | undefined) ??
     tx.feeType ??
     tx.fee_type ??
     tx.metadata?.zendfi?.description ??
@@ -126,7 +127,7 @@ const resolveFeeType = (tx: ApiTransaction) => {
 };
 
 const resolveClassName = (tx: ApiTransaction) => {
-  return tx.className ?? tx.class ?? tx.metadata?.className ?? "-";
+  return tx.metadata?.className ?? tx.className ?? tx.class ?? "-";
 };
 
 const resolveId = (tx: ApiTransaction, index: number) => {

@@ -61,14 +61,6 @@ export default function PublicNewsletterPage() {
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {safeBlogs.map((blog: BlogItem) => {
               const excerpt = stripHtml(blog.text);
-              const dateFormatted = blog.createdAt
-                ? new Date(blog.createdAt).toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })
-                : "—";
-
               return (
                 <article
                   key={blog._id}
@@ -98,7 +90,7 @@ export default function PublicNewsletterPage() {
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500">
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3.5 w-3.5" />
-                        {dateFormatted}
+                        {blog.createdAt}
                       </span>
                       <span className="flex items-center gap-1">
                         <User className="h-3.5 w-3.5" />

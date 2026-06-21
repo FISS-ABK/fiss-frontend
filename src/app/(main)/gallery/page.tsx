@@ -52,9 +52,16 @@ export default function GalleryPage() {
   const y = useTransform(scrollYProgress, [0, 1], [0, -50]);
 
   // Distribute gallery images across three rows
-  const displayRow1 = (galleryImages || []).filter((_, idx) => idx % 3 === 0).map(img => ({ src: img.imageurl, alt: img.description || "School Gallery" }));
-  const displayRow2 = (galleryImages || []).filter((_, idx) => idx % 3 === 1).map(img => ({ src: img.imageurl, alt: img.description || "School Gallery" }));
-  const displayRow3 = (galleryImages || []).filter((_, idx) => idx % 3 === 2).map(img => ({ src: img.imageurl, alt: img.description || "School Gallery" }));
+  const validImages = (galleryImages || [])
+    .map(img => ({
+      src: img.imageurl || img.imageUrl || "",
+      alt: img.description || "School Gallery"
+    }))
+    .filter(item => item.src);
+
+  const displayRow1 = validImages.filter((_, idx) => idx % 3 === 0);
+  const displayRow2 = validImages.filter((_, idx) => idx % 3 === 1);
+  const displayRow3 = validImages.filter((_, idx) => idx % 3 === 2);
 
   // Helper to ensure each row has enough elements for smooth loop scrolling
   const getRowItems = (dynamicList: {src: string, alt: string}[], staticList: {src: string, alt: string}[]) => {
@@ -118,7 +125,7 @@ export default function GalleryPage() {
                   fill 
                   className="object-cover grayscale transition-all duration-500 hover:grayscale-0 hover:scale-105"
                   sizes="350px"
-                  unoptimized={item.src.includes("cloudinary")}
+                  unoptimized={item.src?.includes("cloudinary")}
                 />
               </div>
             ))}
@@ -141,7 +148,7 @@ export default function GalleryPage() {
                   fill 
                   className="object-cover" // Kept color for the middle row to make it pop
                   sizes="450px"
-                  unoptimized={item.src.includes("cloudinary")}
+                  unoptimized={item.src?.includes("cloudinary")}
                 />
                 {/* Optional Caption Overlay on Hover */}
                 <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center text-white font-medium text-xl">
@@ -167,7 +174,7 @@ export default function GalleryPage() {
                   fill 
                   className="object-cover grayscale transition-all duration-500 hover:grayscale-0 hover:scale-105"
                   sizes="350px"
-                  unoptimized={item.src.includes("cloudinary")}
+                  unoptimized={item.src?.includes("cloudinary")}
                 />
               </div>
             ))}

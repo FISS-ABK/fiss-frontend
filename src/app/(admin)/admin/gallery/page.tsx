@@ -116,7 +116,7 @@ export default function AdminGalleryPage() {
               {/* Image Container */}
               <div className="relative h-48 w-full bg-gray-100">
                 <Image
-                  src={item.imageurl}
+                  src={item.imageurl || item.imageUrl || ""}
                   alt={item.description || "School Gallery"}
                   fill
                   sizes="(max-width: 768px) 100vw, 25vw"
