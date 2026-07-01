@@ -133,6 +133,18 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
                   setVerifyStatus(null);
                   try {
                     const res = await verifyPaymentAsync(paymentId);
+                    
+                    const triggerDownload = (blob: Blob) => {
+                      const url = window.URL.createObjectURL(blob);
+                      const link = document.createElement("a");
+                      link.href = url;
+                      link.setAttribute("download", `receipt-${paymentId}.pdf`);
+                      document.body.appendChild(link);
+                      link.click();
+                      link.parentNode?.removeChild(link);
+                      window.URL.revokeObjectURL(url);
+                    };
+
                     // Accept multiple possible response shapes. Prefer explicit `status`.
                     const statusRaw = res.status ?? res.payment_status ?? res.data?.status ?? null;
                     const status = typeof statusRaw === "string" ? statusRaw.toLowerCase() : null;
@@ -147,6 +159,9 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
                       if (status === "confirmed" || status === "success" || status === "successful" || status === "completed") {
                         setStatusInfo("completed", "payment completed successfully");
                         setIsSuccess(true);
+                        if (res.pdfBlob) {
+                          triggerDownload(res.pdfBlob);
+                        }
                         if (onComplete) onComplete();
                       } else if (status === "pending") {
                         setStatusInfo("pending", "payment is pending — we are awaiting confirmation. If you completed payment, wait a few moments then click Verify Payment again.");
@@ -163,6 +178,9 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
                       if (ok === true) {
                         setStatusInfo("completed", "payment completed successfully");
                         setIsSuccess(true);
+                        if (res.pdfBlob) {
+                          triggerDownload(res.pdfBlob);
+                        }
                         if (onComplete) onComplete();
                       } else if (ok === false) {
                         setStatusInfo("failed", "payment failed — please try again or contact support.");
@@ -171,7 +189,18 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
                       }
                     }
                   } catch (err: unknown) {
-                    setLocalError(getErrorMessage(err, "Failed to verify payment"));
+                    const isAxiosError = err && typeof err === "object" && "isAxiosError" in err;
+                    let httpStatus: number | undefined;
+                    if (err && typeof err === "object" && "response" in err) {
+                      const response = (err as { response?: { status?: number } }).response;
+                      httpStatus = response?.status;
+                    }
+                    if (isAxiosError && httpStatus === 404) {
+                      setVerifyStatus("pending");
+                      setVerifyMessage("payment is pending — we are awaiting confirmation. If you completed payment, wait a few moments then click Verify Payment again.");
+                    } else {
+                      setLocalError(getErrorMessage(err, "Failed to verify payment"));
+                    }
                   }
                 }}
                 disabled={isVerifying}
@@ -205,12 +234,20 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
         {isSuccess && (
           <div className="mt-6 rounded-md border border-green-100 bg-green-50 p-4">
             <h3 className="text-lg font-semibold text-green-800">Payment Successful</h3>
-            <p className="mt-2 text-sm text-green-800">Your payment was verified. You can now visit the Receipts page and use your Student ID to print the receipt.</p>
+            <p className="mt-2 text-sm text-green-800">Your payment was verified. You can download your official receipt PDF below.</p>
             <p className="mt-2 text-sm text-gray-700">Student ID: <span className="font-mono">{personalInfo.studentId}</span></p>
             <div className="mt-4 flex gap-3">
               <button
+                onClick={() => {
+                  window.open(`https://fissbackend.online/api/payment-status/${paymentId}`, "_blank");
+                }}
+                className="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors"
+              >
+                Download Receipt PDF
+              </button>
+              <button
                 onClick={() => router.push('/portal/receipts')}
-                className="rounded-md bg-[#09283b] px-4 py-2 text-sm font-medium text-white"
+                className="rounded-md bg-[#09283b] px-4 py-2 text-sm font-medium text-white hover:opacity-90"
               >
                 Open Receipts
               </button>

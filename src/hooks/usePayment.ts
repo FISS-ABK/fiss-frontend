@@ -50,6 +50,7 @@ export interface PaymentStatusResponse {
   receiptUrl?: string;
   studentId?: string;
   transaction?: PaymentTransactionInfo;
+  pdfBlob?: Blob;
   data?: {
     status?: string;
     success?: boolean;
@@ -68,9 +69,29 @@ const createPaymentApi = async (payload: PaymentPayload): Promise<PaymentRespons
 };
 
 const verifyPaymentApi = async (paymentId: string): Promise<PaymentStatusResponse> => {
-  const response = await axiosConfig.get(`/api/payment-status/${paymentId}`);
-  return response.data;
-}
+  const response = await axiosConfig.get(`/api/payment-status/${paymentId}`, {
+    responseType: "blob"
+  });
+  
+  const contentType = response.headers["content-type"];
+  if (contentType && contentType.includes("application/pdf")) {
+    return {
+      success: true,
+      status: "confirmed",
+      pdfBlob: response.data
+    };
+  }
+
+  // Otherwise, it might be JSON (error/pending status).
+  // Read blob as text to parse JSON
+  const text = await response.data.text();
+  try {
+    const data = JSON.parse(text);
+    return data;
+  } catch {
+    return { success: false, status: "pending" };
+  }
+};
 
 export const usePayment = () => {
   const getErrorMessage = (error: unknown, fallback: string) => {

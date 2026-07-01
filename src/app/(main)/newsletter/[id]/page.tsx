@@ -77,7 +77,7 @@ export default function NewsletterDetailPage() {
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs md:text-sm text-gray-500">
                 <span className="flex items-center gap-1.5">
                   <Calendar className="h-4 w-4 text-[#09283b]" />
-                  {dateFormatted}
+                  {blog.createdAt}
                 </span>
                 <span className="flex items-center gap-1.5">
                   <User className="h-4 w-4 text-[#09283b]" />

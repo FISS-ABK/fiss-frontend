@@ -167,6 +167,10 @@ export default function TransactionDetailsPage() {
   // On-chain
   const sig = transaction?.transactionSignature;
   const receiptUrl = transaction?.receiptUrl;
+  
+  const isConfirmed = status === "confirmed" || status === "success" || status === "successful" || status === "completed";
+  const referenceCode = paymentId !== "—" ? paymentId : linkCode !== "—" ? linkCode : mongoId !== "—" ? mongoId : undefined;
+  const finalReceiptUrl = receiptUrl || (isConfirmed && referenceCode ? `https://fissbackend.online/api/payment-status/${referenceCode}` : undefined);
 
   return (
     <AdminDashboardLayout>
@@ -257,6 +261,19 @@ export default function TransactionDetailsPage() {
                 <DetailRow label="Receipt Status" value={receiptStatus} />
                 <DetailRow label="Receipt Sent" value={receiptSent} />
               </dl>
+              {isConfirmed && finalReceiptUrl && (
+                <div className="mt-4 border-t pt-4">
+                  <a
+                    href={finalReceiptUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-700 w-full justify-center"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    Download Receipt PDF
+                  </a>
+                </div>
+              )}
             </div>
 
             {/* Transaction Timeline */}

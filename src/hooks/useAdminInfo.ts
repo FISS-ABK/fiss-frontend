@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export interface PaymentOverviewStatusCounts {
   pending: number;
-  confirmed: number;
+  successful: number;
   failed: number;
 }
 
@@ -37,7 +37,7 @@ export const useAdminInfo = () => {
   return {
     totalCount: data?.totalCount ?? 0,
     totalAmount: data?.totalAmount ?? 0,
-    statusCounts: data?.statusCounts ?? { pending: 0, confirmed: 0, failed: 0 },
+    statusCounts: data?.statusCounts ?? { pending: 0, successful: 0, failed: 0 },
     isLoading,
     error,
     refetch,

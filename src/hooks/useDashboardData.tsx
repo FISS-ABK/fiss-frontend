@@ -180,8 +180,8 @@ export const useDashboardData = () => {
         icon: <DollarSign className="h-6 w-6" />,
       },
       {
-        title: "Confirmed payments",
-        value: formatNumber(statusCounts?.confirmed ?? 0),
+        title: "Successful payments",
+        value: formatNumber(statusCounts?.successful ?? 0),
         icon: <UserCheck className="h-6 w-6" />,
       },
       {
@@ -232,7 +232,7 @@ export const useDashboardData = () => {
       {} as Record<string, number>
     );
 
-    const confirmedValue = statusCounts?.confirmed ?? fallbackCounts.confirmed ?? 0;
+    const confirmedValue = statusCounts?.successful ?? fallbackCounts.successful ?? 0;
     const pendingValue = statusCounts?.pending ?? fallbackCounts.pending ?? 0;
     const failedValue = statusCounts?.failed ?? fallbackCounts.failed ?? 0;
     const otherValue =
@@ -241,7 +241,7 @@ export const useDashboardData = () => {
       0;
 
     return [
-      { label: "Confirmed", value: confirmedValue, color: "bg-emerald-500" },
+      { label: "Successful", value: confirmedValue, color: "bg-emerald-500" },
       { label: "Pending", value: pendingValue, color: "bg-amber-500" },
       { label: "Failed", value: failedValue, color: "bg-rose-500" },
       { label: "Other", value: otherValue, color: "bg-slate-400" },

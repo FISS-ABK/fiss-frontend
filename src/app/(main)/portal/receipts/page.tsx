@@ -71,8 +71,8 @@ function ReceiptsPageContent() {
           if (isSuccessStatus || isSuccessBool === true) {
             toast.success("Payment verified successfully!", { id: loadingToastId });
             
-            // Try to find the receiptUrl
-            const receiptUrl = res.receiptUrl || res.data?.receiptUrl || res.transaction?.receiptUrl || res.data?.transaction?.receiptUrl;
+            // Try to find the receiptUrl, falling back to the payment-status API endpoint
+            const receiptUrl = res.receiptUrl || res.data?.receiptUrl || res.transaction?.receiptUrl || res.data?.transaction?.receiptUrl || `https://fissbackend.online/api/payment-status/${reference}`;
             
             // Try to find the student ID
             const studentIdFromRes = res.studentId || res.data?.studentId || res.data?.metadata?.studentId || res.transaction?.studentId || res.data?.transaction?.studentId || res.data?.transaction?.metadata?.studentId;
@@ -222,11 +222,19 @@ function ReceiptsPageContent() {
                           ? new Date(dateSource).toLocaleString()
                           : "—";
 
-                        const receiptUrl = tx.receiptUrl || ((tx.metadata?.zendfi as Record<string, unknown> | undefined)?.receiptUrl as string | undefined);
+                        const referenceCode = tx.paymentId || tx.linkCode || tx.id;
+                        const isConfirmed = tx.status?.toLowerCase() === "confirmed" || 
+                                            tx.status?.toLowerCase() === "success" || 
+                                            tx.status?.toLowerCase() === "successful" || 
+                                            tx.status?.toLowerCase() === "completed";
+                        
+                        const receiptUrl = tx.receiptUrl || 
+                          ((tx.metadata?.zendfi as Record<string, unknown> | undefined)?.receiptUrl as string | undefined) ||
+                          (isConfirmed && referenceCode ? `https://fissbackend.online/api/payment-status/${referenceCode}` : undefined);
 
                         return (
                           <tr key={tx.id ?? index}>
-                            <td className="px-3 py-2 text-gray-900">
+                            <td className="px-3 py-2 text-gray-900 font-mono text-xs">
                               {tx.id ?? "—"}
                             </td>
                             <td className="px-3 py-2 text-gray-700">
@@ -236,15 +244,23 @@ function ReceiptsPageContent() {
                               {amountFormatted}
                             </td>
                             <td className="px-3 py-2 text-gray-700">
-                              {tx.status || "—"}
+                              <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                                isConfirmed 
+                                  ? "bg-green-100 text-green-800" 
+                                  : tx.status?.toLowerCase() === "pending"
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : "bg-gray-100 text-gray-800"
+                              }`}>
+                                {tx.status || "—"}
+                              </span>
                             </td>
                             <td className="px-3 py-2 text-gray-700">
                               {formattedDate}
                             </td>
                             <td className="px-3 py-2 text-right">
-                              {receiptUrl ? (
+                              {isConfirmed && receiptUrl ? (
                                 <button
-                                  onClick={() => downloadReceipt(receiptUrl, `receipt_${tx.id || index}.pdf`)}
+                                  onClick={() => downloadReceipt(receiptUrl, `receipt_${referenceCode || index}.pdf`)}
                                   className="inline-flex items-center gap-1.5 rounded-md bg-[#09283b] px-3 py-1.5 text-xs font-medium text-white hover:bg-opacity-90 transition-colors"
                                 >
                                   <Download className="h-3.5 w-3.5" />
