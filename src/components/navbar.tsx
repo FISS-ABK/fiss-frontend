@@ -35,7 +35,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="relative w-full py-6">
+    <header className="relative w-full">
       {/* Main Container */}
       <div className="mx-auto flex max-w-7xl min-h-[90px] items-center justify-between rounded-2xl bg-[#faf9f6] px-6 py-2 shadow-sm md:px-10">
         

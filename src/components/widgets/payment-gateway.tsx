@@ -48,6 +48,7 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
         term: fee.term,
         academicSession: fee.academicSession,
         className: fee.className,
+        org: "fiss",
         purpose: fee.term,
       });
 

@@ -11,6 +11,7 @@ export interface PaymentPayload {
   phone: string;
   feeType: string;
   term: string;
+  org: string;
   className: string;
   academicSession: string;
   purpose?: string;

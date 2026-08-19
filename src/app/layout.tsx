@@ -30,9 +30,6 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Foursquare International Secondary School",
   description: "Raising Godly and Academically Excellent Leaders",
-  icons: {
-    icon: "https://www.figma.com/api/mcp/asset/1be565c6-7ea0-4650-8f56-ca2f051ecab4",
-  }
 };
 
 export default function RootLayout({

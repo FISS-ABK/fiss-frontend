@@ -77,10 +77,10 @@ function DetailRow({
 function StatusBadge({ status }: { status: string }) {
   type StatusEntry = { icon: React.ReactNode; cls: string; label: string };
   const map: Record<string, StatusEntry> = {
-    confirmed: {
+    successful: {
       icon: <CheckCircle2 className="h-4 w-4" />,
       cls: "bg-green-100 text-green-700",
-      label: "Confirmed",
+      label: "Successful",
     },
     pending: {
       icon: <Clock className="h-4 w-4" />,
@@ -168,7 +168,7 @@ export default function TransactionDetailsPage() {
   const sig = transaction?.transactionSignature;
   const receiptUrl = transaction?.receiptUrl;
   
-  const isConfirmed = status === "confirmed" || status === "success" || status === "successful" || status === "completed";
+  const isConfirmed = status === "successful" || status === "completed";
   const referenceCode = paymentId !== "—" ? paymentId : linkCode !== "—" ? linkCode : mongoId !== "—" ? mongoId : undefined;
   const finalReceiptUrl = receiptUrl || (isConfirmed && referenceCode ? `https://fissbackend.online/api/payment-status/${referenceCode}` : undefined);
 
