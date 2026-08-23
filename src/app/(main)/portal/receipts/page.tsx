@@ -9,6 +9,13 @@ import { useStudentReceipts, ApiTransaction } from "@/hooks/useTransaction";
 import { useSearchParams } from "next/navigation";
 import { usePayment } from "@/hooks/usePayment";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Loader2, Download } from "lucide-react";
 
 // Helper to trigger file download using a Blob to ensure standard download prompt
@@ -31,6 +38,18 @@ const downloadReceipt = async (url: string, filename: string = "receipt.pdf") =>
     window.open(url, "_blank");
   }
 };
+
+/**
+ * How long (in ms) to wait after redirecting back from Paystack before
+ * requesting payment verification and receipt generation. This gives the
+ * backend time to settle the payment; otherwise the receipt request fires
+ * too early and returns a "pending"/"unconfirmed" status. The "Generating
+ * your receipt" modal stays visible during this wait. Configure via the
+ * NEXT_PUBLIC_PAYMENT_SETTLEMENT_DELAY_MS env var if needed.
+ */
+const PAYMENT_SETTLEMENT_DELAY_MS = Number(
+  process.env.NEXT_PUBLIC_PAYMENT_SETTLEMENT_DELAY_MS || 6000
+);
 
 function ReceiptsPageContent() {
   const [studentId, setStudentId] = useState("");
@@ -55,63 +74,69 @@ function ReceiptsPageContent() {
 
   // Automatically verify payment and retrieve/download receipt if redirected from Paystack
   useEffect(() => {
-    if (reference && downloadedRef !== reference) {
-      setDownloadedRef(reference);
-      const verifyAndDownload = async () => {
-        setIsVerifyingRef(true);
-        const loadingToastId = toast.loading("Verifying payment status...");
-        try {
-          const res = await verifyPaymentAsync(reference);
-          
-          const statusRaw = res.status ?? res.payment_status ?? res.data?.status ?? null;
-          const status = typeof statusRaw === "string" ? statusRaw.toLowerCase() : null;
-          const isSuccessStatus = status === "confirmed" || status === "success" || status === "successful" || status === "completed";
-          const isSuccessBool = res.success ?? res.data?.success;
-          
-          if (isSuccessStatus || isSuccessBool === true) {
-            toast.success("Payment verified successfully!", { id: loadingToastId });
+    setTimeout(() => {
+      if (reference && downloadedRef !== reference) {
+        setDownloadedRef(reference);
+        const verifyAndDownload = async () => {
+          setIsVerifyingRef(true);
+          const loadingToastId = toast.loading("Verifying payment status...");
+          try {
+            // Give Paystack/the backend time to settle the payment before
+            // requesting verification & the receipt. The "Generating your
+            // receipt" modal above stays open to keep the user informed.
+            await new Promise((resolve) => setTimeout(resolve, PAYMENT_SETTLEMENT_DELAY_MS));
+            const res = await verifyPaymentAsync(reference);
             
-            // Try to find the receiptUrl, falling back to the payment-status API endpoint
-            const receiptUrl = res.receiptUrl || res.data?.receiptUrl || res.transaction?.receiptUrl || res.data?.transaction?.receiptUrl || `https://fissbackend.online/api/payment-status/${reference}`;
+            const statusRaw = res.status ?? res.payment_status ?? res.data?.status ?? null;
+            const status = typeof statusRaw === "string" ? statusRaw.toLowerCase() : null;
+            const isSuccessStatus = status === "confirmed" || status === "success" || status === "successful" || status === "completed";
+            const isSuccessBool = res.success ?? res.data?.success;
             
-            // Try to find the student ID
-            const studentIdFromRes = res.studentId || res.data?.studentId || res.data?.metadata?.studentId || res.transaction?.studentId || res.data?.transaction?.studentId || res.data?.transaction?.metadata?.studentId;
-            
-            if (studentIdFromRes) {
-              setStudentId(studentIdFromRes);
-            }
-
-            // Build a single transaction object from the verification response to display in the table
-            const txData = res.transaction || res.data?.transaction || {};
-            const apiTx: ApiTransaction = {
-              id: (txData.id || txData._id || reference) as string | number,
-              feeType: (txData.feeType || txData.fee_type || (res.data as Record<string, unknown> | undefined)?.feeType || "—") as string,
-              amount: (txData.amount || (res.data as Record<string, unknown> | undefined)?.amount || 0) as number,
-              status: (txData.status || status || "completed") as string,
-              date: (txData.date || txData.createdAt || (res.data as Record<string, unknown> | undefined)?.createdAt || new Date().toISOString()) as string,
-              receiptUrl: receiptUrl
-            };
-            setLocalTransactions([apiTx]);
-            
-            if (receiptUrl) {
-              toast.info("Downloading your receipt...");
-              await downloadReceipt(receiptUrl, `receipt_${reference}.pdf`);
+            if (isSuccessStatus || isSuccessBool === true) {
+              toast.success("Payment verified successfully!", { id: loadingToastId });
+              
+              // Try to find the receiptUrl, falling back to the payment-status API endpoint
+              const receiptUrl = res.receiptUrl || res.data?.receiptUrl || res.transaction?.receiptUrl || res.data?.transaction?.receiptUrl || `https://fissbackend.online/api/payment-status/${reference}`;
+              
+              // Try to find the student ID
+              const studentIdFromRes = res.studentId || res.data?.studentId || res.data?.metadata?.studentId || res.transaction?.studentId || res.data?.transaction?.studentId || res.data?.transaction?.metadata?.studentId;
+              
+              if (studentIdFromRes) {
+                setStudentId(studentIdFromRes);
+              }
+  
+              // Build a single transaction object from the verification response to display in the table
+              const txData = res.transaction || res.data?.transaction || {};
+              const apiTx: ApiTransaction = {
+                id: (txData.id || txData._id || reference) as string | number,
+                feeType: (txData.feeType || txData.fee_type || (res.data as Record<string, unknown> | undefined)?.feeType || "—") as string,
+                amount: (txData.amount || (res.data as Record<string, unknown> | undefined)?.amount || 0) as number,
+                status: (txData.status || status || "completed") as string,
+                date: (txData.date || txData.createdAt || (res.data as Record<string, unknown> | undefined)?.createdAt || new Date().toISOString()) as string,
+                receiptUrl: receiptUrl
+              };
+              setLocalTransactions([apiTx]);
+              
+              if (receiptUrl) {
+                toast.info("Downloading your receipt...");
+                await downloadReceipt(receiptUrl, `receipt_${reference}.pdf`);
+              } else {
+                toast.warning("Payment was verified, but receipt URL is not ready yet. Please search by Student ID to print.");
+              }
             } else {
-              toast.warning("Payment was verified, but receipt URL is not ready yet. Please search by Student ID to print.");
+              toast.error("Payment status verification returned: " + (status || "unconfirmed"), { id: loadingToastId });
             }
-          } else {
-            toast.error("Payment status verification returned: " + (status || "unconfirmed"), { id: loadingToastId });
+          } catch (error) {
+            console.error("Verification error:", error);
+            toast.error("Failed to verify payment status.", { id: loadingToastId });
+          } finally {
+            setIsVerifyingRef(false);
           }
-        } catch (error) {
-          console.error("Verification error:", error);
-          toast.error("Failed to verify payment status.", { id: loadingToastId });
-        } finally {
-          setIsVerifyingRef(false);
-        }
-      };
-      
-      verifyAndDownload();
-    }
+        };
+        
+        verifyAndDownload();
+      }
+    }, 3000);
   }, [reference, downloadedRef, verifyPaymentAsync]);
 
   const handleSubmit = async (e: FormEvent) => {
@@ -140,13 +165,24 @@ function ReceiptsPageContent() {
       </header>
       <DotSeparator />
       <main className="mx-auto w-full max-w-3xl px-6 py-12">
-        {isVerifyingRef && (
-          <div className="mb-6 rounded-lg border border-blue-100 bg-blue-50 p-6 text-center shadow-sm">
-            <Loader2 className="mx-auto h-8 w-8 animate-spin text-[#09283b]" />
-            <h3 className="mt-3 text-lg font-semibold text-[#09283b]">Verifying Payment...</h3>
-            <p className="mt-1 text-sm text-gray-600">Please wait while we verify your transaction and retrieve your receipt.</p>
-          </div>
-        )}
+        {/* Non-dismissible modal shown automatically while we wait for the
+            backend to settle the payment and generate the receipt. It closes
+            in the finally block once verification & download finish. */}
+        <Dialog open={isVerifyingRef}>
+          <DialogContent showCloseButton={false} className="sm:max-w-md" aria-describedby="receipt-generating-description">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-3 text-left">
+                <Loader2 className="h-6 w-6 animate-spin text-[#09283b]" />
+                <span>Generating Your Receipt...</span>
+              </DialogTitle>
+              <DialogDescription id="receipt-generating-description" className="text-gray-600">
+                We&apos;re confirming your payment and generating your receipt.
+                Depending on your payment method, this can take a few moments.
+                Please don&apos;t close this window.
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
 
         <div className="rounded-lg border bg-white p-6 shadow-sm">
           <form onSubmit={handleSubmit} className="space-y-4">
