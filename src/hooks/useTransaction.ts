@@ -29,6 +29,11 @@ export interface TransactionMetadata {
   academicSession?: string;
   zendfi?: ZendfiMetadata;
   description?: string;
+  // Fields present in the student-receipts response metadata block
+  receiptNo?: string;
+  feeType?: string;
+  purpose?: string;
+  phone?: string;
 }
 
 export interface ApiTransaction {
@@ -60,6 +65,15 @@ export interface ApiTransaction {
   // On-chain / receipt
   transactionSignature?: string;
   receiptUrl?: string;
+
+  // Fields present in the student-receipts response
+  reference?: string;
+  receiptNo?: string;
+  description?: string;
+  paidAt?: string;
+  receiptStatus?: string;
+  paymentMethod?: string;
+  channel?: string;
 
   // Legacy / compatibility fields kept for older API shapes
   student_id?: string;

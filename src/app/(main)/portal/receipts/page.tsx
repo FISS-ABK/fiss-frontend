@@ -175,7 +175,7 @@ function ReceiptsPageContent() {
                 <Loader2 className="h-6 w-6 animate-spin text-[#09283b]" />
                 <span>Generating Your Receipt...</span>
               </DialogTitle>
-              <DialogDescription id="receipt-generating-description" className="text-gray-600">
+              <DialogDescription id="receipt-generating-description" className="text-gray-600 p-2">
                 We&apos;re confirming your payment and generating your receipt.
                 Depending on your payment method, this can take a few moments.
                 Please don&apos;t close this window.
@@ -235,7 +235,7 @@ function ReceiptsPageContent() {
                   <table className="min-w-full text-left text-sm">
                     <thead className="border-b bg-gray-50 text-xs font-medium text-gray-600">
                       <tr>
-                        <th className="px-3 py-2">Transaction ID</th>
+                        <th className="px-3 py-2">Receipt No.</th>
                         <th className="px-3 py-2">Fee Type</th>
                         <th className="px-3 py-2">Amount</th>
                         <th className="px-3 py-2">Status</th>
@@ -248,33 +248,35 @@ function ReceiptsPageContent() {
                         const amountValue =
                           typeof tx.amount === "number"
                             ? tx.amount
-                            : Number(tx.amount ?? 0);
+                            : Number(tx.amount ?? tx.amountNgn ?? 0);
                         const amountFormatted = isNaN(amountValue)
                           ? `${tx.amount ?? ""}`
                           : `₦${amountValue.toLocaleString()}`;
 
-                        const dateSource = tx.date || tx.createdAt;
+                        const dateSource = tx.updated_at || tx.createdAt;
                         const formattedDate = dateSource
                           ? new Date(dateSource).toLocaleString()
                           : "—";
 
-                        const referenceCode = tx.paymentId || tx.linkCode || tx.id;
+                        const referenceCode = tx.paymentId || tx.TransactionID || tx.reference || tx.linkCode || tx.id || tx._id;
                         const isConfirmed = tx.status?.toLowerCase() === "confirmed" || 
                                             tx.status?.toLowerCase() === "success" || 
                                             tx.status?.toLowerCase() === "successful" || 
                                             tx.status?.toLowerCase() === "completed";
                         
-                        const receiptUrl = tx.receiptUrl || 
-                          ((tx.metadata?.zendfi as Record<string, unknown> | undefined)?.receiptUrl as string | undefined) ||
+                        const receiptUrl = tx.receiptUrl ||
                           (isConfirmed && referenceCode ? `https://fissbackend.online/api/payment-status/${referenceCode}` : undefined);
 
+                        const receiptNo = tx.receiptNo || tx.metadata?.receiptNo;
+                        const feeType = tx.metadata?.feeType || tx.feeType || tx.fee_type || tx.description;
+
                         return (
-                          <tr key={tx.id ?? index}>
+                          <tr key={String(tx._id ?? tx.id ?? index)}>
                             <td className="px-3 py-2 text-gray-900 font-mono text-xs">
-                              {tx.id ?? "—"}
+                              {receiptNo || "—"}
                             </td>
                             <td className="px-3 py-2 text-gray-700">
-                              {tx.feeType || tx.fee_type || "—"}
+                              {feeType || "—"}
                             </td>
                             <td className="px-3 py-2 text-gray-900">
                               {amountFormatted}
