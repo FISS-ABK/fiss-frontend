@@ -2,7 +2,7 @@
 
 import AdminDashboardLayout from "@/app/(admin)/_components/AdminDashboardLayout";
 import PageHeader from "@/app/(admin)/_components/PageHeader";
-import { useClassTransactions } from "@/hooks/useTransaction";
+import { useClassTransactions, getBaseAmountFromTx } from "@/hooks/useTransaction";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, CheckCircle2, Clock, XCircle, ExternalLink, Copy } from "lucide-react";
 import { useState } from "react";
@@ -143,9 +143,10 @@ export default function TransactionDetailsPage() {
   const status = (transaction?.status ?? "pending").toLowerCase();
   const amountUsdc =
     transaction?.token ? `${transaction.amount} ${transaction.token}` : "—";
-  const amountValue = transaction?.amountNgn != null ? transaction.amountNgn : transaction?.amount;
-  const amountNgn =
-    amountValue != null ? `₦${amountValue.toLocaleString()}` : "—";
+  const rawAmountValue = transaction?.amountNgn != null ? transaction.amountNgn : transaction?.amount;
+  const baseAmount = getBaseAmountFromTx(transaction);
+  const baseAmountFormatted = `₦${baseAmount.toLocaleString()}`;
+  const totalPaidNgn = rawAmountValue != null ? `₦${rawAmountValue.toLocaleString()}` : "—";
 
   // Gateway & Receipt details
   const paymentMethod = (transaction?.paymentMethod || transaction?.channel || "—") as string;
@@ -221,9 +222,9 @@ export default function TransactionDetailsPage() {
               <StatusBadge status={status} />
             </div>
             <div className="text-right">
-              <p className="mb-0.5 text-xs text-gray-500">Amount Paid</p>
-              <p className="text-2xl font-bold text-gray-900">{amountNgn}</p>
-              <p className="text-xs text-gray-400">{amountUsdc}</p>
+              <p className="mb-0.5 text-xs text-gray-500">Base Fee Amount</p>
+              <p className="text-2xl font-bold text-gray-900">{baseAmountFormatted}</p>
+              <p className="text-xs text-gray-400">Total Paid: {totalPaidNgn}</p>
             </div>
           </div>
 
@@ -250,7 +251,8 @@ export default function TransactionDetailsPage() {
                 Payment Details
               </h2>
               <dl>
-                <DetailRow label="Amount (NGN)" value={amountNgn} />
+                <DetailRow label="Base Fee Amount" value={baseAmountFormatted} />
+                <DetailRow label="Total Paid (incl. charges)" value={totalPaidNgn} />
                 {amountUsdc !== "—" && <DetailRow label="Amount (Crypto)" value={amountUsdc} />}
                 <DetailRow label="Payment ID" value={paymentId} mono copyable />
                 <DetailRow label="Link Code" value={linkCode} mono copyable />

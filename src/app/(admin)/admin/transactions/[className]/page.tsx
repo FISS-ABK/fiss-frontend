@@ -6,7 +6,7 @@ import { Download, Search, Filter, ArrowLeft, DollarSign } from 'lucide-react';
 import AdminDashboardLayout from '@/app/(admin)/_components/AdminDashboardLayout';
 import PageHeader from '@/app/(admin)/_components/PageHeader';
 import TransactionsTable from '@/app/(admin)/_components/TransactionsTable';
-import { useClassTransactions } from '@/hooks/useTransaction';
+import { useClassTransactions, getBaseAmountFromTx } from '@/hooks/useTransaction';
 
 const ACADEMIC_SESSIONS = [
   '2024/2025',
@@ -35,15 +35,8 @@ export default function ClassTransactionsPage() {
   const normalizedTransactions = useMemo(
     () =>
       (transactions ?? []).map((t, index) => {
-        const amountValue =
-          typeof t.amount === 'number'
-            ? t.amount
-            : typeof t.amountNgn === 'number'
-            ? t.amountNgn
-            : Number(t.amount ?? t.amountNgn ?? 0);
-        const amountFormatted = isNaN(amountValue)
-          ? `${t.amount ?? t.amountNgn ?? ''}`
-          : `₦${amountValue.toLocaleString()}`;
+        const baseAmount = getBaseAmountFromTx(t);
+        const amountFormatted = `₦${baseAmount.toLocaleString()}`;
 
         const createdDate = t.created_at || t.date || t.updated_at;
         const formattedDate = createdDate
@@ -130,6 +123,13 @@ export default function ClassTransactionsPage() {
     window.URL.revokeObjectURL(url);
   };
 
+  const totalClassBaseAmount = useMemo(() => {
+    if (!transactions || transactions.length === 0) {
+      return totalAmount ? getBaseAmountFromTx({ amount: totalAmount }) : 0;
+    }
+    return transactions.reduce((sum, t) => sum + getBaseAmountFromTx(t), 0);
+  }, [transactions, totalAmount]);
+
   const clearFilters = () => {
     setStatusFilter('All');
     setFeeTypeFilter('All');
@@ -159,7 +159,7 @@ export default function ClassTransactionsPage() {
       />
 
       {/* Total Amount Card */}
-      {!isLoadingTransactions && totalAmount > 0 && (
+      {!isLoadingTransactions && totalClassBaseAmount > 0 && (
         <div className="mb-6 flex items-center gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
             <DollarSign className="h-5 w-5" />
@@ -169,7 +169,7 @@ export default function ClassTransactionsPage() {
               Total Amount{academicSession ? ` (${academicSession})` : ''}
             </p>
             <p className="text-xl font-bold text-gray-900">
-              ₦{totalAmount.toLocaleString()}
+              ₦{totalClassBaseAmount.toLocaleString()}
             </p>
           </div>
         </div>

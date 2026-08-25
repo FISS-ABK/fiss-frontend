@@ -13,7 +13,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { useAdminInfo } from "@/hooks/useAdminInfo";
-import { useAdminTransactions, ApiTransaction } from "@/hooks/useTransaction";
+import { useAdminTransactions, ApiTransaction, getBaseAmountFromTx } from "@/hooks/useTransaction";
 import { useFees } from "@/hooks/useFees";
 import { useVacancies } from "@/hooks/useVacancies";
 
@@ -168,6 +168,14 @@ export const useDashboardData = () => {
         .filter((studentId) => studentId && studentId !== "-")
     );
 
+    // Calculate net base amount of successful payments
+    const successfulTxs = transactions.filter(
+      (tx) => resolveStatus(tx.status) === "successful" || resolveStatus(tx.status) === "confirmed" || resolveStatus(tx.status) === "completed"
+    );
+    const netBaseAmount = successfulTxs.length > 0
+      ? successfulTxs.reduce((sum, tx) => sum + getBaseAmountFromTx(tx), 0)
+      : (totalAmount ? getBaseAmountFromTx({ amount: totalAmount }) : 0);
+
     return [
       {
         title: "Total payments",
@@ -176,7 +184,7 @@ export const useDashboardData = () => {
       },
       {
         title: "Net amount",
-        value: formatCurrency(totalAmount ?? 0),
+        value: formatCurrency(netBaseAmount),
         icon: <DollarSign className="h-6 w-6" />,
       },
       {
@@ -273,9 +281,7 @@ export const useDashboardData = () => {
       const key = parsed.toISOString().slice(0, 10);
       const index = bucketIndex.get(key);
       if (index === undefined) return;
-      const amountRaw =
-        tx.amountNgn ?? tx.amount ?? tx.metadata?.zendfi?.amount_ngn ?? 0;
-      buckets[index].total += resolveAmountNumber(amountRaw);
+      buckets[index].total += getBaseAmountFromTx(tx);
       buckets[index].count += 1;
     });
 
@@ -301,8 +307,7 @@ export const useDashboardData = () => {
       .sort(sortByDateDesc)
       .slice(0, 5)
       .map((tx, index) => {
-        const amountRaw =
-          tx.amountNgn ?? tx.amount ?? tx.metadata?.zendfi?.amount_ngn ?? "";
+        const baseAmount = getBaseAmountFromTx(tx);
 
         return {
           id: resolveId(tx, index),
@@ -310,7 +315,7 @@ export const useDashboardData = () => {
           studentId: resolveStudentId(tx),
           feeType: resolveFeeType(tx),
           class: resolveClassName(tx),
-          amountNgn: normalizeAmount(amountRaw),
+          amountNgn: formatCurrency(baseAmount),
           date: resolveDate(tx),
           created_at: tx.created_at,
           updated_at: tx.updated_at,
