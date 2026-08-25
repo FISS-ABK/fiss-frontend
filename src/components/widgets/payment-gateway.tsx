@@ -38,8 +38,23 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
     if (e) e.preventDefault();
     setLocalError(null);
     try {
+      const baseAmount = fee.amount;
+      const totalExtra = (baseAmount * 0.025) + 99;
+      const totalAmount = Math.round(baseAmount + totalExtra);
+
+      let paystackFee = 0;
+      if (totalAmount < 2000) {
+        paystackFee = totalAmount * 0.015;
+      } else {
+        paystackFee = Math.min(2000, (totalAmount * 0.015) + 100);
+      }
+
+      const platformFee = Math.max(0, Math.round(totalExtra - paystackFee));
+      const selectedSubAccount = fee.subAccountCode || fee.subAccount || fee.subaccount;
+
       const response = await createPaymentAsync({
-        amount: fee.amount + fee.amount * 0.025 + 99,
+        amount: totalAmount,
+        platformFee,
         studentId: personalInfo.studentId,
         fullName: personalInfo.fullName,
         email: personalInfo.email,
@@ -48,9 +63,9 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
         term: fee.term,
         academicSession: fee.academicSession,
         className: fee.className,
-        subAccountCode: fee.subAccountCode || fee.subAccount || fee.subaccount,
-        subAccount: fee.subAccountCode || fee.subAccount || fee.subaccount,
-        subaccount: fee.subAccountCode || fee.subAccount || fee.subaccount,
+        subAccountCode: selectedSubAccount,
+        subAccount: selectedSubAccount,
+        subaccount: selectedSubAccount,
         org: "fiss",
         purpose: fee.term,
       });

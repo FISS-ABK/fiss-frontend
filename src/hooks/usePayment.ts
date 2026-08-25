@@ -18,6 +18,7 @@ export interface PaymentPayload {
   subAccountCode?: string;
   subAccount?: string;
   subaccount?: string;
+  platformFee?: number;
 }
 
 export interface PaymentResponse {
