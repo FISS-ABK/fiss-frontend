@@ -39,7 +39,7 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
     setLocalError(null);
     try {
       const response = await createPaymentAsync({
-        amount: fee.amount,
+        amount: fee.amount + fee.amount * 0.025 + 99,
         studentId: personalInfo.studentId,
         fullName: personalInfo.fullName,
         email: personalInfo.email,
@@ -48,6 +48,8 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
         term: fee.term,
         academicSession: fee.academicSession,
         className: fee.className,
+        subAccountCode: fee.subAccountCode || fee.subAccount,
+        subAccount: fee.subAccount || fee.subAccountCode,
         org: "fiss",
         purpose: fee.term,
       });

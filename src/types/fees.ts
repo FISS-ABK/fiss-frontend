@@ -13,4 +13,6 @@ export interface FeeStructure {
   term: '1st Term' | '2nd Term' | '3rd Term';
   breakdown: FeeBreakdownItem[];
   amount: number;
+  subAccountCode?: string;
+  subAccount?: string;
 }

@@ -75,6 +75,8 @@ export default function FeesManagementPage() {
       term: fee.term,
       breakdown: fee.breakdown,
       amount: fee.amount,
+      subAccountCode: fee.subAccountCode || fee.subAccount,
+      subAccount: fee.subAccount || fee.subAccountCode,
     };
 
     if (modalMode === 'create') {

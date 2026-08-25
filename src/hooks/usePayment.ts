@@ -15,6 +15,8 @@ export interface PaymentPayload {
   className: string;
   academicSession: string;
   purpose?: string;
+  subAccountCode?: string;
+  subAccount?: string;
 }
 
 export interface PaymentResponse {

@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { FeeStructure, FeeBreakdownItem } from '@/types/fees';
+import { useAccounts } from '@/hooks/useAccounts';
 
 interface FeeModalProps {
   isOpen: boolean;
@@ -33,6 +34,8 @@ const TERM_OPTIONS = ['1st Term', '2nd Term', '3rd Term'] as const;
 const CLASS_OPTIONS = ['JSS 1', 'JSS 2', 'JSS 3', 'SSS 1', 'SSS 2', 'SSS 3'];
 
 export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading = false }: FeeModalProps) {
+  const { accounts, isLoading: isAccountsLoading } = useAccounts();
+
   const [formData, setFormData] = useState<FeeStructure>({
     _id: fee?._id,
     feeType: fee?.feeType || 'School Fee',
@@ -42,6 +45,8 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
     term: fee?.term || '1st Term',
     breakdown: fee?.breakdown || [{ description: '', amount: 0 }],
     amount: fee?.amount || 0,
+    subAccountCode: fee?.subAccountCode || fee?.subAccount || '',
+    subAccount: fee?.subAccount || fee?.subAccountCode || '',
   });
 
   const [customFeeType, setCustomFeeType] = useState(
@@ -51,6 +56,7 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
   // Update form data when fee or mode changes
   useEffect(() => {
     if (mode === 'edit' && fee) {
+      const selectedSubCode = fee.subAccountCode || fee.subAccount || '';
       setFormData({
         _id: fee._id,
         feeType: fee.feeType || 'School Fee',
@@ -62,11 +68,14 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
           ? fee.breakdown 
           : [{ description: '', amount: 0 }],
         amount: fee.amount || 0,
+        subAccountCode: selectedSubCode,
+        subAccount: selectedSubCode,
       });
       setCustomFeeType(
         fee.feeType && !FEE_TYPE_OPTIONS.includes(fee.feeType) ? fee.feeType : ''
       );
     } else if (mode === 'create') {
+      const defaultSubCode = accounts[0]?.subAccountCode || '';
       setFormData({
         feeType: 'School Fee',
         academicSession: '',
@@ -75,10 +84,12 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
         term: '1st Term',
         breakdown: [{ description: '', amount: 0 }],
         amount: 0,
+        subAccountCode: defaultSubCode,
+        subAccount: defaultSubCode,
       });
       setCustomFeeType('');
     }
-  }, [fee, mode, isOpen]);
+  }, [fee, mode, isOpen, accounts]);
 
   const calculateTotal = (breakdown: FeeBreakdownItem[]) => {
     return breakdown.reduce((sum, item) => sum + (item.amount || 0), 0);
@@ -216,6 +227,35 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
                   </option>
                 ))}
               </select>
+            </div>
+
+            {/* Settlement Account */}
+            <div className="sm:col-span-2">
+              <label className="mb-2 block text-sm font-medium text-gray-700">
+                Settlement Account / Subaccount <span className="text-red-500">*</span>
+              </label>
+              <select
+                required
+                value={formData.subAccountCode || formData.subAccount || ''}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    subAccountCode: e.target.value,
+                    subAccount: e.target.value,
+                  })
+                }
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              >
+                <option value="">Select Settlement Account</option>
+                {accounts.map((account) => (
+                  <option key={account._id || account.subAccountCode} value={account.subAccountCode}>
+                    {account.accountName} - {account.bankName} ({account.accountNumber}) [{account.subAccountCode}]
+                  </option>
+                ))}
+              </select>
+              {isAccountsLoading && (
+                <p className="mt-1 text-xs text-gray-500">Loading available bank accounts...</p>
+              )}
             </div>
           </div>
 

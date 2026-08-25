@@ -14,10 +14,13 @@ export interface FeePayload {
     amount: number;
   }>;
   amount: number;
+  subAccountCode?: string;
+  subAccount?: string;
 }
 
 export interface FeeResponse {
-  id: string | number;
+  id?: string | number;
+  _id?: string | number;
   feeType: string;
   academicSession: string;
   className: string;
@@ -28,6 +31,8 @@ export interface FeeResponse {
     amount: number;
   }>;
   amount: number;
+  subAccountCode?: string;
+  subAccount?: string;
   createdAt?: string;
 }
 
