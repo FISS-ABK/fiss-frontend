@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 export interface PaymentPayload {
   amount: number;
+  baseAmount: number;
   studentId: string;
   fullName: string;
   email: string;

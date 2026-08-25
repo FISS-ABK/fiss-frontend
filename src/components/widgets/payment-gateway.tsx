@@ -57,6 +57,7 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
       const response = await createPaymentAsync({
         amount: totalAmount,
         platformFee,
+        baseAmount: fee.amount,
         studentId: personalInfo.studentId,
         fullName: personalInfo.fullName,
         email: personalInfo.email,
