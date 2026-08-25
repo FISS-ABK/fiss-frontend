@@ -44,12 +44,13 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
 
       let paystackFee = 0;
       if (totalAmount < 2000) {
-        paystackFee = totalAmount * 0.015;
+        paystackFee = Math.ceil((totalAmount * 0.015) * 100) / 100;
       } else {
-        paystackFee = Math.min(2000, (totalAmount * 0.015) + 100);
+        paystackFee = Math.min(2000, Math.ceil(((totalAmount * 0.015) + 100) * 100) / 100);
       }
 
-      const platformFee = Math.max(0, Math.round(totalExtra - paystackFee));
+      // Math.floor ensures platformFee never rounds UP and takes from the school's original base fee
+      const platformFee = Math.max(0, Math.floor(totalExtra - paystackFee));
       const selectedSubAccount = fee.subAccountCode || fee.subAccount || fee.subaccount;
 
       const response = await createPaymentAsync({
