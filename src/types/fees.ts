@@ -15,4 +15,5 @@ export interface FeeStructure {
   amount: number;
   subAccountCode?: string;
   subAccount?: string;
+  subaccount?: string;
 }

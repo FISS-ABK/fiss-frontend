@@ -16,6 +16,7 @@ export interface FeePayload {
   amount: number;
   subAccountCode?: string;
   subAccount?: string;
+  subaccount?: string;
 }
 
 export interface FeeResponse {
@@ -33,6 +34,7 @@ export interface FeeResponse {
   amount: number;
   subAccountCode?: string;
   subAccount?: string;
+  subaccount?: string;
   createdAt?: string;
 }
 

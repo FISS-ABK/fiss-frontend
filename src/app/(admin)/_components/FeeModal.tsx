@@ -244,12 +244,12 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
                     subAccount: e.target.value,
                   })
                 }
-                className="w-full max-w-full truncate rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full max-w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               >
                 <option value="">Select Settlement Account</option>
                 {accounts.map((account) => (
                   <option key={account._id || account.subAccountCode} value={account.subAccountCode}>
-                    {account.accountName} ({account.bankName} - {account.accountNumber})
+                    {account.accountName}
                   </option>
                 ))}
               </select>

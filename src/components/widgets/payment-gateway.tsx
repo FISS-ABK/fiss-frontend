@@ -48,8 +48,9 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
         term: fee.term,
         academicSession: fee.academicSession,
         className: fee.className,
-        subAccountCode: fee.subAccountCode || fee.subAccount,
-        subaccount: fee.subAccount || fee.subAccountCode,
+        subAccountCode: fee.subAccountCode || fee.subAccount || fee.subaccount,
+        subAccount: fee.subAccountCode || fee.subAccount || fee.subaccount,
+        subaccount: fee.subAccountCode || fee.subAccount || fee.subaccount,
         org: "fiss",
         purpose: fee.term,
       });
