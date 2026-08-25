@@ -171,7 +171,7 @@ export default function TransactionDetailsPage() {
   
   const isConfirmed = status === "successful" || status === "completed";
   const referenceCode = paymentId !== "—" ? paymentId : linkCode !== "—" ? linkCode : mongoId !== "—" ? mongoId : undefined;
-  const finalReceiptUrl = receiptUrl || (isConfirmed && referenceCode ? `https://fissbackend.online/api/payment-status/${referenceCode}` : undefined);
+  const finalReceiptUrl = receiptUrl || (isConfirmed && referenceCode ? `https://api.mhetlabs.com/api/fiss/payment-status/${referenceCode}` : undefined);
 
   return (
     <AdminDashboardLayout>

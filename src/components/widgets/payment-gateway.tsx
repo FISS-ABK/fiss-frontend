@@ -261,7 +261,7 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
             <div className="mt-4 flex gap-3">
               <button
                 onClick={() => {
-                  window.open(`https://fissbackend.online/api/payment-status/${paymentId}`, "_blank");
+                  window.open(`https://api.mhetlabs.com/api/fiss/payment-status/${paymentId}`, "_blank");
                 }}
                 className="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors"
               >

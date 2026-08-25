@@ -96,7 +96,7 @@ function ReceiptsPageContent() {
               toast.success("Payment verified successfully!", { id: loadingToastId });
               
               // Try to find the receiptUrl, falling back to the payment-status API endpoint
-              const receiptUrl = res.receiptUrl || res.data?.receiptUrl || res.transaction?.receiptUrl || res.data?.transaction?.receiptUrl || `https://fissbackend.online/api/payment-status/${reference}`;
+              const receiptUrl = res.receiptUrl || res.data?.receiptUrl || res.transaction?.receiptUrl || res.data?.transaction?.receiptUrl || `https://api.mhetlabs.com/api/fiss/payment-status/${reference}`;
               
               // Try to find the student ID
               const studentIdFromRes = res.studentId || res.data?.studentId || res.data?.metadata?.studentId || res.transaction?.studentId || res.data?.transaction?.studentId || res.data?.transaction?.metadata?.studentId;
@@ -265,7 +265,7 @@ function ReceiptsPageContent() {
                                             tx.status?.toLowerCase() === "completed";
                         
                         const receiptUrl = tx.receiptUrl ||
-                          (isConfirmed && referenceCode ? `https://fissbackend.online/api/payment-status/${referenceCode}` : undefined);
+                          (isConfirmed && referenceCode ? `https://api.mhetlabs.com/api/fiss/payment-status/${referenceCode}` : undefined);
 
                         const receiptNo = tx.receiptNo || tx.metadata?.receiptNo;
                         const feeType = tx.metadata?.feeType || tx.feeType || tx.fee_type || tx.description;
