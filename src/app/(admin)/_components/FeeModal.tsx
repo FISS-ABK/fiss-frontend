@@ -232,7 +232,7 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
             {/* Settlement Account */}
             <div className="sm:col-span-2">
               <label className="mb-2 block text-sm font-medium text-gray-700">
-                Settlement Account / Subaccount <span className="text-red-500">*</span>
+                Settlement Account <span className="text-red-500">*</span>
               </label>
               <select
                 required
@@ -244,17 +244,17 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
                     subAccount: e.target.value,
                   })
                 }
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full max-w-full truncate rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               >
                 <option value="">Select Settlement Account</option>
                 {accounts.map((account) => (
                   <option key={account._id || account.subAccountCode} value={account.subAccountCode}>
-                    {account.accountName} - {account.bankName} ({account.accountNumber}) [{account.subAccountCode}]
+                    {account.accountName} ({account.bankName} - {account.accountNumber})
                   </option>
                 ))}
               </select>
               {isAccountsLoading && (
-                <p className="mt-1 text-xs text-gray-500">Loading available bank accounts...</p>
+                <p className="mt-1 text-xs text-gray-500">Loading accounts...</p>
               )}
             </div>
           </div>

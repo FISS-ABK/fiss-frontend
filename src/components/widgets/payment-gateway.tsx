@@ -49,7 +49,7 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
         academicSession: fee.academicSession,
         className: fee.className,
         subAccountCode: fee.subAccountCode || fee.subAccount,
-        subAccount: fee.subAccount || fee.subAccountCode,
+        subaccount: fee.subAccount || fee.subAccountCode,
         org: "fiss",
         purpose: fee.term,
       });

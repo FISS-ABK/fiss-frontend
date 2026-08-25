@@ -29,11 +29,6 @@ export default function FeeCard({ fee, onEdit, onDelete }: FeeCardProps) {
             <span className="rounded-full bg-green-100 px-2 py-0.5 text-green-700">
               {fee.academicSession}
             </span>
-            {(fee.subAccountCode || fee.subAccount) && (
-              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-amber-800 text-xs font-mono">
-                {fee.subAccountCode || fee.subAccount}
-              </span>
-            )}
           </div>
         </div>
         
