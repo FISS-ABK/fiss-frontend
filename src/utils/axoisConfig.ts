@@ -5,6 +5,11 @@ export const axiosConfig = axios.create({
   withCredentials: true,
 });
 
+export const mhetConfig = axios.create({
+  baseURL: "https://api.mhetlabs.com",
+  withCredentials: true,
+});
+
 // Add a request interceptor to dynamically add the jwt_token or admin-token from sessionStorage
 axiosConfig.interceptors.request.use(
   (config) => {

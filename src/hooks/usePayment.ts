@@ -1,5 +1,5 @@
 "use client";
-import { axiosConfig } from "@/utils/axoisConfig";
+import { axiosConfig, mhetConfig } from "@/utils/axoisConfig";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -75,7 +75,7 @@ const createPaymentApi = async (payload: PaymentPayload): Promise<PaymentRespons
 };
 
 const verifyPaymentApi = async (paymentId: string): Promise<PaymentStatusResponse> => {
-  const response = await axiosConfig.get(`/api/paystack/callback/${paymentId}`, {
+  const response = await mhetConfig.get(`/api/paystack/callback/${paymentId}`, {
     responseType: "blob"
   });
   
