@@ -1,5 +1,4 @@
 import axios from "axios";
-import { logger } from "@/lib/logger";
 
 export const axiosConfig = axios.create({
   baseURL: "https://api.mhetlabs.com/api/fiss",

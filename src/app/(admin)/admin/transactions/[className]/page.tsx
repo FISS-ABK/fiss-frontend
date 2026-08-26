@@ -240,23 +240,6 @@ export default function ClassTransactionsPage() {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            {/* Status Filter */}
-            <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
-                Status
-              </label>
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              >
-                <option value="All">All Statuses</option>
-                <option value="Approved">Approved</option>
-                <option value="Pending">Pending</option>
-                <option value="Rejected">Rejected</option>
-              </select>
-            </div>
-
             {/* Fee Type Filter */}
             <div>
               <label className="mb-2 block text-sm font-medium text-gray-700">
