@@ -113,9 +113,20 @@ export const useAdminAuth = (): UseSignInReturn => {
         setUser((prev) => ({ ...prev, ...fetchedUser }));
       }
       setSession(token);
-    } catch (err) {
-      console.warn("Session check endpoint warning, keeping token:", err);
-      // Keep session intact if token is stored and decoded
+    } catch (err: unknown) {
+      const status = (err as { response?: { status?: number } })?.response?.status;
+      if (status === 401 || status === 403) {
+        console.error(`Session check returned ${status}:`, err);
+        clearSession();
+        setUser(null);
+        setError(
+          status === 403
+            ? "Access Denied (403): Your account does not have admin permissions."
+            : "Session expired. Please sign in again."
+        );
+      } else {
+        console.warn("Session check endpoint warning:", err);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -142,8 +153,23 @@ export const useAdminAuth = (): UseSignInReturn => {
         if (fetchedUser && typeof fetchedUser === "object" && fetchedUser.name) {
           setUser((prev) => ({ ...prev, ...fetchedUser }));
         }
-      } catch (e) {
-        console.warn("Dashboard fetch failed, proceed with stored session:", e);
+      } catch (e: unknown) {
+        const status = (e as { response?: { status?: number } })?.response?.status;
+        if (status === 401 || status === 403) {
+          clearSession();
+          setUser(null);
+          setError(
+            status === 403
+              ? "Access Denied (403): Account does not have admin permissions."
+              : "Authentication failed."
+          );
+          if (popup && !popup.closed) {
+            try { popup.close(); } catch {}
+          }
+          setIsLoading(false);
+          return;
+        }
+        console.warn("Dashboard fetch non-blocking warning:", e);
       }
 
       setError(null);
