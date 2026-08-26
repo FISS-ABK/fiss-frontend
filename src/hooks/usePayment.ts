@@ -75,7 +75,7 @@ const createPaymentApi = async (payload: PaymentPayload): Promise<PaymentRespons
 };
 
 const verifyPaymentApi = async (paymentId: string): Promise<PaymentStatusResponse> => {
-  const response = await axiosConfig.get(`/paystack/callback/${paymentId}`, {
+  const response = await axiosConfig.get(`/api/paystack/callback/${paymentId}`, {
     responseType: "blob"
   });
   
