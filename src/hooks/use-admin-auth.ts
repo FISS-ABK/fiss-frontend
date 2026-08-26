@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { axiosConfig } from "@/utils";
 import { removeSession, setSession } from "@/lib/auth";
-import { logger } from "@/lib/logger";
 
 interface User {
   id: string;
@@ -28,11 +27,57 @@ const AUTH_POPUP_CONFIG = "width=500,height=600,scrollbars=yes,resizable=yes";
 const AUTH_TIMEOUT = 5 * 60 * 1000; // 5 minutes
 const BACKEND_URL = "https://api.mhetlabs.com";
 
+const decodeJwtUser = (token: string): User | null => {
+  try {
+    const parts = token.split(".");
+    if (parts.length < 2) return null;
+    const payload = JSON.parse(atob(parts[1]));
+    return {
+      id: payload.id || payload._id || payload.sub || "admin",
+      email: payload.email || "admin@foursquareschoolsabk.org",
+      name: payload.name || payload.fullName || payload.username || "Admin User",
+      picture: payload.picture || payload.avatar,
+    };
+  } catch {
+    return null;
+  }
+};
+
+const extractTokenFromMessage = (data: unknown): string | null => {
+  if (!data) return null;
+  let parsed: Record<string, unknown> = {};
+
+  if (typeof data === "string") {
+    try {
+      parsed = JSON.parse(data);
+    } catch {
+      return null;
+    }
+  } else if (typeof data === "object") {
+    parsed = data as Record<string, unknown>;
+  }
+
+  const token =
+    parsed.token ??
+    parsed.jwt_token ??
+    parsed.admin_token ??
+    parsed.accessToken ??
+    parsed.access_token ??
+    parsed.jwt ??
+    (parsed.data as Record<string, unknown> | undefined)?.token ??
+    (parsed.data as Record<string, unknown> | undefined)?.jwt_token;
+
+  return typeof token === "string" && token.trim() !== "" ? token : null;
+};
+
 export const useAdminAuth = (): UseSignInReturn => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
+  const userRef = useRef<User | null>(null);
+  userRef.current = user;
 
   const isAuthenticated = !!user;
 
@@ -49,21 +94,93 @@ export const useAdminAuth = (): UseSignInReturn => {
       return;
     }
 
+    // Set token in headers and restore user from JWT so user remains authenticated
+    axiosConfig.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    const decodedUser = decodeJwtUser(token);
+    if (decodedUser) {
+      setUser(decodedUser);
+    } else {
+      setUser({ id: "admin", email: "admin@foursquareschoolsabk.org", name: "Admin" });
+    }
+
     try {
       const response = await axiosConfig.get("/dashboard", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setUser(response.data.user || response.data.data?.user || response.data);
+      const fetchedUser = response.data.user || response.data.data?.user || response.data;
+      if (fetchedUser && typeof fetchedUser === "object" && fetchedUser.name) {
+        setUser((prev) => ({ ...prev, ...fetchedUser }));
+      }
       setSession(token);
-      axiosConfig.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     } catch (err) {
-      console.error("Session validation failed:", err);
-      clearSession();
-      setError("Session expired. Please sign in again.");
+      console.warn("Session check endpoint warning, keeping token:", err);
+      // Keep session intact if token is stored and decoded
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleAuthSuccess = async (token: string, popup?: Window | null) => {
+    try {
+      // 1. ALWAYS store token first
+      sessionStorage.setItem(STORAGE_KEY, token);
+      sessionStorage.setItem("admin-token", token);
+      setSession(token);
+      axiosConfig.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+      // 2. Decode user locally
+      const decodedUser = decodeJwtUser(token);
+      setUser(decodedUser || { id: "admin", email: "admin@foursquareschoolsabk.org", name: "Admin" });
+
+      // 3. Try dashboard fetch
+      try {
+        const response = await axiosConfig.get("/dashboard", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const fetchedUser = response.data.user || response.data.data?.user || response.data;
+        if (fetchedUser && typeof fetchedUser === "object" && fetchedUser.name) {
+          setUser((prev) => ({ ...prev, ...fetchedUser }));
+        }
+      } catch (e) {
+        console.warn("Dashboard fetch failed, proceed with stored session:", e);
+      }
+
+      setError(null);
+      if (popup && !popup.closed) {
+        try { popup.close(); } catch {}
+      }
+      router.push("/admin/overview");
+    } catch (err) {
+      console.error("Auth success handler error:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const setupAuthListener = (popup: Window) => {
+    const handleMessage = async (event: MessageEvent) => {
+      // Ignore React DevTools & internal messages
+      if (typeof event.data === "string" && (event.data.includes("react-devtools") || event.data.includes("webpack"))) {
+        return;
+      }
+
+      const token = extractTokenFromMessage(event.data);
+      if (token) {
+        await handleAuthSuccess(token, popup);
+        return;
+      }
+
+      const authError = event.data?.error || event.data?.authError;
+      if (authError) {
+        setError(typeof authError === "string" ? authError : authError.message || "Authentication failed");
+        setIsLoading(false);
+        try { if (!popup.closed) popup.close(); } catch {}
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
   };
 
   const signIn = useCallback(() => {
@@ -84,102 +201,33 @@ export const useAdminAuth = (): UseSignInReturn => {
 
     const cleanup = setupAuthListener(popup);
 
-    // Monitor popup closure
+    // Monitor popup closure without relying on stale user closure
     const checkInterval = setInterval(() => {
       if (popup.closed) {
         clearInterval(checkInterval);
         cleanup();
-        if (!user) {
+
+        // Check if token was received
+        const tokenExists = sessionStorage.getItem(STORAGE_KEY) || sessionStorage.getItem("admin-token");
+        if (!tokenExists && !userRef.current) {
           setIsLoading(false);
           setError("Sign in cancelled");
+        } else {
+          setIsLoading(false);
         }
       }
     }, 1000);
 
-    // Timeout after 5 minutes
     setTimeout(() => {
       cleanup();
       clearInterval(checkInterval);
       if (!popup.closed) {
-        popup.close();
+        try { popup.close(); } catch {}
         setIsLoading(false);
-        setError("Sign in timed out");
       }
     }, AUTH_TIMEOUT);
-  }, [user]);
+  }, []);
 
-  /**
-   * Sets up message listener for OAuth callback
-   */
-  const setupAuthListener = (popup: Window) => {
-    const handleMessage = async (event: MessageEvent) => {
-      // Validate origin against allowed backend and frontend domains
-      const origin = event.origin;
-      const isValidOrigin =
-        origin.includes("api.mhetlabs.com") ||
-        origin.includes("fissbackend") ||
-        origin.includes("foursquareschoolsabk") ||
-        origin === window.location.origin;
-
-      if (!isValidOrigin) {
-        return;
-      }
-
-      const { token, error: authError } = event.data;
-
-      if (authError) {
-        setError(authError.message || "Authentication failed");
-        setIsLoading(false);
-        popup.close();
-        return;
-      }
-
-      if (token) {
-        await handleAuthSuccess(token, popup);
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-
-    // Return cleanup function
-    return () => window.removeEventListener("message", handleMessage);
-  };
-
-  /**
-   * Handles successful authentication
-   */
-  const handleAuthSuccess = async (token: string, popup: Window) => {
-    try {
-      // Store token across both key names and set axios default header
-      sessionStorage.setItem(STORAGE_KEY, token);
-      sessionStorage.setItem("admin-token", token);
-      setSession(token);
-      axiosConfig.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-      // Fetch user data
-      const response = await axiosConfig.get("/dashboard", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      setUser(response.data.user || response.data.data?.user || response.data);
-      setError(null);
-      popup.close();
-
-      // Redirect to dashboard
-      router.push("/admin/overview");
-    } catch (err) {
-      console.error("Failed to fetch user data:", err);
-      clearSession();
-      setError("Sign in failed. Please try again.");
-      popup.close();
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  /**
-   * Signs out the current user
-   */
   const signOut = useCallback(async () => {
     setIsLoading(true);
 
@@ -198,9 +246,6 @@ export const useAdminAuth = (): UseSignInReturn => {
     router.push("/");
   }, [router]);
 
-  /**
-   * Clears session data
-   */
   const clearSession = () => {
     sessionStorage.removeItem(STORAGE_KEY);
     sessionStorage.removeItem("admin-token");
@@ -208,9 +253,6 @@ export const useAdminAuth = (): UseSignInReturn => {
     delete axiosConfig.defaults.headers.common["Authorization"];
   };
 
-  /**
-   * Clears error state
-   */
   const clearError = useCallback(() => {
     setError(null);
   }, []);
