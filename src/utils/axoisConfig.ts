@@ -6,10 +6,10 @@ export const axiosConfig = axios.create({
   withCredentials: true,
 });
 
-// Add a request interceptor to dynamically add the jwt_token from sessionStorage
+// Add a request interceptor to dynamically add the jwt_token or admin-token from sessionStorage
 axiosConfig.interceptors.request.use(
   (config) => {
-    const token = sessionStorage.getItem("admin-token");
+    const token = sessionStorage.getItem("jwt_token") || sessionStorage.getItem("admin-token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -29,6 +29,8 @@ axiosConfig.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       sessionStorage.removeItem("jwt_token");
+      sessionStorage.removeItem("admin-token");
+      sessionStorage.removeItem("admin-token-expiry");
       logger.log("Token expired or invalid. Please sign in again.");
     }
     

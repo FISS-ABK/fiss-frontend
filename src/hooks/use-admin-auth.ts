@@ -42,7 +42,7 @@ export const useAdminAuth = (): UseSignInReturn => {
   }, []);
 
   const validateSession = async () => {
-    const token = sessionStorage.getItem(STORAGE_KEY);
+    const token = sessionStorage.getItem(STORAGE_KEY) || sessionStorage.getItem("admin-token");
 
     if (!token) {
       setIsLoading(false);
@@ -54,7 +54,8 @@ export const useAdminAuth = (): UseSignInReturn => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setUser(response.data.user);
+      setUser(response.data.user || response.data.data?.user || response.data);
+      setSession(token);
       axiosConfig.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     } catch (err) {
       console.error("Session validation failed:", err);
@@ -112,8 +113,15 @@ export const useAdminAuth = (): UseSignInReturn => {
    */
   const setupAuthListener = (popup: Window) => {
     const handleMessage = async (event: MessageEvent) => {
-      // Validate origin
-      if (!event.origin.includes("api.mhetlabs.com") && !event.origin.includes("foursquareschoolsabk")) {
+      // Validate origin against allowed backend and frontend domains
+      const origin = event.origin;
+      const isValidOrigin =
+        origin.includes("api.mhetlabs.com") ||
+        origin.includes("fissbackend") ||
+        origin.includes("foursquareschoolsabk") ||
+        origin === window.location.origin;
+
+      if (!isValidOrigin) {
         return;
       }
 
@@ -142,8 +150,10 @@ export const useAdminAuth = (): UseSignInReturn => {
    */
   const handleAuthSuccess = async (token: string, popup: Window) => {
     try {
-      // Store token
+      // Store token across both key names and set axios default header
       sessionStorage.setItem(STORAGE_KEY, token);
+      sessionStorage.setItem("admin-token", token);
+      setSession(token);
       axiosConfig.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
       // Fetch user data
@@ -151,8 +161,7 @@ export const useAdminAuth = (): UseSignInReturn => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setUser(response.data.user);
-      setSession(token);
+      setUser(response.data.user || response.data.data?.user || response.data);
       setError(null);
       popup.close();
 
@@ -194,6 +203,8 @@ export const useAdminAuth = (): UseSignInReturn => {
    */
   const clearSession = () => {
     sessionStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem("admin-token");
+    removeSession();
     delete axiosConfig.defaults.headers.common["Authorization"];
   };
 

@@ -4,13 +4,14 @@
 
 export function getSession() {
   if (typeof window === 'undefined') return null;
-  const session = sessionStorage.getItem('admin-token');
+  const session = sessionStorage.getItem('admin-token') || sessionStorage.getItem('jwt_token');
   return session;
 }
 
 export function setSession(token: string) {
   if (typeof window === 'undefined') return;
   sessionStorage.setItem('admin-token', token);
+  sessionStorage.setItem('jwt_token', token);
   //add 24 hours expiry
   const expiry = new Date();
   expiry.setDate(expiry.getDate() + 1);
@@ -20,5 +21,6 @@ export function setSession(token: string) {
 export function removeSession() {
   if (typeof window === 'undefined') return;
   sessionStorage.removeItem('admin-token');
+  sessionStorage.removeItem('jwt_token');
   sessionStorage.removeItem('admin-token-expiry');
 }
