@@ -75,7 +75,7 @@ const createPaymentApi = async (payload: PaymentPayload): Promise<PaymentRespons
 };
 
 const verifyPaymentApi = async (paymentId: string): Promise<PaymentStatusResponse> => {
-  const response = await axiosConfig.post(`/paystack/callback/${paymentId}`, {}, {
+  const response = await axiosConfig.get(`/paystack/callback/${paymentId}`, {
     responseType: "blob"
   });
   
@@ -101,7 +101,7 @@ const verifyPaymentApi = async (paymentId: string): Promise<PaymentStatusRespons
 
 export const downloadReceiptPdf = async (referenceCode: string) => {
   try {
-    const response = await axiosConfig.post(`/paystack/callback/${referenceCode}`, {}, {
+    const response = await axiosConfig.get(`/paystack/callback/${referenceCode}`, {
       responseType: "blob"
     });
     const contentType = response.headers["content-type"];
