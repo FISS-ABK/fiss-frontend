@@ -21,20 +21,12 @@ axiosConfig.interceptors.request.use(
   }
 );
 
-// Add response interceptor to handle token expiration or forbidden access
+// Response interceptor
 axiosConfig.interceptors.response.use(
   (response) => {
     return response;
   },
   (error) => {
-    const status = error.response?.status;
-    if (status === 401 || status === 403) {
-      sessionStorage.removeItem("jwt_token");
-      sessionStorage.removeItem("admin-token");
-      sessionStorage.removeItem("admin-token-expiry");
-      logger.log("Access forbidden or token invalid (Status " + status + "). Please sign in with an authorized account.");
-    }
-    
     return Promise.reject(error);
   }
 );

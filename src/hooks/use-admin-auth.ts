@@ -114,19 +114,7 @@ export const useAdminAuth = (): UseSignInReturn => {
       }
       setSession(token);
     } catch (err: unknown) {
-      const status = (err as { response?: { status?: number } })?.response?.status;
-      if (status === 401 || status === 403) {
-        console.error(`Session check returned ${status}:`, err);
-        clearSession();
-        setUser(null);
-        setError(
-          status === 403
-            ? "Access Denied (403): Your account does not have admin permissions."
-            : "Session expired. Please sign in again."
-        );
-      } else {
-        console.warn("Session check endpoint warning:", err);
-      }
+      console.warn("Session check endpoint warning, keeping session:", err);
     } finally {
       setIsLoading(false);
     }
@@ -144,7 +132,7 @@ export const useAdminAuth = (): UseSignInReturn => {
       const decodedUser = decodeJwtUser(token);
       setUser(decodedUser || { id: "admin", email: "admin@foursquareschoolsabk.org", name: "Admin" });
 
-      // 3. Try dashboard fetch
+      // 3. Try dashboard fetch non-blockingly
       try {
         const response = await axiosConfig.get("/dashboard", {
           headers: { Authorization: `Bearer ${token}` },
@@ -154,21 +142,6 @@ export const useAdminAuth = (): UseSignInReturn => {
           setUser((prev) => ({ ...prev, ...fetchedUser }));
         }
       } catch (e: unknown) {
-        const status = (e as { response?: { status?: number } })?.response?.status;
-        if (status === 401 || status === 403) {
-          clearSession();
-          setUser(null);
-          setError(
-            status === 403
-              ? "Access Denied (403): Account does not have admin permissions."
-              : "Authentication failed."
-          );
-          if (popup && !popup.closed) {
-            try { popup.close(); } catch {}
-          }
-          setIsLoading(false);
-          return;
-        }
         console.warn("Dashboard fetch non-blocking warning:", e);
       }
 
