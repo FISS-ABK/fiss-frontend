@@ -75,7 +75,7 @@ const createPaymentApi = async (payload: PaymentPayload): Promise<PaymentRespons
 };
 
 const verifyPaymentApi = async (paymentId: string): Promise<PaymentStatusResponse> => {
-  const response = await axiosConfig.post(`/api/paystack/callback/${paymentId}`, {
+  const response = await axiosConfig.post(`/paystack/callback/${paymentId}`, {}, {
     responseType: "blob"
   });
   
@@ -96,6 +96,37 @@ const verifyPaymentApi = async (paymentId: string): Promise<PaymentStatusRespons
     return data;
   } catch {
     return { success: false, status: "pending" };
+  }
+};
+
+export const downloadReceiptPdf = async (referenceCode: string) => {
+  try {
+    const response = await axiosConfig.post(`/paystack/callback/${referenceCode}`, {}, {
+      responseType: "blob"
+    });
+    const contentType = response.headers["content-type"];
+    if (contentType && contentType.includes("application/json")) {
+      const text = await response.data.text();
+      try {
+        const json = JSON.parse(text);
+        toast.error(json.message || "Failed to download receipt PDF");
+        return;
+      } catch {
+        // proceed
+      }
+    }
+    const blob = new Blob([response.data], { type: "application/pdf" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `receipt_${referenceCode}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error("Failed to download receipt:", err);
+    toast.error("Failed to download receipt PDF");
   }
 };
 

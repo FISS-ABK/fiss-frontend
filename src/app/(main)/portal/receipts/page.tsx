@@ -7,7 +7,7 @@ import DotSeparator from "@/components/dot-separator";
 import { FormEvent, useState, useEffect, Suspense } from "react";
 import { useStudentReceipts, ApiTransaction } from "@/hooks/useTransaction";
 import { useSearchParams } from "next/navigation";
-import { usePayment } from "@/hooks/usePayment";
+import { usePayment, downloadReceiptPdf } from "@/hooks/usePayment";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -18,25 +18,30 @@ import {
 } from "@/components/ui/dialog";
 import { Loader2, Download } from "lucide-react";
 
-// Helper to trigger file download using a Blob to ensure standard download prompt
-const downloadReceipt = async (url: string, filename: string = "receipt.pdf") => {
-  try {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error("Network response was not ok");
-    const blob = await response.blob();
-    const blobUrl = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = blobUrl;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(blobUrl);
-  } catch (error) {
-    console.error("Failed to download receipt via blob:", error);
-    // Fallback: just open in new tab
-    window.open(url, "_blank");
+// Helper to trigger file download using POST or Blob
+const downloadReceipt = async (urlOrRef: string, filename: string = "receipt.pdf") => {
+  if (urlOrRef.startsWith("http") && !urlOrRef.includes("/payment-status/")) {
+    try {
+      const response = await fetch(urlOrRef);
+      if (!response.ok) throw new Error("Network response was not ok");
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+      return;
+    } catch (error) {
+      console.error("Failed to download receipt via blob:", error);
+    }
   }
+  
+  // Clean reference code if full URL was passed
+  const refCode = urlOrRef.split(/\/paystack\/callback\/|\/payment-status\//).pop() || urlOrRef;
+  await downloadReceiptPdf(refCode);
 };
 
 /**
@@ -95,8 +100,8 @@ function ReceiptsPageContent() {
             if (isSuccessStatus || isSuccessBool === true) {
               toast.success("Payment verified successfully!", { id: loadingToastId });
               
-              // Try to find the receiptUrl, falling back to the payment-status API endpoint
-              const receiptUrl = res.receiptUrl || res.data?.receiptUrl || res.transaction?.receiptUrl || res.data?.transaction?.receiptUrl || `https://api.mhetlabs.com/api/fiss/payment-status/${reference}`;
+              // Try to find the receiptUrl, falling back to the payment-status reference
+              const receiptUrl = res.receiptUrl || res.data?.receiptUrl || res.transaction?.receiptUrl || res.data?.transaction?.receiptUrl || reference;
               
               // Try to find the student ID
               const studentIdFromRes = res.studentId || res.data?.studentId || res.data?.metadata?.studentId || res.transaction?.studentId || res.data?.transaction?.studentId || res.data?.transaction?.metadata?.studentId;
@@ -265,7 +270,7 @@ function ReceiptsPageContent() {
                                             tx.status?.toLowerCase() === "completed";
                         
                         const receiptUrl = tx.receiptUrl ||
-                          (isConfirmed && referenceCode ? `https://api.mhetlabs.com/api/fiss/payment-status/${referenceCode}` : undefined);
+                          (isConfirmed && referenceCode ? String(referenceCode) : undefined);
 
                         const receiptNo = tx.receiptNo || tx.metadata?.receiptNo;
                         const feeType = tx.metadata?.feeType || tx.feeType || tx.fee_type || tx.description;

@@ -3,6 +3,7 @@
 import AdminDashboardLayout from "@/app/(admin)/_components/AdminDashboardLayout";
 import PageHeader from "@/app/(admin)/_components/PageHeader";
 import { useClassTransactions, getBaseAmountFromTx } from "@/hooks/useTransaction";
+import { downloadReceiptPdf } from "@/hooks/usePayment";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, CheckCircle2, Clock, XCircle, ExternalLink, Copy } from "lucide-react";
 import { useState } from "react";
@@ -171,7 +172,7 @@ export default function TransactionDetailsPage() {
   
   const isConfirmed = status === "successful" || status === "completed";
   const referenceCode = paymentId !== "—" ? paymentId : linkCode !== "—" ? linkCode : mongoId !== "—" ? mongoId : undefined;
-  const finalReceiptUrl = receiptUrl || (isConfirmed && referenceCode ? `https://api.mhetlabs.com/api/fiss/payment-status/${referenceCode}` : undefined);
+  const finalReceiptUrl = receiptUrl || (isConfirmed && referenceCode ? `https://api.mhetlabs.com/api/fiss/api/payment-status/${referenceCode}` : undefined);
 
   return (
     <AdminDashboardLayout>
@@ -263,17 +264,15 @@ export default function TransactionDetailsPage() {
                 <DetailRow label="Receipt Status" value={receiptStatus} />
                 <DetailRow label="Receipt Sent" value={receiptSent} />
               </dl>
-              {isConfirmed && finalReceiptUrl && (
+              {isConfirmed && referenceCode && (
                 <div className="mt-4 border-t pt-4">
-                  <a
-                    href={finalReceiptUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    onClick={() => downloadReceiptPdf(referenceCode)}
                     className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-700 w-full justify-center"
                   >
                     <ExternalLink className="h-4 w-4" />
                     Download Receipt PDF
-                  </a>
+                  </button>
                 </div>
               )}
             </div>

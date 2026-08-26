@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { PaymentData } from "@/types/payment";
 import { ArrowLeft, Loader2 } from "lucide-react";
-import { usePayment } from "@/hooks/usePayment";
+import { usePayment, downloadReceiptPdf } from "@/hooks/usePayment";
 import { useRouter } from "next/navigation";
 
 interface PaymentGatewayProps {
@@ -261,7 +261,7 @@ export default function PaymentGateway({ data, onBack, onComplete }: PaymentGate
             <div className="mt-4 flex gap-3">
               <button
                 onClick={() => {
-                  window.open(`https://api.mhetlabs.com/api/fiss/payment-status/${paymentId}`, "_blank");
+                  if (paymentId) downloadReceiptPdf(paymentId);
                 }}
                 className="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors"
               >
