@@ -34,7 +34,8 @@ export interface TransactionMetadata {
   feeType?: string;
   purpose?: string;
   phone?: string;
-  baseAmount?: number;
+  baseAmount?: number | string;
+  base_amount?: number | string;
   platformFee?: number;
 }
 
@@ -49,7 +50,8 @@ export interface ApiTransaction {
   // Amounts
   amount?: number;
   amountNgn?: number;
-  baseAmount?: number;
+  baseAmount?: number | string;
+  base_amount?: number | string;
   platformFee?: number;
   token?: string;
 
@@ -143,38 +145,31 @@ const extractPaymentsResponse = (data: unknown): PaymentsResponse => {
 export const getBaseAmountFromTx = (tx?: ApiTransaction | null | Record<string, unknown>): number => {
   if (!tx) return 0;
   const t = tx as ApiTransaction;
-
-  // 1. Explicit base amount if present
-  if (typeof t.baseAmount === "number" && t.baseAmount > 0) return t.baseAmount;
-  if (typeof t.metadata?.baseAmount === "number" && t.metadata.baseAmount > 0) return t.metadata.baseAmount;
   const metaObj = t.metadata as Record<string, unknown> | undefined;
-  if (typeof metaObj?.feeAmount === "number" && metaObj.feeAmount > 0) return metaObj.feeAmount;
 
-  const rawAmount = t.amountNgn ?? t.amount ?? t.metadata?.zendfi?.amount_ngn ?? 0;
-  const totalAmount = typeof rawAmount === "number" ? rawAmount : Number(String(rawAmount).replace(/[^0-9.-]/g, "")) || 0;
-
-  if (totalAmount <= 0) return 0;
-
-  // 2. If platformFee is provided on transaction
-  const platformFee = typeof t.platformFee === "number" ? t.platformFee : (typeof metaObj?.platformFee === "number" ? (metaObj.platformFee as number) : undefined);
-  if (typeof platformFee === "number" && platformFee >= 0) {
-    let paystackFee = 0;
-    if (totalAmount < 2000) {
-      paystackFee = Math.round(totalAmount * 0.015 * 100) / 100;
-    } else {
-      paystackFee = Math.min(2000, Math.round(((totalAmount * 0.015) + 100) * 100) / 100);
+  const parseNum = (val: unknown) => {
+    if (typeof val === "number" && Number.isFinite(val)) return val;
+    if (typeof val === "string") {
+      const cleaned = val.replace(/[^0-9.-]/g, "");
+      const parsed = Number(cleaned);
+      if (Number.isFinite(parsed) && cleaned !== "") return parsed;
     }
-    const schoolPayout = Math.round((totalAmount - platformFee - paystackFee) * 100) / 100;
-    if (schoolPayout > 0) return schoolPayout;
-  }
+    return undefined;
+  };
 
-  // 3. Fallback: calculate base amount from totalAmount (Math.round((totalAmount - 99) / 1.025))
-  if (totalAmount > 99) {
-    const calcBase = Math.round((totalAmount - 99) / 1.025);
-    if (calcBase > 0) return calcBase;
-  }
+  const base =
+    parseNum(t.baseAmount) ??
+    parseNum(t.base_amount) ??
+    parseNum(t.metadata?.baseAmount) ??
+    parseNum(t.metadata?.base_amount) ??
+    parseNum(metaObj?.baseAmount) ??
+    parseNum(metaObj?.base_amount) ??
+    parseNum(metaObj?.feeAmount) ??
+    parseNum(t.amountNgn) ??
+    parseNum(t.amount) ??
+    0;
 
-  return totalAmount;
+  return base;
 };
 
 // ADMIN: POST /payments — optional academic_session filter

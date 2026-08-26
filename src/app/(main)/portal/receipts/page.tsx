@@ -246,11 +246,11 @@ function ReceiptsPageContent() {
                     <tbody className="divide-y">
                       {transactionsToShow.map((tx: ApiTransaction, index: number) => {
                         const amountValue =
-                          typeof tx.amount === "number"
-                            ? tx.amount
-                            : Number(tx.amount ?? tx.amountNgn ?? 0);
+                          typeof tx.baseAmount === "number"
+                            ? tx.baseAmount
+                            : Number(tx.baseAmount ?? 0);
                         const amountFormatted = isNaN(amountValue)
-                          ? `${tx.amount ?? ""}`
+                          ? `${tx.baseAmount ?? ""}`
                           : `₦${amountValue.toLocaleString()}`;
 
                         const dateSource = tx.updated_at || tx.createdAt;
@@ -299,7 +299,7 @@ function ReceiptsPageContent() {
                               {isConfirmed && receiptUrl ? (
                                 <button
                                   onClick={() => downloadReceipt(receiptUrl, `receipt_${referenceCode || index}.pdf`)}
-                                  className="inline-flex items-center gap-1.5 rounded-md bg-[#09283b] px-3 py-1.5 text-xs font-medium text-white hover:bg-opacity-90 transition-colors"
+                                  className="inline-flex items-center gap-1.5 cursor-pointer rounded-md bg-[#09283b] px-3 py-1.5 text-xs font-medium text-white hover:bg-opacity-90 transition-colors"
                                 >
                                   <Download className="h-3.5 w-3.5" />
                                   Download

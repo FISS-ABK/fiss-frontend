@@ -32,6 +32,7 @@ export interface DashboardTransaction {
   feeType: string;
   class: string;
   amountNgn: string;
+  baseAmount?: string;
   date: string;
   created_at?: string;
   updated_at?: string;
