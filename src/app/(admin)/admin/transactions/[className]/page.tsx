@@ -38,7 +38,7 @@ export default function ClassTransactionsPage() {
         const baseAmount = getBaseAmountFromTx(t);
         const amountFormatted = `₦${baseAmount.toLocaleString()}`;
 
-        const createdDate = t.created_at || t.date || t.updated_at;
+        const createdDate = t.paidAt || t.created_at || t.updated_at;
         const formattedDate = createdDate
           ? new Date(createdDate).toLocaleDateString(undefined, {
               year: 'numeric',
