@@ -53,7 +53,7 @@ const downloadReceipt = async (urlOrRef: string, filename: string = "receipt.pdf
  * NEXT_PUBLIC_PAYMENT_SETTLEMENT_DELAY_MS env var if needed.
  */
 const PAYMENT_SETTLEMENT_DELAY_MS = Number(
-  process.env.NEXT_PUBLIC_PAYMENT_SETTLEMENT_DELAY_MS || 6000
+  process.env.NEXT_PUBLIC_PAYMENT_SETTLEMENT_DELAY_MS || 3000
 );
 
 function ReceiptsPageContent() {
