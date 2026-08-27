@@ -193,9 +193,6 @@ export default function ClassTransactionsPage() {
       {/* Total Amount Card */}
       {!isLoadingTransactions && totalClassBaseAmount > 0 && (
         <div className="mb-6 flex items-center gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
-            <DollarSign className="h-5 w-5" />
-          </div>
           <div>
             <p className="text-sm text-gray-500">
               Total Amount{academicSession ? ` (${academicSession})` : ''}
