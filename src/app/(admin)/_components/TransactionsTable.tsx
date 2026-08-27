@@ -115,7 +115,7 @@ export default function TransactionsTable({
                   <td className="hidden whitespace-nowrap px-4 py-3 text-gray-600 sm:table-cell sm:px-0 sm:py-4">{transaction.class}</td>
                   <td className="whitespace-nowrap px-4 py-3 font-medium text-gray-900 sm:px-0 sm:py-4">{transaction.amountNgn}</td>
                   <td className="hidden whitespace-nowrap px-4 py-3 text-gray-600 lg:table-cell lg:px-0 lg:py-4">
-                    {formatDate(transaction.paidAt ?? transaction.created_at ?? transaction.updated_at)}
+                    {formatDate(transaction.paidAt ?? transaction.date ?? transaction.created_at ?? transaction.updated_at)}
                   </td>
                   <td className="whitespace-nowrap px-4 py-3 sm:px-0 sm:py-4">
                     <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium sm:px-3 sm:py-1 ${badgeClass}`}>

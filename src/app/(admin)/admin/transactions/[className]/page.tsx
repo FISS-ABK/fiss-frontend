@@ -88,8 +88,9 @@ export default function ClassTransactionsPage() {
             feeType: (((t.metadata as Record<string, unknown> | undefined)?.feeType as string | undefined) || t.feeType || t.fee_type || '—') as string,
             class: (t.metadata?.className || t.className || t.class || className) as string,
             amountNgn: amountFormatted,
-            date: formattedDate,
-            rawDate: createdDate,
+            date: createdDate || '',
+            paidAt: createdDate,
+            created_at: createdDate,
             status: (t.status || 'Pending') as string,
           };
         }),
