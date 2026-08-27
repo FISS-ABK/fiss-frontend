@@ -319,6 +319,7 @@ export const useDashboardData = () => {
           amountNgn: formatCurrency(baseAmount),
           date: resolveDate(tx),
           created_at: tx.created_at,
+          paidAt: tx.paidAt,
           updated_at: tx.updated_at,
           status: resolveStatus(tx.status),
         };
