@@ -54,6 +54,7 @@ export interface PaymentStatusResponse {
   status?: string;
   payment_status?: string;
   receiptUrl?: string;
+  receiptAccessUrl?: string;
   studentId?: string;
   transaction?: PaymentTransactionInfo;
   pdfBlob?: Blob;

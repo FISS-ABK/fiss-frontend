@@ -53,7 +53,7 @@ const downloadReceipt = async (urlOrRef: string, filename: string = "receipt.pdf
  * NEXT_PUBLIC_PAYMENT_SETTLEMENT_DELAY_MS env var if needed.
  */
 const PAYMENT_SETTLEMENT_DELAY_MS = Number(
-  process.env.NEXT_PUBLIC_PAYMENT_SETTLEMENT_DELAY_MS || 3000
+  process.env.NEXT_PUBLIC_PAYMENT_SETTLEMENT_DELAY_MS || 1000
 );
 
 function ReceiptsPageContent() {
@@ -101,7 +101,7 @@ function ReceiptsPageContent() {
               toast.success("Payment verified successfully!", { id: loadingToastId });
               
               // Try to find the receiptUrl, falling back to the payment-status reference
-              const receiptUrl = res.receiptUrl || res.data?.receiptUrl || res.transaction?.receiptUrl || res.data?.transaction?.receiptUrl || reference;
+              const receiptUrl = res.receiptUrl || res.data?.receiptUrl || res?.receiptAccessUrl || res.data?.transaction?.receiptUrl || reference;
               
               // Try to find the student ID
               const studentIdFromRes = res.studentId || res.data?.studentId || res.data?.metadata?.studentId || res.transaction?.studentId || res.data?.transaction?.studentId || res.data?.transaction?.metadata?.studentId;
