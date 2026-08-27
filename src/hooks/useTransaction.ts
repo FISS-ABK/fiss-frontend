@@ -65,8 +65,11 @@ export interface ApiTransaction {
 
   // Timestamps
   created_at?: string;
+  createdAt?: string;
   updated_at?: string;
   confirmedAt?: string;
+  paidAt?: string;
+  paid_at?: string;
 
   // On-chain / receipt
   transactionSignature?: string;
@@ -76,7 +79,6 @@ export interface ApiTransaction {
   reference?: string;
   receiptNo?: string;
   description?: string;
-  paidAt?: string;
   receiptStatus?: string;
   paymentMethod?: string;
   channel?: string;
@@ -91,7 +93,6 @@ export interface ApiTransaction {
   class?: string;
   currency?: string;
   date?: string;
-  createdAt?: string;
   academic_session?: string;
   academicSession?: string;
 

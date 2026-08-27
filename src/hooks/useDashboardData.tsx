@@ -92,12 +92,17 @@ const resolveAmountNumber = (raw: unknown) => {
 };
 
 const resolveDate = (tx: ApiTransaction) => {
+  const meta = tx.metadata as Record<string, unknown> | undefined;
   return (
+    tx.paidAt ??
+    tx.paid_at ??
+    (meta?.paidAt as string | undefined) ??
+    (meta?.paid_at as string | undefined) ??
     tx.date ??
     tx.created_at ??
+    tx.createdAt ??
     tx.updated_at ??
     tx.confirmedAt ??
-    tx.createdAt ??
     ""
   );
 };

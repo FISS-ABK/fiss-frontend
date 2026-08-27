@@ -125,3 +125,81 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Global Select & Option Styling — Clean, Modern & Icon-Free */
+select {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  background-image: none !important;
+  background-color: #ffffff;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+select:hover {
+  border-color: #94a3b8;
+  background-color: #f8fafc;
+}
+
+select:focus,
+select:focus-visible {
+  border-color: #0284c7 !important;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15) !important;
+  outline: none !important;
+}
+
+select:disabled {
+  background-color: #f1f5f9;
+  color: #94a3b8;
+  cursor: not-allowed;
+  border-color: #e2e8f0;
+}
+
+select option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  padding: 0.625rem 0.875rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+}
+
+select option:hover,
+select option:focus,
+select option:active,
+select option:checked {
+  background-color: #e0f2fe !important;
+  color: #0369a1 !important;
+}
+
+.dark select {
+  background-color: #0f172a;
+  color: #f8fafc;
+  border-color: #334155;
+}
+
+.dark select:hover {
+  background-color: #1e293b;
+  border-color: #475569;
+}
+
+.dark select option {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+.dark select option:hover,
+.dark select option:focus,
+.dark select option:checked {
+  background-color: #1e293b !important;
+  color: #38bdf8 !important;
+}

@@ -31,37 +31,68 @@ export default function ClassTransactionsPage() {
     isLoadingTransactions,
   } = useClassTransactions(className, academicSession || undefined);
 
-  // Normalize transactions for display
+  // Helper to extract timestamp for sorting and display
+  const getTxTimestamp = (t: typeof transactions[number]) => {
+    const meta = t.metadata as Record<string, unknown> | undefined;
+    const raw =
+      t.paidAt ||
+      t.paid_at ||
+      (meta?.paidAt as string) ||
+      (meta?.paid_at as string) ||
+      t.date ||
+      t.created_at ||
+      t.createdAt ||
+      t.updated_at ||
+      t.confirmedAt;
+    return raw ? new Date(raw).getTime() : 0;
+  };
+
+  // Normalize transactions for display & sort newest first
   const normalizedTransactions = useMemo(
     () =>
-      (transactions ?? []).map((t, index) => {
-        const baseAmount = getBaseAmountFromTx(t);
-        const amountFormatted = `₦${baseAmount.toLocaleString()}`;
+      (transactions ?? [])
+        .slice()
+        .sort((a, b) => getTxTimestamp(b) - getTxTimestamp(a))
+        .map((t, index) => {
+          const baseAmount = getBaseAmountFromTx(t);
+          const amountFormatted = `₦${baseAmount.toLocaleString()}`;
 
-        const createdDate = t.paidAt || t.created_at || t.updated_at;
-        const formattedDate = createdDate
-          ? new Date(createdDate).toLocaleDateString(undefined, {
-              year: 'numeric',
-              month: 'short',
-              day: '2-digit',
-            })
-          : '';
+          const meta = t.metadata as Record<string, unknown> | undefined;
+          const createdDate =
+            t.paidAt ||
+            t.paid_at ||
+            (meta?.paidAt as string) ||
+            (meta?.paid_at as string) ||
+            t.date ||
+            t.created_at ||
+            t.createdAt ||
+            t.updated_at ||
+            t.confirmedAt;
 
-        return {
-          // Prefer MongoDB _id so the detail-page route resolves correctly
-          id: (t._id ?? t.id ?? index) as string | number,
-          fullName: (t.metadata?.fullName ||
-            t.fullName ||
-            t.student_name ||
-            'Unknown Student') as string,
-          studentId: (t.metadata?.studentId || t.studentId || t.student_id || '—') as string,
-          feeType: (((t.metadata as Record<string, unknown> | undefined)?.feeType as string | undefined) || t.feeType || t.fee_type || '—') as string,
-          class: (t.metadata?.className || t.className || t.class || className) as string,
-          amountNgn: amountFormatted,
-          date: formattedDate,
-          status: (t.status || 'Pending') as string,
-        };
-      }),
+          const formattedDate = createdDate
+            ? new Date(createdDate).toLocaleDateString(undefined, {
+                year: 'numeric',
+                month: 'short',
+                day: '2-digit',
+              })
+            : '—';
+
+          return {
+            // Prefer MongoDB _id so the detail-page route resolves correctly
+            id: (t._id ?? t.id ?? index) as string | number,
+            fullName: (t.metadata?.fullName ||
+              t.fullName ||
+              t.student_name ||
+              'Unknown Student') as string,
+            studentId: (t.metadata?.studentId || t.studentId || t.student_id || '—') as string,
+            feeType: (((t.metadata as Record<string, unknown> | undefined)?.feeType as string | undefined) || t.feeType || t.fee_type || '—') as string,
+            class: (t.metadata?.className || t.className || t.class || className) as string,
+            amountNgn: amountFormatted,
+            date: formattedDate,
+            rawDate: createdDate,
+            status: (t.status || 'Pending') as string,
+          };
+        }),
     [transactions, className]
   );
 
@@ -251,9 +282,8 @@ export default function ClassTransactionsPage() {
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               >
                 <option value="All">All Fee Types</option>
-                <option value="Tuition Fee">Tuition Fee</option>
-                <option value="School Bus">School Bus</option>
-                <option value="Lab Fee">Lab Fee</option>
+                <option value="School Fee">School Fee</option>
+                <option value="Hostel Fee">Hostel Fee</option>
                 <option value="Sports Fee">Sports Fee</option>
               </select>
             </div>
