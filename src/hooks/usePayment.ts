@@ -102,7 +102,7 @@ const verifyPaymentApi = async (paymentId: string): Promise<PaymentStatusRespons
 
 export const downloadReceiptPdf = async (referenceCode: string) => {
   try {
-    const response = await mhetConfig.get(`/api/paystack/callback/${referenceCode}`, {
+    const response = await axiosConfig.post(`/payment-status/${referenceCode}`, {
       responseType: "blob"
     });
     const contentType = response.headers["content-type"];
