@@ -258,7 +258,7 @@ function ReceiptsPageContent() {
                           ? `${tx.baseAmount ?? ""}`
                           : `₦${amountValue.toLocaleString()}`;
 
-                        const dateSource = tx.updated_at || tx.createdAt;
+                        const dateSource = tx.updated_at || tx.paidAt;
                         const formattedDate = dateSource
                           ? new Date(dateSource).toLocaleString()
                           : "—";
