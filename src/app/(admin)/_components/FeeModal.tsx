@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { FeeStructure, FeeBreakdownItem } from '@/types/fees';
 import { useAccounts } from '@/hooks/useAccounts';
+import { calculatePlatformFee } from '@/utils/feeUtils';
 
 interface FeeModalProps {
   isOpen: boolean;
@@ -48,6 +49,8 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
     subAccountCode: fee?.subAccountCode || fee?.subAccount || '',
     subAccount: fee?.subAccount || fee?.subAccountCode || '',
   });
+
+  const platformFee = calculatePlatformFee(formData.amount);
 
   const [customFeeType, setCustomFeeType] = useState(
     fee?.feeType && !FEE_TYPE_OPTIONS.includes(fee.feeType) ? fee.feeType : ''
@@ -325,11 +328,22 @@ export default function FeeModal({ isOpen, onClose, onSave, fee, mode, isLoading
           </div>
 
           {/* Total Amount */}
-          <div className="rounded-lg bg-gray-50 p-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">Total Amount</span>
-              <span className="text-xl font-bold text-gray-900">
-                ₦{formData.amount.toLocaleString()}
+          <div className="rounded-lg bg-gray-50 p-4 space-y-2 border border-gray-200">
+            <div className="flex items-center justify-between text-xs text-gray-500">
+              <span>School Base Amount</span>
+              <span className="font-medium">₦{formData.amount.toLocaleString()}</span>
+            </div>
+            <div className="flex items-center justify-between text-xs text-gray-600">
+              <span className="flex items-center gap-1">
+                Platform & Processing Fee
+                <span className="text-[10px] bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded font-normal">(2.5% + ₦99)</span>
+              </span>
+              <span className="font-medium">₦{platformFee.toLocaleString()}</span>
+            </div>
+            <div className="flex items-center justify-between border-t border-gray-200 pt-2">
+              <span className="text-sm font-semibold text-gray-800">Total Payable on Paystack</span>
+              <span className="text-xl font-bold text-[#0a1929]">
+                ₦{(formData.amount + platformFee).toLocaleString()}
               </span>
             </div>
           </div>
