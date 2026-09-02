@@ -69,26 +69,16 @@ export default function FeeCard({ fee, onEdit, onDelete }: FeeCardProps) {
               <span className="font-medium text-gray-900">₦{item.amount.toLocaleString()}</span>
             </div>
           ))}
-          <div className="flex justify-between text-sm pt-1 border-t border-dashed border-gray-200">
-            <span className="text-gray-600 flex items-center gap-1">
-              Platform & Processing Fee
-              <span className="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded font-normal">(2.5% + ₦99)</span>
-            </span>
-            <span className="font-medium text-gray-700">₦{platformFee.toLocaleString()}</span>
-          </div>
+
         </div>
       </div>
 
       {/* Total */}
       <div className="mt-4 border-t pt-3 space-y-1">
-        <div className="flex justify-between items-center text-xs text-gray-500">
-          <span>School Base Amount</span>
-          <span>₦{fee.amount.toLocaleString()}</span>
-        </div>
         <div className="flex justify-between items-center pt-1">
           <span className="text-sm font-semibold text-gray-800">Total Payable</span>
           <span className="text-xl font-bold text-[#0a1929]">
-            ₦{(fee.amount + platformFee).toLocaleString()}
+            ₦{(fee.amount).toLocaleString()}
           </span>
         </div>
       </div>

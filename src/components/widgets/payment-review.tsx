@@ -64,28 +64,15 @@ export default function PaymentReview({ data, onBack, onNext }: PaymentReviewPro
                   </span>
                 </div>
               ))}
-              <div className="flex items-center justify-between border-b border-dashed border-gray-200 pb-2">
-                <span className="text-sm text-gray-600 flex items-center gap-1.5">
-                  Platform & Processing Fee
-                  <span className="text-[10px] bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded font-medium">(2.5% + ₦99)</span>
-                </span>
-                <span className="text-sm font-medium text-gray-700">
-                  ₦{platformFee.toLocaleString()}
-                </span>
-              </div>
             </div>
 
             <div className="mt-4 space-y-1.5 border-t-2 border-gray-200 pt-4">
-              <div className="flex items-center justify-between text-xs text-gray-500">
-                <span>School Base Fee</span>
-                <span>₦{fee.amount.toLocaleString()}</span>
-              </div>
               <div className="flex items-center justify-between pt-1">
                 <span className="text-base font-semibold text-[#09283b]">
                   Total Amount Payable
                 </span>
                 <span className="text-xl font-bold text-[#09283b]">
-                  ₦{(fee.amount + platformFee).toLocaleString()}
+                  ₦{(fee.amount).toLocaleString()}
                 </span>
               </div>
             </div>
